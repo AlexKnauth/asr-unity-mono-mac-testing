@@ -1,6 +1,8 @@
 # asr-unity-mono-mac-testing
 
-An auto splitter for Hollow Knight.
+Exploring how a Unity / Mono library might try to support
+Mac, and attempting to test potential library code and see
+if it works on Hollow Knight, for now.
 
 ## Compilation
 
