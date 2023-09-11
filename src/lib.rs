@@ -1,21 +1,26 @@
 use std::{path::Path, fs::File, io::{Read, self}, mem, slice};
 
-use asr::{future::next_tick, Process, Address};
+use asr::{future::next_tick, Process, Address, string::ArrayCString};
 use bytemuck::CheckedBitPattern;
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
 
+const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
+const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
+
+// --------------------------------------------------------
+
 struct MachOFormatOffsets {
-    number_of_commands: u8,
-    load_commands: u8,
-    command_size: u8,
-    symbol_table_offset: u8,
-    number_of_symbols: u8,
-    string_table_offset: u8,
-    nlist_value: u8,
-    size_of_nlist_item: u8,
+    number_of_commands: usize,
+    load_commands: usize,
+    command_size: usize,
+    symbol_table_offset: usize,
+    number_of_symbols: usize,
+    string_table_offset: usize,
+    nlist_value: usize,
+    size_of_nlist_item: usize,
 }
 
 impl MachOFormatOffsets {
@@ -64,22 +69,53 @@ async fn main() {
     }
 }
 
-fn attach(process: &Process) -> Option<()> {
+fn attach(process: &Process) -> Option<Address> {
     // TODO: Attach Unity / Mono stuff with code similar to
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
-    let (mono_module_addr, mono_module_len) = mono_module;
-    asr::print_message(&format!("attach found mono module: {}, {}", mono_module_addr, mono_module_len));
+    let (mono_module_addr, _mono_module_len) = mono_module;
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
     let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
-    asr::print_message(&format!("module_from_path: {:X} {:X} {:X} {:X}", module_from_path[0], module_from_path[1], module_from_path[2], module_from_path[3]));
     let macho_offsets = MachOFormatOffsets::new();
-    let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands as usize)?;
-    asr::print_message(&format!("number_of_commands: {}", number_of_commands));
-    Some(())
+    let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
+
+    let mut root_domain_function_address = Address::NULL;
+
+    let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
+    for _i in 0..number_of_commands {
+        // Check if load command is LC_SYMTAB
+        let next_command: i32 = slice_read(&module_from_path, offset_to_next_command)?;
+        if next_command == 2 {
+            let symbol_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.symbol_table_offset)?;
+            let number_of_symbols: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.number_of_symbols)?;
+            let string_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.string_table_offset)?;
+
+            for j in 0..(number_of_symbols as usize) {
+                let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
+                let symbol_name: ArrayCString<MONO_GET_ROOT_DOMAIN_LEN> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
+
+                if symbol_name.matches(MONO_GET_ROOT_DOMAIN) {
+                    let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
+                    root_domain_function_address = mono_module_addr + root_domain_function_offset;
+                    break;
+                }
+            }
+
+            break;
+        } else {
+            let command_size: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.command_size)?;
+            offset_to_next_command += command_size as usize;
+        }
+    }
+
+    if root_domain_function_address.is_null() {
+        return None;
+    }
+
+    Some(root_domain_function_address)
 }
 
 fn file_read_all_bytes<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
