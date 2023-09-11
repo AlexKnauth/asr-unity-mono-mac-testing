@@ -1,4 +1,4 @@
-use asr::{future::next_tick, game_engine::unity::il2cpp::{Module, Version}, Process};
+use asr::{future::next_tick, Process};
 
 asr::async_main!(stable);
 
@@ -15,9 +15,9 @@ async fn main() {
         let process = Process::wait_attach("Hollow Knight").await;
         process
             .until_closes(async {
-                // TODO: Change this to use the correct version of IL2CPP (or mono backend).
-                let module = Module::wait_attach(&process, Version::V2020).await;
-                let image = module.wait_get_default_image(&process).await;
+                // TODO: Attach Unity / Mono stuff with code similar to
+                // GetRootDomainFunctionAddressMachOFormat from:
+                // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
 
                 // TODO: Load some initial information from the process.
                 loop {
