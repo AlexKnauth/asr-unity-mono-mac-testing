@@ -1,16 +1,12 @@
 use std::{path::Path, fs::File, io::{Read, self}, mem, slice};
 
-use asr::{future::next_tick, Process, Address, string::ArrayCString, signature::Signature, Address64, game_engine::unity::mono};
+use asr::{future::next_tick, Process, Address, string::ArrayCString, Address64, game_engine::unity::mono};
 use bytemuck::CheckedBitPattern;
 use memchr::memmem;
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
-
-const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
-const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
-const MONO_GET_ROOT_DOMAIN_LEN_1: usize = MONO_GET_ROOT_DOMAIN_LEN + 1;
 
 const UNITY_PLAYER_VERSION: &[u8] = b"Unity Player version ";
 const UNITY_PLAYER_VERSION_LEN: usize = UNITY_PLAYER_VERSION.len();
@@ -24,35 +20,6 @@ const MH_MAGIC_64: u32 = 0xfeedfacf; /* the 64-bit mach magic number */
 const MH_CIGAM_64: u32 = 0xcffaedfe; /* NXSwapInt(MH_MAGIC_64) */
 
 // --------------------------------------------------------
-
-struct MachOFormatOffsets {
-    number_of_commands: usize,
-    load_commands: usize,
-    command_size: usize,
-    symbol_table_offset: usize,
-    number_of_symbols: usize,
-    string_table_offset: usize,
-    nlist_value: usize,
-    size_of_nlist_item: usize,
-}
-
-impl MachOFormatOffsets {
-    const fn new() -> Self {
-        // offsets taken from:
-        //  - https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/Offsets/MachOFormatOffsets.cs
-        //  - https://opensource.apple.com/source/xnu/xnu-4570.71.2/EXTERNAL_HEADERS/mach-o/loader.h.auto.html
-        MachOFormatOffsets {
-            number_of_commands: 0x10,
-            load_commands: 0x20,
-            command_size: 0x04,
-            symbol_table_offset: 0x08,
-            number_of_symbols: 0x0c,
-            string_table_offset: 0x10,
-            nlist_value: 0x08,
-            size_of_nlist_item: 0x10,
-        }
-    }
-}
 
 struct Offsets {
     monoassembly_aname: u8,
