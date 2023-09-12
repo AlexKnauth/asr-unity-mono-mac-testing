@@ -228,16 +228,7 @@ fn attach_default(process: &Process, version: mono::Version) -> Option<(Address,
 fn attach(process: &Process, version: mono::Version, assembly_name: &str) -> Option<(Address, Address)> {
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
     let (mono_module_addr, mono_module_len) = mono_module;
-    let process_path = process.get_path().ok()?;
-    let contents_path = Path::new(&process_path).parent()?.parent()?;
-    let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
-    let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
-    let magic: u32 = slice_read(&module_from_path, 0).ok()?;
-    let is_64_bit = match magic {
-        MH_MAGIC_64 | MH_CIGAM_64 => true,
-        MH_MAGIC_32 | MH_CIGAM_32 => false,
-        _ => { return None; }
-    };
+    let is_64_bit = is_64_bit(process)?;
 
     for i in 0..(mono_module_len/8) {
         let a = mono_module_addr + (i * 8);
@@ -299,6 +290,19 @@ fn detect_version(process: &Process) -> Option<mono::Version> {
     } else {
         mono::Version::V2
     })
+}
+
+fn is_64_bit(process: &Process) -> Option<bool> {
+    let process_path = process.get_path().ok()?;
+    let mut process_file = File::open(process_path).ok()?;
+    let mut buffer: [u8; 4] = [0; 4];
+    process_file.read_exact(&mut buffer).ok();
+    let magic: u32 = bytemuck::checked::try_from_bytes(&buffer).ok().cloned()?;
+    match magic {
+        MH_MAGIC_64 | MH_CIGAM_64 => Some(true),
+        MH_MAGIC_32 | MH_CIGAM_32 => Some(false),
+        _ => None
+    }
 }
 
 fn file_read_all_bytes<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
