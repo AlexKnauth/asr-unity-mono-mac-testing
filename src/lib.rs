@@ -11,6 +11,9 @@ asr::async_main!(stable);
 const UNITY_PLAYER_VERSION: &[u8] = b"Unity Player version ";
 const UNITY_PLAYER_VERSION_LEN: usize = UNITY_PLAYER_VERSION.len();
 
+// Magic mach-o header constants from:
+// https://opensource.apple.com/source/xnu/xnu-4570.71.2/EXTERNAL_HEADERS/mach-o/loader.h.auto.html
+
 /* Constant for the magic field of the mach_header_32 (32-bit architectures) */
 const MH_MAGIC_32: u32 = 0xfeedface; /* the mach magic number */
 const MH_CIGAM_32: u32 = 0xcefaedfe; /* NXSwapInt(MH_MAGIC) */
