@@ -1,4 +1,4 @@
-use std::{path::Path, fs::File, io::{Read, self}, mem, slice};
+use std::{path::Path, fs::File, io::{Read, self}, mem};
 
 use asr::{future::next_tick, Process, Address, string::ArrayCString, Address64, game_engine::unity::mono};
 use bytemuck::CheckedBitPattern;
@@ -232,7 +232,7 @@ fn attach(process: &Process, version: mono::Version, assembly_name: &str) -> Opt
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
     let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
-    let magic: u32 = slice_read(&module_from_path, 0)?;
+    let magic: u32 = slice_read(&module_from_path, 0).ok()?;
     let is_64_bit = match magic {
         MH_MAGIC_64 | MH_CIGAM_64 => true,
         MH_MAGIC_32 | MH_CIGAM_32 => false,
@@ -272,7 +272,7 @@ fn detect_version(process: &Process) -> Option<mono::Version> {
     let info_plist_bytes = file_read_all_bytes(info_plist_path).ok()?;
     // example: "Unity Player version 2020.2.2f1 "
     let upv = memmem::find(&info_plist_bytes, UNITY_PLAYER_VERSION)?;
-    let version_string: ArrayCString<6> = slice_read(&info_plist_bytes, upv + UNITY_PLAYER_VERSION_LEN)?;
+    let version_string: ArrayCString<6> = slice_read(&info_plist_bytes, upv + UNITY_PLAYER_VERSION_LEN).ok()?;
     let (before, after) = version_string.split_at(version_string.iter().position(|&x| x == b'.')?);
 
     const ZERO: u8 = b'0';
@@ -310,16 +310,8 @@ fn file_read_all_bytes<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
 
 // like Process::read, except it reads from a slice instead
 // of reading from the process memory
-fn slice_read<T: CheckedBitPattern>(slice: &[u8], address: usize) -> Option<T> {
+fn slice_read<T: CheckedBitPattern>(slice: &[u8], address: usize) -> Result<T, bytemuck::checked::CheckedCastError> {
     let size = mem::size_of::<T>();
     let slice_src = &slice[address..(address + size)];
-    unsafe {
-        let mut value = mem::MaybeUninit::<T>::uninit();
-        let slice_dst: &mut [u8] = slice::from_raw_parts_mut(value.as_mut_ptr().cast(), size);
-        slice_dst.copy_from_slice(slice_src);
-        if !T::is_valid_bit_pattern(&*value.as_ptr().cast::<T::Bits>()) {
-            return None;
-        }
-        Some(value.assume_init())
-    }
+    bytemuck::checked::try_from_bytes(slice_src).cloned()
 }
