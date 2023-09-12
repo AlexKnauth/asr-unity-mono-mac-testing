@@ -9,6 +9,7 @@ asr::async_main!(stable);
 
 const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
 const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
+const MONO_GET_ROOT_DOMAIN_LEN_1: usize = MONO_GET_ROOT_DOMAIN_LEN + 1;
 
 // --------------------------------------------------------
 
@@ -74,7 +75,7 @@ fn attach(process: &Process) -> Option<Address> {
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
-    let (mono_module_addr, _mono_module_len) = mono_module;
+    let (mono_module_addr, mono_module_len) = mono_module;
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
@@ -95,10 +96,12 @@ fn attach(process: &Process) -> Option<Address> {
 
             for j in 0..(number_of_symbols as usize) {
                 let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
-                let symbol_name: ArrayCString<MONO_GET_ROOT_DOMAIN_LEN> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
+                let symbol_name: ArrayCString<MONO_GET_ROOT_DOMAIN_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
 
                 if symbol_name.matches(MONO_GET_ROOT_DOMAIN) {
                     let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
+                    asr::print_message(&format!("root_domain_function_offset: {}", root_domain_function_offset));
+                    asr::print_message(&format!("mono_module_len: {}", mono_module_len));
                     root_domain_function_address = mono_module_addr + root_domain_function_offset;
                     break;
                 }
@@ -114,6 +117,20 @@ fn attach(process: &Process) -> Option<Address> {
     if root_domain_function_address.is_null() {
         return None;
     }
+
+    asr::print_message(&format!("mono_module_addr: {}", mono_module_addr));
+    asr::print_message(&format!("root_domain_function_address: {}", root_domain_function_address));
+    let b = Address::new(mono_module_addr.value() + (root_domain_function_address.value() - mono_module_addr.value())*0xd087dc/0x1000000);
+    let c = Address::new(mono_module_addr.value() + (root_domain_function_address.value() - mono_module_addr.value())*0xd087dd/0x1000000);
+    let d = Address::new(mono_module_addr.value() + (root_domain_function_address.value() - mono_module_addr.value())*0xd157a0/0x1000000);
+    let f = Address::new(mono_module_addr.value() + mono_module_len);
+    let av = process.read::<u8>(mono_module_addr);
+    let bv = process.read::<u8>(b);
+    let cv = process.read::<u8>(c);
+    let dv = process.read::<u8>(d);
+    let ev = process.read::<u8>(root_domain_function_address);
+    asr::print_message(&format!("av: {:?}, bv: {:?}, cv: {:?}, dv: {:?}, ev: {:?}", av, bv, cv, dv, ev));
+    asr::print_message(&format!("a: {:?}\nb: {:?}\nc: {:?}\nd: {:?}\ne: {:?}\nf: {:?}", mono_module_addr, b, c, d, root_domain_function_address, f));
 
     Some(root_domain_function_address)
 }
