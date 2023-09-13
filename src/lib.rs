@@ -74,7 +74,9 @@ fn read_pointer_path_string_object<const N: usize>(process: &Process, address: A
 }
 
 fn read_string_object<const N: usize>(process: &Process, a: Address64) -> Option<String> {
+    // class "System.String" field "m_stringLength"
     const STRING_LEN_OFFSET: u64 = 0x10;
+    // class "System.String" field "m_firstChar"
     const STRING_CONTENTS_OFFSET: u64 = 0x14;
 
     let n: u32 = process.read_pointer_path64(a, &[STRING_LEN_OFFSET]).ok()?;
