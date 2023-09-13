@@ -1,5 +1,5 @@
 
-use asr::{future::next_tick, Process, game_engine::unity::mono};
+use asr::{future::next_tick, Process, game_engine::unity::mono, Address};
 
 asr::async_main!(stable);
 
@@ -32,7 +32,7 @@ async fn main() {
     }
 }
 
-async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class)> {
+async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class, Address)> {
     asr::print_message("attaching mono module image...");
     for _ in 0..0x10 { next_tick().await; }
     let (module, image) = attach_auto_detect_default(process)?;
@@ -41,7 +41,9 @@ async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mo
     let game_manager_class = image.get_class(&process, &module, "GameManager")?;
     asr::print_message("GameManager class found");
     for _ in 0..0x10 { next_tick().await; }
-    Some((module, image, game_manager_class))
+    let game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
+    asr::print_message("GameManager instance found");
+    Some((module, image, game_manager_class, game_manager_instance))
 }
 
 fn attach_auto_detect_default(process: &Process) -> Option<(mono::Module, mono::Image)> {
