@@ -19,7 +19,7 @@ async fn main() {
         let process = Process::wait_attach("Hollow Knight").await;
         process
             .until_closes(async {
-                let a = attach_auto_detect_default(&process);
+                let a = wait_attach_game_manager(&process).await;
 
                 // TODO: Load some initial information from the process.
                 asr::print_message(&format!("done: {:?}", a.is_some()));
@@ -30,6 +30,18 @@ async fn main() {
             })
             .await;
     }
+}
+
+async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class)> {
+    asr::print_message("attaching mono module image...");
+    for _ in 0..0x10 { next_tick().await; }
+    let (module, image) = attach_auto_detect_default(process)?;
+    asr::print_message("attached mono module image");
+    for _ in 0..0x10 { next_tick().await; }
+    let game_manager_class = image.get_class(&process, &module, "GameManager")?;
+    asr::print_message("GameManager class found");
+    for _ in 0..0x10 { next_tick().await; }
+    Some((module, image, game_manager_class))
 }
 
 fn attach_auto_detect_default(process: &Process) -> Option<(mono::Module, mono::Image)> {
