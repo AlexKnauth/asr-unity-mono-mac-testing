@@ -6,11 +6,6 @@ use bytemuck::CheckedBitPattern;
 asr::async_main!(stable);
 
 // --------------------------------------------------------
-
-const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
-const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
-const MONO_GET_ROOT_DOMAIN_LEN_1: usize = MONO_GET_ROOT_DOMAIN_LEN + 1;
-
 // --------------------------------------------------------
 
 struct MachOFormatOffsets {
@@ -133,16 +128,16 @@ fn attach(process: &Process) -> Option<Address> {
     // TODO: Attach Unity / Mono stuff with code similar to
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
-    let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
-    let (mono_module_addr, mono_module_len) = mono_module;
+    let unity_module = process.get_module_range("UnityPlayer.dylib").ok()?;
+    let (unity_module_addr, unity_module_len) = unity_module;
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
-    let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
-    let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
+    let unity_module_path = contents_path.join("Frameworks").join("UnityPlayer.dylib");
+    let module_from_path = file_read_all_bytes(unity_module_path).ok()?;
     let macho_offsets = MachOFormatOffsets::new();
     let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
 
-    let mut root_domain_function_address = Address::NULL;
+    let mut something_scene_something_address = Address::NULL;
 
     let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
     for _i in 0..number_of_commands {
@@ -155,14 +150,17 @@ fn attach(process: &Process) -> Option<Address> {
 
             for j in 0..(number_of_symbols as usize) {
                 let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
-                let symbol_name: ArrayCString<MONO_GET_ROOT_DOMAIN_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
+                let symbol_name: ArrayCString<128> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
 
-                if symbol_name.matches(MONO_GET_ROOT_DOMAIN) {
-                    let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
-                    asr::print_message(&format!("root_domain_function_offset: {}", root_domain_function_offset));
-                    asr::print_message(&format!("mono_module_len: {}", mono_module_len));
-                    root_domain_function_address = mono_module_addr + root_domain_function_offset;
-                    break;
+                if let Ok(symbol_name_str) = String::from_utf8(symbol_name.to_vec()) {
+                    if symbol_name_str.to_lowercase().contains("scene") {
+                        asr::print_message(&format!("symbol_name: {:?}", String::from_utf8(symbol_name.to_vec())));
+                        let something_scene_something_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
+                        asr::print_message(&format!("something_scene_something_offset: 0x{:X}", something_scene_something_offset));
+                        asr::print_message(&format!("unity_module_len: 0x{:X}", unity_module_len));
+                        something_scene_something_address = unity_module_addr + something_scene_something_offset;
+                        break;
+                    }
                 }
             }
 
@@ -173,21 +171,21 @@ fn attach(process: &Process) -> Option<Address> {
         }
     }
 
-    if root_domain_function_address.is_null() {
-        return None;
+    if something_scene_something_address.is_null() {
+        // return None;
     }
 
-    if process.read::<u8>(root_domain_function_address).is_ok() {
-        return Some(root_domain_function_address);
+    if process.read::<u8>(something_scene_something_address).is_ok() {
+        // return Some(something_scene_something_address);
     }
 
-    let root_domain_function_offset_in_page = root_domain_function_address.value() & 0xfff;
-    let number_of_pages = mono_module_len / 0x1000;
+    let root_domain_function_offset_in_page = something_scene_something_address.value() & 0xfff;
+    let number_of_pages = unity_module_len / 0x1000;
     const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
     asr::print_message("looking at offset in page...");
     asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
     for i in 0..number_of_pages {
-        let a = Address::new(mono_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
+        let a = Address::new(unity_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
         if process.read::<u8>(a).is_ok() {
             let mb = SIG_MONO_64.scan_process_range(process, (a, 0x100));
             if let Some(b) = mb {
@@ -195,7 +193,7 @@ fn attach(process: &Process) -> Option<Address> {
                 let mc = process.read::<i32>(scan_address).ok();
                 if let Some(c) = mc {
                     let assemblies = scan_address + 0x4 + c;
-                    if attach_assemblies(process, assemblies).is_some() {
+                    if attach_scene_manager(process, assemblies).is_some() {
                         asr::print_message("found at offset in page.");
                         return Some(a);
                     }
@@ -206,12 +204,15 @@ fn attach(process: &Process) -> Option<Address> {
 
     asr::print_message("looking everywhere else...");
 
-    for i in 0..(mono_module_len/8) {
-        let a = Address::new(mono_module_addr.value() + (i * 8));
-        if attach_assemblies(process, a).is_some() {
+    for i in 0..(unity_module_len/8) {
+        let a = Address::new(unity_module_addr.value() + (i * 8));
+        if attach_scene_manager(process, a).is_some() {
             asr::print_message("found somewhere else.");
             let actual_offset_in_page = a.value() & 0xfff;
-            asr::print_message(&format!("0x{:X}", actual_offset_in_page));
+            asr::print_message(&format!("0x{:010X}", actual_offset_in_page));
+            let actual_offset_in_module = a.value() - unity_module_addr.value();
+            asr::print_message(&format!("0x{:010X}", actual_offset_in_module));
+            asr::print_message(&format!("0x{:010X}", a.value()));
             return Some(a);
         }
     }
@@ -219,21 +220,19 @@ fn attach(process: &Process) -> Option<Address> {
     None
 }
 
-fn attach_assemblies(process: &Process, assemblies_addr: Address) -> Option<Address> {
-    let offsets = Offsets::new(mono::Version::V2, true);
-    let mut assemblies = process.read::<Address64>(assemblies_addr).ok()?;
-    let image = loop {
-        let data = process.read::<Address64>(assemblies).ok()?;
-        if data.is_null() { return None; }
-        let name_addr = process.read::<Address64>(data + offsets.monoassembly_aname as u64 + offsets.monoassemblyname_name as u64).ok()?;
-        let name = process.read::<ArrayCString<128>>(name_addr).ok()?;
-        if name.matches("Assembly-CSharp") {
-            asr::print_message("name.matches(\"Assembly-CSharp\")");
-            break process.read::<Address64>(data + offsets.monoassembly_image as u64).ok()?;
-        }
-        assemblies = process.read::<Address64>(assemblies + offsets.glist_next as u64).ok()?;
-    };
-    Some(image.into())
+fn attach_scene_manager(process: &Process, a: Address) -> Option<Address> {
+    const ASSETS_SCENES: &[u8] = b"Assets/Scenes/";
+    const ASSETS_SCENES_LEN: usize = ASSETS_SCENES.len();
+    const SCENE_ASSET_PATH_OFFSET: u64 = 0x10;
+    const ACTIVE_SCENE_OFFSET: u64 = 0x48;
+    const ACTIVE_SCENE_CONTENTS_PATH: &[u64] = &[0, ACTIVE_SCENE_OFFSET, SCENE_ASSET_PATH_OFFSET, 0];
+
+    let s1: ArrayCString<ASSETS_SCENES_LEN> = process.read_pointer_path64(a, ACTIVE_SCENE_CONTENTS_PATH).ok()?;
+    if s1.matches(ASSETS_SCENES) {
+        Some(a)
+    } else {
+        None
+    }
 }
 
 fn file_read_all_bytes<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
