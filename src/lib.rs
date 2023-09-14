@@ -185,6 +185,7 @@ fn attach(process: &Process) -> Option<Address> {
     let number_of_pages = mono_module_len / 0x1000;
     const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
     asr::print_message("looking at offset in page...");
+    asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
     for i in 0..number_of_pages {
         let a = Address::new(mono_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
         if process.read::<u8>(a).is_ok() {
@@ -209,6 +210,8 @@ fn attach(process: &Process) -> Option<Address> {
         let a = Address::new(mono_module_addr.value() + (i * 8));
         if attach_assemblies(process, a).is_some() {
             asr::print_message("found somewhere else.");
+            let actual_offset_in_page = a.value() & 0xfff;
+            asr::print_message(&format!("0x{:X}", actual_offset_in_page));
             return Some(a);
         }
     }
