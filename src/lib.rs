@@ -365,7 +365,15 @@ fn attach(process: &Process) -> Option<Address> {
     }
 
     const SIG_64_BIT: Signature<13> = Signature::new("48 83 EC 20 4C 8B ?5 ???????? 33 F6");
-    asr::print_message(&format!("SIG_64_BIT: {:?}", SIG_64_BIT.scan_process_range(process, unity_module)));
+    let scan_64_bit = SIG_64_BIT.scan_process_range(process, unity_module);
+    asr::print_message(&format!("SIG_64_BIT: {:?}", scan_64_bit));
+    if let Some(found_64_bit) = scan_64_bit {
+        let addr = found_64_bit + 7;
+        if let Ok(at_64_bit) = process.read::<i32>(addr) {
+            asr::print_message(&format!("0x{:012X}", at_64_bit));             // example: 0x00000129D799
+            asr::print_message(&format!("0x{:012}", addr + 0x4 + at_64_bit)); // example: 0x7ffa62d8ac30
+        }
+    }
 
     const SIG_7: Signature<7> = Signature::new("48 83 EC 20 4C 8B ?5");
     let scan_7 = SIG_7.scan_process_range(process, unity_module);
@@ -373,8 +381,8 @@ fn attach(process: &Process) -> Option<Address> {
     if let Some(found_7) = scan_7 {
         let addr = found_7 + 7;
         if let Ok(at_7) = process.read::<i32>(addr) {
-            asr::print_message(&format!("0x{:010X}", at_7));
-            asr::print_message(&format!("0x{:010}", addr + 0x4 + at_7));
+            asr::print_message(&format!("0x{:012X}", at_7));
+            asr::print_message(&format!("0x{:012}", addr + 0x4 + at_7));
         }
     }
 
@@ -385,10 +393,10 @@ fn attach(process: &Process) -> Option<Address> {
         if attach_scene_manager(process, a).is_some() {
             asr::print_message("found somewhere else.");
             let actual_offset_in_page = a.value() & 0xfff;
-            asr::print_message(&format!("0x{:010X}", actual_offset_in_page));
+            asr::print_message(&format!("0x{:012X}", actual_offset_in_page));
             let actual_offset_in_module = a.value() - unity_module_addr.value();
-            asr::print_message(&format!("0x{:010X}", actual_offset_in_module));
-            asr::print_message(&format!("0x{:010X}", a.value()));
+            asr::print_message(&format!("0x{:012X}", actual_offset_in_module));
+            asr::print_message(&format!("0x{:012X}", a.value()));
             return Some(a);
         }
     }
