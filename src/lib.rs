@@ -409,11 +409,8 @@ fn attach(process: &Process) -> Option<Address> {
         }
     }
 
-    if scene_manager_address.is_null() {
-        None
-    } else {
-        Some(scene_manager_address)
-    }
+    if scene_manager_address.is_null() { return None; }
+    Some(scene_manager_address)
 }
 
 fn attach_scene_manager(process: &Process, a: Address) -> Option<Address> {
