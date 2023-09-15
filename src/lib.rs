@@ -16,6 +16,8 @@ const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
 const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
 const MONO_GET_ROOT_DOMAIN_LEN_1: usize = MONO_GET_ROOT_DOMAIN_LEN + 1;
 
+const ITEMS_PER_TICK: u64 = 16384;
+
 // --------------------------------------------------------
 
 #[derive(Copy, Clone, PartialEq, Hash, Debug)]
@@ -269,7 +271,7 @@ async fn main() {
         }).await;
         process
             .until_closes(async {
-                let a = attach(&process);
+                let a = attach(&process).await;
 
                 // TODO: Load some initial information from the process.
                 asr::print_message(&format!("done: {:?}", a));
@@ -282,7 +284,7 @@ async fn main() {
     }
 }
 
-fn attach(process: &Process) -> Option<Address> {
+async fn attach(process: &Process) -> Option<Address> {
     // TODO: Attach Unity / Mono stuff with code similar to
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
@@ -329,6 +331,7 @@ fn attach(process: &Process) -> Option<Address> {
     if root_domain_function_address.is_null() {
         return None;
     }
+    next_tick().await;
 
     let mut assemblies_address = Address::NULL;
 
@@ -357,6 +360,7 @@ fn attach(process: &Process) -> Option<Address> {
     }
 
     asr::print_message("looking everywhere else...");
+    next_tick().await;
 
     for i in 0..(mono_module_len/8) {
         let a = Address::new(mono_module_addr.value() + (i * 8));
@@ -366,6 +370,9 @@ fn attach(process: &Process) -> Option<Address> {
             asr::print_message(&format!("0x{:X}", actual_offset_in_page));
             assemblies_address = a;
             break;
+        }
+        if 0 == i % ITEMS_PER_TICK {
+            next_tick().await;
         }
     }
 
