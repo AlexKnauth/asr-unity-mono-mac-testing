@@ -290,6 +290,9 @@ fn attach(process: &Process) -> Option<Address> {
         panic!("UnityPlayer not found")
     };
     let (unity_module_addr, unity_module_len) = unity_module;
+
+    let mut scene_manager_address = Address::NULL;
+
     let process_path = process.get_path().ok()?;
     if format == BinaryFormat::MachO {
         let contents_path = Path::new(&process_path).parent()?.parent()?;
@@ -356,7 +359,8 @@ fn attach(process: &Process) -> Option<Address> {
                         let assemblies = scan_address + 0x4 + c;
                         if attach_scene_manager(process, assemblies).is_some() {
                             asr::print_message("found at offset in page.");
-                            return Some(a);
+                            scene_manager_address = a;
+                            break;
                         }
                     }
                 }
@@ -370,11 +374,13 @@ fn attach(process: &Process) -> Option<Address> {
     if let Some(found_64_bit) = scan_64_bit {
         let addr = found_64_bit + 7;
         if let Ok(at_64_bit) = process.read::<i32>(addr) {
+            scene_manager_address = addr + 0x4 + at_64_bit;
             asr::print_message(&format!("0x{:012X}", at_64_bit));             // example: 0x00000129D799
-            asr::print_message(&format!("0x{:012}", addr + 0x4 + at_64_bit)); // example: 0x7ffa62d8ac30
+            asr::print_message(&format!("0x{:012}", scene_manager_address));  // example: 0x7ffa62d8ac30
         }
     }
 
+    /*
     const SIG_7: Signature<7> = Signature::new("48 83 EC 20 4C 8B ?5");
     let scan_7 = SIG_7.scan_process_range(process, unity_module);
     asr::print_message(&format!("SIG_7: {:?}", scan_7));
@@ -385,6 +391,7 @@ fn attach(process: &Process) -> Option<Address> {
             asr::print_message(&format!("0x{:012}", addr + 0x4 + at_7));
         }
     }
+    */
 
     asr::print_message("looking everywhere else...");
 
@@ -397,11 +404,16 @@ fn attach(process: &Process) -> Option<Address> {
             let actual_offset_in_module = a.value() - unity_module_addr.value();
             asr::print_message(&format!("0x{:012X}", actual_offset_in_module));
             asr::print_message(&format!("0x{:012X}", a.value()));
-            return Some(a);
+            scene_manager_address = a;
+            break;
         }
     }
 
-    None
+    if scene_manager_address.is_null() {
+        None
+    } else {
+        Some(scene_manager_address)
+    }
 }
 
 fn attach_scene_manager(process: &Process, a: Address) -> Option<Address> {
