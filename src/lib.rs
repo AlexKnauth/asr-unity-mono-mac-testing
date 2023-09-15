@@ -395,6 +395,18 @@ async fn attach(process: &Process) -> Option<Address> {
     }
     */
 
+    const SIG_13: Signature<13> = Signature::new("41 54 53 50 4C 8B ?5 ???????? 41 83");
+    let scan_13 = SIG_13.scan_process_range(process, unity_module);
+    asr::print_message(&format!("SIG_13: {:?}", scan_13));
+    if let Some(found_13) = scan_13 {
+        let addr = found_13 + 7;
+        if let Ok(at_13) = process.read::<i32>(addr) {
+            scene_manager_address = addr + 0x4 + at_13;
+            asr::print_message(&format!("0x{:012X}", at_13));                 // example: 0x0000013D56A3
+            asr::print_message(&format!("0x{:012}", scene_manager_address));  // example: 0x00010edd12e8
+        }
+    }
+
     asr::print_message("looking everywhere else...");
 
     for i in 0..(unity_module_len/8) {
@@ -415,12 +427,16 @@ async fn attach(process: &Process) -> Option<Address> {
 
     for _ in 0..0x16 { next_tick().await; }
 
-    for i in 0..(unity_module_len - 0x4) {
-        let a = unity_module_addr + i;
+    for i in 0..(unity_module_len - 0xb) {
+        let am7 = unity_module_addr + i;
+        let a = am7 + 7;
         if let Ok(b) = process.read::<i32>(a) {
             let rip = a + 0x4;
             if rip + b == scene_manager_address {
                 asr::print_message(&format!("rip: {} + {:04X} = scene_manager: {}", rip, b, scene_manager_address));
+                if let (Ok(m7), Ok(m6), Ok(m5), Ok(m4), Ok(m3), Ok(m2), Ok(m1), Ok(p4), Ok(p5)) = (process.read::<u8>(am7), process.read::<u8>(am7 + 1), process.read::<u8>(am7 + 2), process.read::<u8>(am7 + 3), process.read::<u8>(am7 + 4), process.read::<u8>(am7 + 5), process.read::<u8>(am7 + 6), process.read::<u8>(a + 4), process.read::<u8>(a + 5)) {
+                    asr::print_message(&format!("{:02X} {:02X} {:02X} {:02X} {:02X} {:02X} {:02X} ???????? {:02X} {:02X}", m7, m6, m5, m4, m3, m2, m1, p4, p5));
+                }
             }
         }
         if 0 == i % ITEMS_PER_TICK {
