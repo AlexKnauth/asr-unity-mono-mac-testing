@@ -274,74 +274,82 @@ fn attach(process: &Process) -> Option<Address> {
     // TODO: Attach Unity / Mono stuff with code similar to
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
-    let unity_module = process.get_module_range("UnityPlayer.dylib").ok()?;
+    let (format, unity_module) = if let Ok(unity_module) = process.get_module_range("UnityPlayer.dll") {
+        (BinaryFormat::PE, unity_module)
+    } else if let Ok(unity_module) = process.get_module_range("UnityPlayer.dylib") {
+        (BinaryFormat::MachO, unity_module)
+    } else {
+        panic!("UnityPlayer not found")
+    };
     let (unity_module_addr, unity_module_len) = unity_module;
     let process_path = process.get_path().ok()?;
-    let contents_path = Path::new(&process_path).parent()?.parent()?;
-    let unity_module_path = contents_path.join("Frameworks").join("UnityPlayer.dylib");
-    let module_from_path = file_read_all_bytes(unity_module_path).ok()?;
-    let macho_offsets = MachOFormatOffsets::new();
-    let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
-
-    let mut something_scene_something_address = Address::NULL;
-
-    let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
-    for _i in 0..number_of_commands {
-        // Check if load command is LC_SYMTAB
-        let next_command: i32 = slice_read(&module_from_path, offset_to_next_command)?;
-        if next_command == 2 {
-            let symbol_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.symbol_table_offset)?;
-            let number_of_symbols: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.number_of_symbols)?;
-            let string_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.string_table_offset)?;
-
-            for j in 0..(number_of_symbols as usize) {
-                let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
-                let symbol_name: ArrayCString<128> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
-
-                if let Ok(symbol_name_str) = String::from_utf8(symbol_name.to_vec()) {
-                    if symbol_name_str.to_lowercase().contains("scene") {
-                        asr::print_message(&format!("symbol_name: {:?}", String::from_utf8(symbol_name.to_vec())));
-                        let something_scene_something_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
-                        asr::print_message(&format!("something_scene_something_offset: 0x{:X}", something_scene_something_offset));
-                        asr::print_message(&format!("unity_module_len: 0x{:X}", unity_module_len));
-                        something_scene_something_address = unity_module_addr + something_scene_something_offset;
-                        break;
+    if format == BinaryFormat::MachO {
+        let contents_path = Path::new(&process_path).parent()?.parent()?;
+        let unity_module_path = contents_path.join("Frameworks").join("UnityPlayer.dylib");
+        let module_from_path = file_read_all_bytes(unity_module_path).ok()?;
+        let macho_offsets = MachOFormatOffsets::new();
+        let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
+    
+        let mut something_scene_something_address = Address::NULL;
+    
+        let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
+        for _i in 0..number_of_commands {
+            // Check if load command is LC_SYMTAB
+            let next_command: i32 = slice_read(&module_from_path, offset_to_next_command)?;
+            if next_command == 2 {
+                let symbol_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.symbol_table_offset)?;
+                let number_of_symbols: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.number_of_symbols)?;
+                let string_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.string_table_offset)?;
+    
+                for j in 0..(number_of_symbols as usize) {
+                    let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
+                    let symbol_name: ArrayCString<128> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
+    
+                    if let Ok(symbol_name_str) = String::from_utf8(symbol_name.to_vec()) {
+                        if symbol_name_str.to_lowercase().contains("scene") {
+                            asr::print_message(&format!("symbol_name: {:?}", String::from_utf8(symbol_name.to_vec())));
+                            let something_scene_something_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
+                            asr::print_message(&format!("something_scene_something_offset: 0x{:X}", something_scene_something_offset));
+                            asr::print_message(&format!("unity_module_len: 0x{:X}", unity_module_len));
+                            something_scene_something_address = unity_module_addr + something_scene_something_offset;
+                            break;
+                        }
                     }
                 }
+    
+                break;
+            } else {
+                let command_size: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.command_size)?;
+                offset_to_next_command += command_size as usize;
             }
-
-            break;
-        } else {
-            let command_size: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.command_size)?;
-            offset_to_next_command += command_size as usize;
         }
-    }
-
-    if something_scene_something_address.is_null() {
-        // return None;
-    }
-
-    if process.read::<u8>(something_scene_something_address).is_ok() {
-        // return Some(something_scene_something_address);
-    }
-
-    let root_domain_function_offset_in_page = something_scene_something_address.value() & 0xfff;
-    let number_of_pages = unity_module_len / 0x1000;
-    const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
-    asr::print_message("looking at offset in page...");
-    asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
-    for i in 0..number_of_pages {
-        let a = Address::new(unity_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
-        if process.read::<u8>(a).is_ok() {
-            let mb = SIG_MONO_64.scan_process_range(process, (a, 0x100));
-            if let Some(b) = mb {
-                let scan_address = b + 3;
-                let mc = process.read::<i32>(scan_address).ok();
-                if let Some(c) = mc {
-                    let assemblies = scan_address + 0x4 + c;
-                    if attach_scene_manager(process, assemblies).is_some() {
-                        asr::print_message("found at offset in page.");
-                        return Some(a);
+    
+        if something_scene_something_address.is_null() {
+            // return None;
+        }
+    
+        if process.read::<u8>(something_scene_something_address).is_ok() {
+            // return Some(something_scene_something_address);
+        }
+    
+        let root_domain_function_offset_in_page = something_scene_something_address.value() & 0xfff;
+        let number_of_pages = unity_module_len / 0x1000;
+        const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
+        asr::print_message("looking at offset in page...");
+        asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
+        for i in 0..number_of_pages {
+            let a = Address::new(unity_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
+            if process.read::<u8>(a).is_ok() {
+                let mb = SIG_MONO_64.scan_process_range(process, (a, 0x100));
+                if let Some(b) = mb {
+                    let scan_address = b + 3;
+                    let mc = process.read::<i32>(scan_address).ok();
+                    if let Some(c) = mc {
+                        let assemblies = scan_address + 0x4 + c;
+                        if attach_scene_manager(process, assemblies).is_some() {
+                            asr::print_message("found at offset in page.");
+                            return Some(a);
+                        }
                     }
                 }
             }
