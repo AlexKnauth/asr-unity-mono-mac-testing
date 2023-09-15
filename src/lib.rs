@@ -303,6 +303,7 @@ async fn attach(process: &Process) -> Option<Address> {
     let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
 
     let mut root_domain_function_address = Address::NULL;
+    let mut root_domain_function_offset: u32 = 0;
 
     let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
     for _i in 0..number_of_commands {
@@ -318,7 +319,7 @@ async fn attach(process: &Process) -> Option<Address> {
                 let symbol_name: ArrayCString<MONO_ASSEMBLY_FOREACH_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
 
                 if symbol_name.matches(MONO_ASSEMBLY_FOREACH) {
-                    let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
+                    root_domain_function_offset = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
                     asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_offset: {:X}", root_domain_function_offset));
                     asr::print_message(&format!("mono_module_len: {}", mono_module_len));
                     root_domain_function_address = macho_addr + root_domain_function_offset;
@@ -334,12 +335,33 @@ async fn attach(process: &Process) -> Option<Address> {
         }
     }
 
+    if root_domain_function_offset == 0 {
+        return None;
+    }
+    let function_slice = &module_from_path[(root_domain_function_offset as usize)..(root_domain_function_offset as usize + 0x100)];
+    asr::print_message(&format!("function_slice: {:02X?}", function_slice));
+    if let Some(a) = memchr::memmem::find(function_slice, &[0x48, 0x8D, 0x0D]) {
+        asr::print_message("found 48 8D 0D in function_slice.");
+        let scan_offset = a + 3;
+        if let Some(relative) = slice_read::<i32>(function_slice, scan_offset) {
+            let assemblies = macho_addr + root_domain_function_offset + scan_offset as u32 + 0x4 + relative;
+            asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
+            if attach_assemblies(process, assemblies).is_some() {
+                asr::print_message("found RIP-relative in function_slice.");
+                asr::print_message(&format!("assemblies: {}", assemblies));
+            }
+        }
+    } else {
+        asr::print_message("48 8D 0D not found.");
+    }
+
     if root_domain_function_address.is_null() {
         // return None;
     }
     next_tick().await;
 
     asr::print_message(&format!("at root_domain_function_address: {:?}", process.read::<u8>(root_domain_function_address)));
+    asr::print_message(&format!("{:02X?}", process.read::<[u8; 0x100]>(root_domain_function_address)));
 
     let mut assemblies_address = Address::NULL;
 
@@ -392,6 +414,28 @@ async fn attach(process: &Process) -> Option<Address> {
 
     if assemblies_address.is_null() {
         return None;
+    }
+    next_tick().await;
+
+    for i in 0..(0x100 - 7) {
+        let scan_offset = i + 3;
+        if let Some(relative) = slice_read::<i32>(function_slice, scan_offset) {
+            let assemblies = macho_addr + root_domain_function_offset + scan_offset as u32 + 0x4 + relative;
+            if assemblies == assemblies_address {
+                asr::print_message("found stuff RIP-relative from function_slice");
+            }
+        }
+    }
+    next_tick().await;
+
+    for i in 0..(module_from_path.len() - 7) {
+        let scan_offset = i + 3;
+        if let Some(relative) = slice_read::<i32>(&module_from_path, scan_offset) {
+            let assemblies = macho_addr + scan_offset as u32 + 0x4 + relative;
+            if assemblies == assemblies_address {
+                asr::print_message("found stuff RIP-relative from module_from_path");
+            }
+        }
     }
     next_tick().await;
 
