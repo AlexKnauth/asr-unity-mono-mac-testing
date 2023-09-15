@@ -1,11 +1,16 @@
 use std::{path::Path, fs::File, io::{Read, self}, mem, slice};
 
-use asr::{future::next_tick, Process, Address, string::ArrayCString, signature::Signature, Address64, game_engine::unity::mono::{self, Version}};
+use asr::{future::{next_tick, retry}, Process, Address, string::ArrayCString, signature::Signature, Address64, game_engine::unity::mono::{self, Version}};
 use bytemuck::CheckedBitPattern;
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
+
+const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
+    "hollow_knight.exe", // Windows
+    "Hollow Knight", // Mac
+];
 
 const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
 const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
@@ -259,7 +264,9 @@ async fn main() {
     asr::print_message("Hello, World!");
 
     loop {
-        let process = Process::wait_attach("Hollow Knight").await;
+        let process = retry(|| {
+            HOLLOW_KNIGHT_NAMES.into_iter().find_map(Process::attach)
+        }).await;
         process
             .until_closes(async {
                 let a = attach(&process);
