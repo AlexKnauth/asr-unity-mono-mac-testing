@@ -290,6 +290,11 @@ async fn attach(process: &Process) -> Option<Address> {
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
     let (mono_module_addr, mono_module_len) = mono_module;
+
+    const SIG_MACHO: Signature<4> = Signature::new("CF FA ED FE");
+    let macho_addr = SIG_MACHO.scan_process_range(process, mono_module)?;
+    next_tick().await;
+
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
@@ -316,7 +321,7 @@ async fn attach(process: &Process) -> Option<Address> {
                     let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
                     asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_offset: {:X}", root_domain_function_offset));
                     asr::print_message(&format!("mono_module_len: {}", mono_module_len));
-                    root_domain_function_address = mono_module_addr + root_domain_function_offset;
+                    root_domain_function_address = macho_addr + root_domain_function_offset;
                     asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_address: {}", root_domain_function_address));
                     break;
                 }
@@ -330,15 +335,18 @@ async fn attach(process: &Process) -> Option<Address> {
     }
 
     if root_domain_function_address.is_null() {
-        return None;
+        // return None;
     }
     next_tick().await;
+
+    asr::print_message(&format!("at root_domain_function_address: {:?}", process.read::<u8>(root_domain_function_address)));
 
     let mut assemblies_address = Address::NULL;
 
     let root_domain_function_offset_in_page = root_domain_function_address.value() & 0xfff;
     let number_of_pages = mono_module_len / 0x1000;
     const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
+    // const SIG_3: Signature<3> = Signature::new("48 8D 0D");
     asr::print_message("looking at offset in page...");
     asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
     for i in 0..number_of_pages {
@@ -357,6 +365,9 @@ async fn attach(process: &Process) -> Option<Address> {
                     }
                 }
             }
+        }
+        if 0 == i % 4 {
+            next_tick().await;
         }
     }
 
@@ -391,17 +402,38 @@ async fn attach(process: &Process) -> Option<Address> {
         if let Some(c) = mc {
             let assemblies = scan_address + 0x4 + c;
             if assemblies == assemblies_address {
-                asr::print_message("found stuff?");
+                asr::print_message("found stuff RIP-relative?");
                 if let (Ok(a0), Ok(a1), Ok(a2)) = (process.read::<u8>(a), process.read::<u8>(a + 1), process.read::<u8>(a + 2)) {
                     asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
                     asr::print_message(&format!("a: {}, scan_address: {}, c: {:X}, assemblies: {}", a, scan_address, c, assemblies));
                 }
             }
         }
+        if let Ok(d) = process.read::<Address64>(a) {
+            if d.value() == assemblies_address.value() {
+                asr::print_message("found stuff absolute?");
+                asr::print_message(&format!("a: {}, d: {}", a, d));
+            }
+        }
+        if let Ok(e) = process.read::<i32>(a) {
+            let assemblies = mono_module_addr + e;
+            if assemblies == assemblies_address {
+                asr::print_message("found stuff with offset?");
+                asr::print_message(&format!("a: {}, e: {:X}, assemblies: {}", a, e, assemblies));
+            }
+        }
         if 0 == i % ITEMS_PER_TICK {
             next_tick().await;
         }
     }
+
+    const SIG_TRY: Signature<17> = Signature::new("55 48 89 E5 41 57 41 56 41 54 53 49 89 F6 49 89 FF");
+    let sig_try = SIG_TRY.scan_process_range(process, mono_module);
+    if let Some(sig_succeed) = sig_try {
+        let sig_succeed_offset = sig_succeed.value() - mono_module_addr.value();
+        asr::print_message(&format!("SIG_TRY: {:?}, sig_succeed_offset: {:X}", sig_succeed, sig_succeed_offset));
+    }
+    // 554889E5 41574156 41545349 89F64989 FF488D3D 229A1B00 E82DCB0F 0085C075 41488B3D AA9A1B00 E8B8330E 004889C3 488D3D03 9A1B00E8 1ACB0F00 85C0754F 488B3D8B 9A1B004C 89FE4C89 F2E8E632 0E004889 DF5B415C 415E415F 5DE9EA2E 0E0089C3 89C7E863 FD0D0048 8D155EE3 0F00488D 0D84E30F 0031FFBE 04000000 4989C041 89D931C0 E8D6F10D 00EBFE41 89C489C7 E835FD0D 00488D15 70E30F00 488D0D98 E30F0031 FFBE0400 00004989 C04589E1 31C0E8A8 F10D00EB FE554889 E5415653 488D3D6F 991B00E8 6ECA0F00 85C00F85 C1000000 488D3D9B 991B00E8 5ACA0F00 85C00F85 DA000000 488B1DF7 991B0048 85DB7425 4C8B334C 89F7E8F0
 
     Some(assemblies_address)
 }
