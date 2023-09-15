@@ -330,9 +330,7 @@ fn attach(process: &Process) -> Option<Address> {
         return None;
     }
 
-    if process.read::<u8>(root_domain_function_address).is_ok() {
-        return Some(root_domain_function_address);
-    }
+    let mut assemblies_address = Address::NULL;
 
     let root_domain_function_offset_in_page = root_domain_function_address.value() & 0xfff;
     let number_of_pages = mono_module_len / 0x1000;
@@ -350,7 +348,8 @@ fn attach(process: &Process) -> Option<Address> {
                     let assemblies = scan_address + 0x4 + c;
                     if attach_assemblies(process, assemblies).is_some() {
                         asr::print_message("found at offset in page.");
-                        return Some(a);
+                        assemblies_address = assemblies;
+                        break;
                     }
                 }
             }
@@ -365,11 +364,15 @@ fn attach(process: &Process) -> Option<Address> {
             asr::print_message("found somewhere else.");
             let actual_offset_in_page = a.value() & 0xfff;
             asr::print_message(&format!("0x{:X}", actual_offset_in_page));
-            return Some(a);
+            assemblies_address = a;
+            break;
         }
     }
 
-    None
+    if assemblies_address.is_null() {
+        return None;
+    }
+    Some(assemblies_address)
 }
 
 fn attach_assemblies(process: &Process, assemblies_addr: Address) -> Option<Address> {
