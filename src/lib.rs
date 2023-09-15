@@ -12,9 +12,9 @@ const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
     "Hollow Knight", // Mac
 ];
 
-const MONO_GET_ROOT_DOMAIN: &str = "_mono_get_root_domain";
-const MONO_GET_ROOT_DOMAIN_LEN: usize = MONO_GET_ROOT_DOMAIN.len();
-const MONO_GET_ROOT_DOMAIN_LEN_1: usize = MONO_GET_ROOT_DOMAIN_LEN + 1;
+const MONO_ASSEMBLY_FOREACH: &str = "_mono_assembly_foreach";
+const MONO_ASSEMBLY_FOREACH_LEN: usize = MONO_ASSEMBLY_FOREACH.len();
+const MONO_ASSEMBLY_FOREACH_LEN_1: usize = MONO_ASSEMBLY_FOREACH_LEN + 1;
 
 const ITEMS_PER_TICK: u64 = 16384;
 
@@ -310,13 +310,14 @@ async fn attach(process: &Process) -> Option<Address> {
 
             for j in 0..(number_of_symbols as usize) {
                 let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
-                let symbol_name: ArrayCString<MONO_GET_ROOT_DOMAIN_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
+                let symbol_name: ArrayCString<MONO_ASSEMBLY_FOREACH_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
 
-                if symbol_name.matches(MONO_GET_ROOT_DOMAIN) {
+                if symbol_name.matches(MONO_ASSEMBLY_FOREACH) {
                     let root_domain_function_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
-                    asr::print_message(&format!("root_domain_function_offset: {}", root_domain_function_offset));
+                    asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_offset: {:X}", root_domain_function_offset));
                     asr::print_message(&format!("mono_module_len: {}", mono_module_len));
                     root_domain_function_address = mono_module_addr + root_domain_function_offset;
+                    asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_address: {}", root_domain_function_address));
                     break;
                 }
             }
@@ -368,6 +369,8 @@ async fn attach(process: &Process) -> Option<Address> {
             asr::print_message("found somewhere else.");
             let actual_offset_in_page = a.value() & 0xfff;
             asr::print_message(&format!("0x{:X}", actual_offset_in_page));
+            asr::print_message(&format!("0x{:X}", a.value() - mono_module_addr.value()));
+            asr::print_message(&format!("0x{}", a));
             assemblies_address = a;
             break;
         }
@@ -379,6 +382,27 @@ async fn attach(process: &Process) -> Option<Address> {
     if assemblies_address.is_null() {
         return None;
     }
+    next_tick().await;
+
+    for i in 0..(mono_module_len - 7) {
+        let a = mono_module_addr + i;
+        let scan_address = a + 3;
+        let mc = process.read::<i32>(scan_address).ok();
+        if let Some(c) = mc {
+            let assemblies = scan_address + 0x4 + c;
+            if assemblies == assemblies_address {
+                asr::print_message("found stuff?");
+                if let (Ok(a0), Ok(a1), Ok(a2)) = (process.read::<u8>(a), process.read::<u8>(a + 1), process.read::<u8>(a + 2)) {
+                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
+                    asr::print_message(&format!("a: {}, scan_address: {}, c: {:X}, assemblies: {}", a, scan_address, c, assemblies));
+                }
+            }
+        }
+        if 0 == i % ITEMS_PER_TICK {
+            next_tick().await;
+        }
+    }
+
     Some(assemblies_address)
 }
 
