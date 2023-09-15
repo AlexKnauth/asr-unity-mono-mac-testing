@@ -1,12 +1,18 @@
 use std::{path::Path, fs::File, io::{Read, self}, mem, slice};
 
-use asr::{future::next_tick, Process, Address, string::ArrayCString, signature::Signature, Address64, game_engine::unity::mono};
+use asr::{future::next_tick, Process, Address, string::ArrayCString, signature::Signature, Address64, game_engine::unity::mono::{self, Version}};
 use bytemuck::CheckedBitPattern;
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
 // --------------------------------------------------------
+
+#[derive(Copy, Clone, PartialEq, Hash, Debug)]
+enum BinaryFormat {
+    PE,
+    MachO,
+}
 
 struct MachOFormatOffsets {
     number_of_commands: usize,
@@ -61,13 +67,153 @@ struct Offsets {
 }
 
 impl Offsets {
-    const fn new(version: mono::Version, is_64_bit: bool) -> &'static Self {
-        match is_64_bit {
-            true => match version {
-                mono::Version::V1 => panic!("MachO V1 not supported"),
+    const fn new(version: mono::Version, is_64_bit: bool, format: BinaryFormat) -> &'static Self {
+        match (is_64_bit, format) {
+            (true, BinaryFormat::PE) => match version {
+                Version::V1 => &Self {
+                    monoassembly_aname: 0x10,
+                    monoassembly_image: 0x58,
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x8,
+                    monoimage_class_cache: 0x3D0,
+                    monointernalhashtable_table: 0x20,
+                    monointernalhashtable_size: 0x18,
+                    monoclassdef_next_class_cache: 0x100,
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x48,
+                    monoclass_fields: 0xA8,
+                    monoclassdef_field_count: 0x94,
+                    monoclass_runtime_info: 0xF8,
+                    monoclass_vtable_size: 0x18, // MonoVtable.data
+                    monoclass_parent: 0x30,
+                    monoclassfield_name: 0x8,
+                    monoclassfield_offset: 0x18,
+                    monoclassruntimeinfo_domain_vtables: 0x8,
+                    monovtable_vtable: 0x48,
+                    monoclassfieldalignment: 0x20,
+                },
+                // 64-bit V2 matches Unity2019_4_2020_3_x64_PE_Offsets from
+                // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/Offsets/MonoLibraryOffsets.cs#L49
+                Version::V2 => &Self {
+                    monoassembly_aname: 0x10,
+                    monoassembly_image: 0x60, // AssemblyImage = 0x44 + 0x1c
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x8,
+                    monoimage_class_cache: 0x4C0, // ImageClassCache = 0x354 + 0x16c
+                    monointernalhashtable_table: 0x20, // HashTableTable = 0x14 + 0xc
+                    monointernalhashtable_size: 0x18, // HashTableSize = 0xc + 0xc
+                    monoclassdef_next_class_cache: 0x108, // TypeDefinitionNextClassCache = 0xa8 + 0x34 + 0x10 + 0x18 + 0x4
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x48, // TypeDefinitionName = 0x2c + 0x1c
+                    monoclass_fields: 0x98, // TypeDefinitionFields = 0x60 + 0x20 + 0x18
+                    monoclassdef_field_count: 0x100, // TypeDefinitionFieldCount = 0xa4 + 0x34 + 0x10 + 0x18
+                    monoclass_runtime_info: 0xD0, // TypeDefinitionRuntimeInfo = 0x84 + 0x34 + 0x18
+                    monoclass_vtable_size: 0x5C, // TypeDefinitionVTableSize = 0x38 + 0x24
+                    monoclass_parent: 0x30, // TypeDefinitionParent = 0x20 + 0x10
+                    monoclassfield_name: 0x8,
+                    monoclassfield_offset: 0x18,
+                    monoclassruntimeinfo_domain_vtables: 0x8, // TypeDefinitionRuntimeInfoDomainVTables = 0x4 + 0x4
+                    monovtable_vtable: 0x40, // VTable = 0x28 + 0x18
+                    monoclassfieldalignment: 0x20,
+                },
+                Version::V3 => &Self {
+                    monoassembly_aname: 0x10,
+                    monoassembly_image: 0x60,
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x8,
+                    monoimage_class_cache: 0x4D0,
+                    monointernalhashtable_table: 0x20,
+                    monointernalhashtable_size: 0x18,
+                    monoclassdef_next_class_cache: 0x108,
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x48,
+                    monoclass_fields: 0x98,
+                    monoclassdef_field_count: 0x100,
+                    monoclass_runtime_info: 0xD0,
+                    monoclass_vtable_size: 0x5C,
+                    monoclass_parent: 0x30,
+                    monoclassfield_name: 0x8,
+                    monoclassfield_offset: 0x18,
+                    monoclassruntimeinfo_domain_vtables: 0x8,
+                    monovtable_vtable: 0x48,
+                    monoclassfieldalignment: 0x20,
+                },
+            },
+            (false, BinaryFormat::PE) => match version {
+                Version::V1 => &Self {
+                    monoassembly_aname: 0x8,
+                    monoassembly_image: 0x40,
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x4,
+                    monoimage_class_cache: 0x2A0,
+                    monointernalhashtable_table: 0x14,
+                    monointernalhashtable_size: 0xC,
+                    monoclassdef_next_class_cache: 0xA8,
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x30,
+                    monoclass_fields: 0x74,
+                    monoclassdef_field_count: 0x64,
+                    monoclass_runtime_info: 0xA4,
+                    monoclass_vtable_size: 0xC, // MonoVtable.data
+                    monoclass_parent: 0x24,
+                    monoclassfield_name: 0x4,
+                    monoclassfield_offset: 0xC,
+                    monoclassruntimeinfo_domain_vtables: 0x4,
+                    monovtable_vtable: 0x28,
+                    monoclassfieldalignment: 0x10,
+                },
+                // 32-bit V2 matches Unity2018_4_10_x86_PE_Offsets from
+                // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/Offsets/MonoLibraryOffsets.cs#L12
+                Version::V2 => &Self {
+                    monoassembly_aname: 0x8,
+                    monoassembly_image: 0x44, // AssemblyImage
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x4,
+                    monoimage_class_cache: 0x354, // ImageClassCache
+                    monointernalhashtable_table: 0x14, // HashTableTable
+                    monointernalhashtable_size: 0xC, // HashTableSize
+                    monoclassdef_next_class_cache: 0xA8, // TypeDefinitionNextClassCache
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x2C, // TypeDefinitionName
+                    monoclass_fields: 0x60, // TypeDefinitionFields
+                    monoclassdef_field_count: 0xA4, // TypeDefinitionFieldCount
+                    monoclass_runtime_info: 0x84, // TypeDefinitionRuntimeInfo
+                    monoclass_vtable_size: 0x38, // TypeDefinitionVTableSize
+                    monoclass_parent: 0x20, // TypeDefinitionParent
+                    monoclassfield_name: 0x4,
+                    monoclassfield_offset: 0xC,
+                    monoclassruntimeinfo_domain_vtables: 0x4, // TypeDefinitionRuntimeInfoDomainVTables
+                    monovtable_vtable: 0x28, // VTable
+                    monoclassfieldalignment: 0x10,
+                },
+                Version::V3 => &Self {
+                    monoassembly_aname: 0x8,
+                    monoassembly_image: 0x48,
+                    monoassemblyname_name: 0x0,
+                    glist_next: 0x4,
+                    monoimage_class_cache: 0x35C,
+                    monointernalhashtable_table: 0x14,
+                    monointernalhashtable_size: 0xC,
+                    monoclassdef_next_class_cache: 0xA0,
+                    monoclassdef_klass: 0x0,
+                    monoclass_name: 0x2C,
+                    monoclass_fields: 0x60,
+                    monoclassdef_field_count: 0x9C,
+                    monoclass_runtime_info: 0x7C,
+                    monoclass_vtable_size: 0x38,
+                    monoclass_parent: 0x20,
+                    monoclassfield_name: 0x4,
+                    monoclassfield_offset: 0xC,
+                    monoclassruntimeinfo_domain_vtables: 0x4,
+                    monovtable_vtable: 0x2C,
+                    monoclassfieldalignment: 0x10,
+                },
+            },
+            (true, BinaryFormat::MachO) => match version {
+                Version::V1 => panic!("MachO V1 not supported"),
                 // 64-bit MachO V2 matches Unity2019_4_2020_3_x64_MachO_Offsets from
                 // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/Offsets/MonoLibraryOffsets.cs#L86
-                mono::Version::V2 => &Self {
+                Version::V2 => &Self {
                     monoassembly_aname: 0x10,
                     monoassembly_image: 0x60, // AssemblyImage = 0x44 + 0x1c
                     monoassemblyname_name: 0x0,
@@ -89,9 +235,9 @@ impl Offsets {
                     monovtable_vtable: 0x40, // VTable = 0x28 + 0x18
                     monoclassfieldalignment: 0x20,
                 },
-                mono::Version::V3 => panic!("MachO V3 not supported"),
+                Version::V3 => panic!("MachO V3 not supported"),
             },
-            false => panic!("32-bit MachO format not supported"),
+            (false, BinaryFormat::MachO) => panic!("32-bit MachO format not supported"),
         }
     }
 }
