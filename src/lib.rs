@@ -202,6 +202,20 @@ fn attach(process: &Process) -> Option<Address> {
         }
     }
 
+    const SIG_64_BIT: Signature<13> = Signature::new("48 83 EC 20 4C 8B ?5 ???????? 33 F6");
+    asr::print_message(&format!("SIG_64_BIT: {:?}", SIG_64_BIT.scan_process_range(process, unity_module)));
+
+    const SIG_7: Signature<7> = Signature::new("48 83 EC 20 4C 8B ?5");
+    let scan_7 = SIG_7.scan_process_range(process, unity_module);
+    asr::print_message(&format!("SIG_7: {:?}", scan_7));
+    if let Some(found_7) = scan_7 {
+        let addr = found_7 + 7;
+        if let Ok(at_7) = process.read::<i32>(addr) {
+            asr::print_message(&format!("0x{:010X}", at_7));
+            asr::print_message(&format!("0x{:010}", addr + 0x4 + at_7));
+        }
+    }
+
     asr::print_message("looking everywhere else...");
 
     for i in 0..(unity_module_len/8) {
