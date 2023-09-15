@@ -12,6 +12,8 @@ const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
     "Hollow Knight", // Mac
 ];
 
+const ITEMS_PER_TICK: u64 = 16384;
+
 // --------------------------------------------------------
 
 #[derive(Copy, Clone, PartialEq, Hash, Debug)]
@@ -265,7 +267,7 @@ async fn main() {
         }).await;
         process
             .until_closes(async {
-                let a = attach(&process);
+                let a = attach(&process).await;
 
                 // TODO: Load some initial information from the process.
                 asr::print_message(&format!("done: {:?}", a));
@@ -278,7 +280,7 @@ async fn main() {
     }
 }
 
-fn attach(process: &Process) -> Option<Address> {
+async fn attach(process: &Process) -> Option<Address> {
     // TODO: Attach Unity / Mono stuff with code similar to
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
@@ -410,6 +412,22 @@ fn attach(process: &Process) -> Option<Address> {
     }
 
     if scene_manager_address.is_null() { return None; }
+
+    for _ in 0..0x16 { next_tick().await; }
+
+    for i in 0..(unity_module_len - 0x4) {
+        let a = unity_module_addr + i;
+        if let Ok(b) = process.read::<i32>(a) {
+            let rip = a + 0x4;
+            if rip + b == scene_manager_address {
+                asr::print_message(&format!("rip: {} + {:04X} = scene_manager: {}", rip, b, scene_manager_address));
+            }
+        }
+        if 0 == i % ITEMS_PER_TICK {
+            next_tick().await;
+        }
+    }
+
     Some(scene_manager_address)
 }
 
