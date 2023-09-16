@@ -6,6 +6,9 @@ use asr::{future::next_tick, Process, game_engine::unity::{mono, SceneManager, g
 asr::async_main!(stable);
 
 // --------------------------------------------------------
+
+const INIT_MAX_DIRTYNESS: usize = 0x10;
+
 // --------------------------------------------------------
 
 async fn main() {
@@ -25,7 +28,11 @@ async fn main() {
                 for _ in 0..0x10 { next_tick().await; }
                 let scene_manager = SceneManager::wait_attach(&process).await;
                 asr::print_message("attached SceneManager");
-                let (module, _image, game_manager_class, game_manager_instance) = wait_attach_game_manager(&process).await.expect("GameManager");
+                let (module, _image, game_manager_class) = wait_attach_game_manager(&process).await.expect("GameManager");
+                let mut game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
+                let mut game_manager_dirtyness = 0;
+                let mut max_dirtyness = INIT_MAX_DIRTYNESS;
+                asr::print_message(&format!("GameManager instance found: {}", game_manager_instance));
                 let scene_name_offset = game_manager_class.get_field(&process, &module, "sceneName").expect("sceneName") as u64;
                 let next_scene_name_offset = game_manager_class.get_field(&process, &module, "nextSceneName").expect("nextSceneName") as u64;
 
@@ -39,6 +46,17 @@ async fn main() {
                     let scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<64>(&process).ok().map(scene_path_to_name_string);
                     let scene_name = read_pointer_path_string_object::<64>(&process, game_manager_instance, &[scene_name_offset]);
                     let next_scene_name = read_pointer_path_string_object::<64>(&process, game_manager_instance, &[next_scene_name_offset]);
+                    if scene_manager_scene_name.is_some() {
+                        if scene_manager_scene_name == scene_name {
+                            if 0 < game_manager_dirtyness {
+                                asr::print_message(&format!("game_manager_dirtyness: {}", game_manager_dirtyness));
+                            }
+                            game_manager_dirtyness = 0;
+                            max_dirtyness = INIT_MAX_DIRTYNESS;
+                        } else {
+                            game_manager_dirtyness += 1;
+                        }
+                    }
                     if Some(&scene_manager_scene_name) != string_table.get(&("SceneManager", 0)) {
                         string_table.insert(("SceneManager", 0), scene_manager_scene_name);
                         asr::print_message(&format!("SceneManager sceneName: {:?}", string_table.get(&("SceneManager", 0))));
@@ -51,6 +69,13 @@ async fn main() {
                         string_table.insert(("GameManager", next_scene_name_offset), next_scene_name);
                         asr::print_message(&format!("GameManager nextSceneName: {:?}", string_table.get(&("GameManager", next_scene_name_offset))));
                     }
+                    if max_dirtyness < game_manager_dirtyness {
+                        asr::print_message(&format!("game_manager_dirtyness: {}", game_manager_dirtyness));
+                        game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
+                        game_manager_dirtyness = 0;
+                        max_dirtyness *= 2;
+                        asr::print_message(&format!("GameManager instance found: {}", game_manager_instance));
+                    }
                     next_tick().await;
                 }
             })
@@ -58,7 +83,7 @@ async fn main() {
     }
 }
 
-async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class, Address)> {
+async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class)> {
     asr::print_message("attaching mono module image...");
     for _ in 0..0x10 { next_tick().await; }
     let (module, image) = attach_auto_detect_default(process)?;
@@ -67,9 +92,7 @@ async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mo
     let game_manager_class = image.get_class(&process, &module, "GameManager")?;
     asr::print_message("GameManager class found");
     for _ in 0..0x10 { next_tick().await; }
-    let game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
-    asr::print_message("GameManager instance found");
-    Some((module, image, game_manager_class, game_manager_instance))
+    Some((module, image, game_manager_class))
 }
 
 fn attach_auto_detect_default(process: &Process) -> Option<(mono::Module, mono::Image)> {
