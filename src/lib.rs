@@ -437,8 +437,6 @@ mono_assembly_foreach(int64_t arg1, int64_t arg2);
 }
 
 async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<Address> {
-    let (mono_module_addr, mono_module_len) = mono_module;
-
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
@@ -463,8 +461,6 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
 
                 if symbol_name.matches(MONO_ASSEMBLY_FOREACH) {
                     root_domain_function_offset = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
-                    asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_offset: {:X}", root_domain_function_offset));
-                    asr::print_message(&format!("mono_module_len: {}", mono_module_len));
                     break;
                 }
             }
@@ -485,13 +481,15 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
     let sig_function_array: Signature<0x100> = Signature::Simple(function_array);
     let root_domain_function_address = sig_function_array.scan_process_range(process, mono_module)?;
 
+    const SIG_MONO_64_DYLIB: Signature<3> = Signature::new("48 8B 3D");
+
     let mut assemblies_address = Address::NULL;
 
-    let a = memchr::memmem::find(&function_array, &[0x48, 0x8B, 0x3D])?;
-    let scan_offset = a + 3;
-    let relative = slice_read::<i32>(&function_array, scan_offset)?;
-    let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
-    asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
+    let a = SIG_MONO_64_DYLIB.scan_process_range(process, (root_domain_function_address, 0x100))?;
+    let scan_address = a + 3;
+    let relative = process.read::<i32>(scan_address).ok()?;
+    let assemblies = scan_address + 0x4 + relative;
+    asr::print_message(&format!("a: {}, scan_address: {}, relative: {:X}, assemblies? {}", a, scan_address, relative, assemblies));
     if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
         asr::print_message("found RIP-relative in function_array.");
         asr::print_message(&format!("assemblies: {}", assemblies));
