@@ -487,20 +487,15 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
 
     let mut assemblies_address = Address::NULL;
 
-    if let Some(a) = memchr::memmem::find(&function_array, &[0x48, 0x8B, 0x3D]) {
-        asr::print_message("found 48 8B 3D in function_array.");
-        let scan_offset = a + 3;
-        if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
-            let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
-            asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
-            if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
-                asr::print_message("found RIP-relative in function_array.");
-                asr::print_message(&format!("assemblies: {}", assemblies));
-                assemblies_address = assemblies;
-            }
-        }
-    } else {
-        asr::print_message("48 8B 3D not found.");
+    let a = memchr::memmem::find(&function_array, &[0x48, 0x8B, 0x3D])?;
+    let scan_offset = a + 3;
+    let relative = slice_read::<i32>(&function_array, scan_offset)?;
+    let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
+    asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
+    if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
+        asr::print_message("found RIP-relative in function_array.");
+        asr::print_message(&format!("assemblies: {}", assemblies));
+        assemblies_address = assemblies;
     }
 
     if assemblies_address.is_null() {
