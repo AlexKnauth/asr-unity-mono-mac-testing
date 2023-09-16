@@ -441,40 +441,9 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
     let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
-    let macho_offsets = MachOFormatOffsets::new();
-    let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
 
-    let mut root_domain_function_offset: u32 = 0;
+    let root_domain_function_offset: u32 = macho_function_offset::<MONO_ASSEMBLY_FOREACH_LEN_1>(&module_from_path, MONO_ASSEMBLY_FOREACH)?;
 
-    let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
-    for _i in 0..number_of_commands {
-        // Check if load command is LC_SYMTAB
-        let next_command: i32 = slice_read(&module_from_path, offset_to_next_command)?;
-        if next_command == 2 {
-            let symbol_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.symbol_table_offset)?;
-            let number_of_symbols: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.number_of_symbols)?;
-            let string_table_offset: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.string_table_offset)?;
-
-            for j in 0..(number_of_symbols as usize) {
-                let symbol_name_offset: u32 = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
-                let symbol_name: ArrayCString<MONO_ASSEMBLY_FOREACH_LEN_1> = slice_read(&module_from_path, (string_table_offset + symbol_name_offset) as usize)?;
-
-                if symbol_name.matches(MONO_ASSEMBLY_FOREACH) {
-                    root_domain_function_offset = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
-                    break;
-                }
-            }
-
-            break;
-        } else {
-            let command_size: u32 = slice_read(&module_from_path, offset_to_next_command + macho_offsets.command_size)?;
-            offset_to_next_command += command_size as usize;
-        }
-    }
-
-    if root_domain_function_offset == 0 {
-        return None;
-    }
     let function_array: [u8; 0x100] = slice_read(&module_from_path, root_domain_function_offset as usize)?;
     asr::print_message(&format!("function_array: {:02X?}", function_array));
 
@@ -517,6 +486,37 @@ fn attach_assemblies(process: &Process, assemblies_addr: Address, format: Binary
         assemblies = process.read::<Address64>(assemblies + offsets.glist_next as u64).ok()?;
     };
     Some(image.into())
+}
+
+fn macho_function_offset<const N: usize>(macho_bytes: &[u8], function_name: &str) -> Option<u32> {
+    let macho_offsets = MachOFormatOffsets::new();
+    let number_of_commands: u32 = slice_read(macho_bytes, macho_offsets.number_of_commands)?;
+
+    let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
+    for _i in 0..number_of_commands {
+        // Check if load command is LC_SYMTAB
+        let next_command: i32 = slice_read(macho_bytes, offset_to_next_command)?;
+        if next_command == 2 {
+            let symbol_table_offset: u32 = slice_read(macho_bytes, offset_to_next_command + macho_offsets.symbol_table_offset)?;
+            let number_of_symbols: u32 = slice_read(macho_bytes, offset_to_next_command + macho_offsets.number_of_symbols)?;
+            let string_table_offset: u32 = slice_read(macho_bytes, offset_to_next_command + macho_offsets.string_table_offset)?;
+
+            for j in 0..(number_of_symbols as usize) {
+                let symbol_name_offset: u32 = slice_read(macho_bytes, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item))?;
+                let symbol_name: ArrayCString<N> = slice_read(macho_bytes, (string_table_offset + symbol_name_offset) as usize)?;
+
+                if symbol_name.matches(function_name) {
+                    return Some(slice_read(macho_bytes, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?);
+                }
+            }
+
+            break;
+        } else {
+            let command_size: u32 = slice_read(macho_bytes, offset_to_next_command + macho_offsets.command_size)?;
+            offset_to_next_command += command_size as usize;
+        }
+    }
+    None
 }
 
 fn file_read_all_bytes<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
