@@ -503,65 +503,9 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
         asr::print_message("48 8B 3D not found.");
     }
 
-    next_tick().await;
-
     if assemblies_address.is_null() {
         return None;
     }
-    next_tick().await;
-
-    for i in 0..(0x100 - 7) {
-        let scan_offset = i + 3;
-        if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
-            let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
-            if assemblies == assemblies_address {
-                asr::print_message("found stuff RIP-relative from function_array");
-                if let (Some(a0), Some(a1), Some(a2)) = (slice_read::<u8>(&function_array, i), slice_read::<u8>(&function_array, i + 1), slice_read::<u8>(&function_array, i + 2)) {
-                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
-                    asr::print_message(&format!("i: {:X}, scan_offset: {:X}, relative: {:X}, assemblies: {}", i, scan_offset, relative, assemblies));
-                }
-            }
-        }
-    }
-    next_tick().await;
-
-    let macho_addr = root_domain_function_address + (- (root_domain_function_offset as i32));
-    for i in 0..(module_from_path.len() - 7) {
-        let scan_offset = i + 3;
-        if let Some(relative) = slice_read::<i32>(&module_from_path, scan_offset) {
-            let assemblies = macho_addr + scan_offset as u32 + 0x4 + relative;
-            if assemblies == assemblies_address {
-                asr::print_message("found stuff RIP-relative from module_from_path");
-                if let (Some(a0), Some(a1), Some(a2)) = (slice_read::<u8>(&module_from_path, i), slice_read::<u8>(&module_from_path, i + 1), slice_read::<u8>(&module_from_path, i + 2)) {
-                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
-                    asr::print_message(&format!("i: {:X}, scan_offset: {:X}, relative: {:X}, assemblies: {}", i, scan_offset, relative, assemblies));
-                }
-            }
-        }
-    }
-    next_tick().await;
-
-    for i in 0..(mono_module_len - 7) {
-        let a = mono_module_addr + i;
-        let scan_address = a + 3;
-        let mc = process.read::<i32>(scan_address).ok();
-        if let Some(c) = mc {
-            let assemblies = scan_address + 0x4 + c;
-            if assemblies == assemblies_address {
-                asr::print_message("found stuff RIP-relative?");
-                if let (Ok(a0), Ok(a1), Ok(a2)) = (process.read::<u8>(a), process.read::<u8>(a + 1), process.read::<u8>(a + 2)) {
-                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
-                    asr::print_message(&format!("a: {}, scan_address: {}, c: {:X}, assemblies: {}", a, scan_address, c, assemblies));
-                }
-            }
-        }
-        if 0 == i % ITEMS_PER_TICK {
-            next_tick().await;
-        }
-    }
-
-    // 554889E5 41574156 41545349 89F64989 FF488D3D 229A1B00 E82DCB0F 0085C075 41488B3D AA9A1B00 E8B8330E 004889C3 488D3D03 9A1B00E8 1ACB0F00 85C0754F 488B3D8B 9A1B004C 89FE4C89 F2E8E632 0E004889 DF5B415C 415E415F 5DE9EA2E 0E0089C3 89C7E863 FD0D0048 8D155EE3 0F00488D 0D84E30F 0031FFBE 04000000 4989C041 89D931C0 E8D6F10D 00EBFE41 89C489C7 E835FD0D 00488D15 70E30F00 488D0D98 E30F0031 FFBE0400 00004989 C04589E1 31C0E8A8 F10D00EB FE554889 E5415653 488D3D6F 991B00E8 6ECA0F00 85C00F85 C1000000 488D3D9B 991B00E8 5ACA0F00 85C00F85 DA000000 488B1DF7 991B0048 85DB7425 4C8B334C 89F7E8F0
-
     Some(assemblies_address)
 }
 
