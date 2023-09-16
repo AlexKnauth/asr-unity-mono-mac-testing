@@ -388,6 +388,37 @@ f:  48 8b f1                mov    rsi,rcx
 38: ff 15 72 c6 35 00       call   QWORD PTR [rip+0x35c672]            # 0x35c6b0
 3e: 48 8b 0d 03 a0 46 00    mov    rcx,QWORD PTR [rip+0x46a003]        # 0x46a048
 45: 4c 8b c7                mov    r8,rdi
+
+----------
+
+mono_assembly_foreach(int64_t arg1, int64_t arg2);
+; arg int64_t arg1 @ rcx
+; arg int64_t arg2 @ rdx
+; var int64_t var_8h @ stack + 0x8
+; var int64_t var_10h @ stack + 0x10
+0x18002fcf0      mov     qword [var_8h], rbx
+0x18002fcf5      mov     qword [var_10h], rsi
+0x18002fcfa      push    rdi
+0x18002fcfb      sub     rsp, 0x20
+0x18002fcff      mov     rsi, rcx  ; arg1
+0x18002fd02      mov     rdi, rdx  ; arg2
+0x18002fd05      lea     rcx, data.180499d48 ; 0x180499d48 ; LPCRITICAL_SECTION lpCriticalSection
+0x18002fd0c      call    qword [EnterCriticalSection] ; 0x18038c398 ; VOID EnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
+0x18002fd12      mov     rcx, qword data.180499d38 ; 0x180499d38 ; int64_t arg1
+0x18002fd19      call    fcn.180009170 ; fcn.180009170
+0x18002fd1e      lea     rcx, data.180499d48 ; 0x180499d48 ; LPCRITICAL_SECTION lpCriticalSection
+0x18002fd25      mov     rbx, rax
+0x18002fd28      call    qword [LeaveCriticalSection] ; 0x18038c3a0 ; VOID LeaveCriticalSection(LPCRITICAL_SECTION lpCriticalSection)
+0x18002fd2e      mov     rcx, qword data.180499d38 ; 0x180499d38 ; int64_t arg1
+0x18002fd35      mov     r8, rdi   ; int64_t arg3
+0x18002fd38      mov     rdx, rsi  ; int64_t arg2
+0x18002fd3b      call    fcn.180009320 ; fcn.180009320
+0x18002fd40      mov     rcx, rbx
+0x18002fd43      mov     rbx, qword [var_8h]
+0x18002fd48      mov     rsi, qword [var_10h]
+0x18002fd4d      add     rsp, 0x20
+0x18002fd51      pop     rdi
+0x18002fd52      jmp     fcn.180009370 ; fcn.180009370
     */
 
     let assemblies: Address = {
