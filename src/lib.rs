@@ -397,6 +397,11 @@ f:  48 8b f1                mov    rsi,rcx
             + 3;
         scan_address + 0x4 + process.read::<i32>(scan_address).ok()?
     };
+
+    if attach_assemblies(process, assemblies, BinaryFormat::PE).is_some() {
+        asr::print_message("found assemblies with root_domain_function_address and 48 8B 0D");
+    }
+
     Some(assemblies)
 }
 
