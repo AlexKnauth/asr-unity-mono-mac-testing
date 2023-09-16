@@ -12,12 +12,6 @@ const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
     "Hollow Knight", // Mac
 ];
 
-const MONO_ASSEMBLY_FOREACH: &str = "_mono_assembly_foreach";
-const MONO_ASSEMBLY_FOREACH_LEN: usize = MONO_ASSEMBLY_FOREACH.len();
-const MONO_ASSEMBLY_FOREACH_LEN_1: usize = MONO_ASSEMBLY_FOREACH_LEN + 1;
-
-const ITEMS_PER_TICK: u64 = 16384;
-
 // --------------------------------------------------------
 
 #[derive(Copy, Clone, PartialEq, Hash, Debug)]
@@ -437,24 +431,28 @@ mono_assembly_foreach(int64_t arg1, int64_t arg2);
 }
 
 async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<Address> {
+    const MONO_ASSEMBLY_FOREACH: &str = "_mono_assembly_foreach";
+    const MONO_ASSEMBLY_FOREACH_LEN: usize = MONO_ASSEMBLY_FOREACH.len();
+    const MONO_ASSEMBLY_FOREACH_LEN_1: usize = MONO_ASSEMBLY_FOREACH_LEN + 1;
+
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
     let module_from_path = file_read_all_bytes(mono_module_path).ok()?;
 
-    let root_domain_function_offset: u32 = macho_function_offset::<MONO_ASSEMBLY_FOREACH_LEN_1>(&module_from_path, MONO_ASSEMBLY_FOREACH)?;
+    let mono_assembly_foreach_offset: u32 = macho_function_offset::<MONO_ASSEMBLY_FOREACH_LEN_1>(&module_from_path, MONO_ASSEMBLY_FOREACH)?;
 
-    let function_array: [u8; 0x100] = slice_read(&module_from_path, root_domain_function_offset as usize)?;
+    let function_array: [u8; 0x100] = slice_read(&module_from_path, mono_assembly_foreach_offset as usize)?;
     asr::print_message(&format!("function_array: {:02X?}", function_array));
 
     let sig_function_array: Signature<0x100> = Signature::Simple(function_array);
-    let root_domain_function_address = sig_function_array.scan_process_range(process, mono_module)?;
+    let mono_assembly_foreach_address = sig_function_array.scan_process_range(process, mono_module)?;
 
     const SIG_MONO_64_DYLIB: Signature<3> = Signature::new("48 8B 3D");
 
     let mut assemblies_address = Address::NULL;
 
-    let a = SIG_MONO_64_DYLIB.scan_process_range(process, (root_domain_function_address, 0x100))?;
+    let a = SIG_MONO_64_DYLIB.scan_process_range(process, (mono_assembly_foreach_address, 0x100))?;
     let scan_address = a + 3;
     let relative = process.read::<i32>(scan_address).ok()?;
     let assemblies = scan_address + 0x4 + relative;
