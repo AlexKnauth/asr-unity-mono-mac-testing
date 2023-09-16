@@ -289,6 +289,10 @@ async fn attach(process: &Process) -> Option<Address> {
     // GetRootDomainFunctionAddressMachOFormat from:
     // https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L160
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
+    attach_dylib(process, mono_module).await
+}
+
+async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<Address> {
     let (mono_module_addr, mono_module_len) = mono_module;
 
     let process_path = process.get_path().ok()?;
