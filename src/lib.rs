@@ -505,58 +505,6 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
 
     next_tick().await;
 
-    let root_domain_function_offset_in_page = root_domain_function_address.value() & 0xfff;
-    let number_of_pages = mono_module_len / 0x1000;
-    const _SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
-    const SIG_3: Signature<3> = Signature::new("48 8B 3D");
-    asr::print_message("looking at offset in page...");
-    asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
-    for i in 0..number_of_pages {
-        let a = Address::new(mono_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
-        if process.read::<u8>(a).is_ok() {
-            let mb = SIG_3.scan_process_range(process, (a, 0x100));
-            if let Some(b) = mb {
-                let scan_address = b + 3;
-                let mc = process.read::<i32>(scan_address).ok();
-                if let Some(c) = mc {
-                    let assemblies = scan_address + 0x4 + c;
-                    if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
-                        asr::print_message("found at offset in page.");
-                        asr::print_message(&format!("assemblies: {}", assemblies));
-                        if assemblies_address.is_null() {
-                            assemblies_address = assemblies;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        if 0 == i % 4 {
-            next_tick().await;
-        }
-    }
-
-    asr::print_message("looking everywhere else...");
-    next_tick().await;
-
-    for i in 0..(mono_module_len/8) {
-        let a = Address::new(mono_module_addr.value() + (i * 8));
-        if attach_assemblies(process, a, BinaryFormat::MachO).is_some() {
-            asr::print_message("found somewhere else.");
-            let actual_offset_in_page = a.value() & 0xfff;
-            asr::print_message(&format!("0x{:X}", actual_offset_in_page));
-            asr::print_message(&format!("0x{:X}", a.value() - mono_module_addr.value()));
-            asr::print_message(&format!("0x{}", a));
-            if assemblies_address.is_null() {
-                assemblies_address = a;
-            }
-            break;
-        }
-        if 0 == i % ITEMS_PER_TICK {
-            next_tick().await;
-        }
-    }
-
     if assemblies_address.is_null() {
         return None;
     }
@@ -568,6 +516,10 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
             let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
             if assemblies == assemblies_address {
                 asr::print_message("found stuff RIP-relative from function_array");
+                if let (Some(a0), Some(a1), Some(a2)) = (slice_read::<u8>(&function_array, i), slice_read::<u8>(&function_array, i + 1), slice_read::<u8>(&function_array, i + 2)) {
+                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
+                    asr::print_message(&format!("i: {:X}, scan_offset: {:X}, relative: {:X}, assemblies: {}", i, scan_offset, relative, assemblies));
+                }
             }
         }
     }
@@ -580,6 +532,10 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
             let assemblies = macho_addr + scan_offset as u32 + 0x4 + relative;
             if assemblies == assemblies_address {
                 asr::print_message("found stuff RIP-relative from module_from_path");
+                if let (Some(a0), Some(a1), Some(a2)) = (slice_read::<u8>(&module_from_path, i), slice_read::<u8>(&module_from_path, i + 1), slice_read::<u8>(&module_from_path, i + 2)) {
+                    asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
+                    asr::print_message(&format!("i: {:X}, scan_offset: {:X}, relative: {:X}, assemblies: {}", i, scan_offset, relative, assemblies));
+                }
             }
         }
     }
@@ -597,19 +553,6 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
                     asr::print_message(&format!("{:02X} {:02X} {:02X}", a0, a1, a2));
                     asr::print_message(&format!("a: {}, scan_address: {}, c: {:X}, assemblies: {}", a, scan_address, c, assemblies));
                 }
-            }
-        }
-        if let Ok(d) = process.read::<Address64>(a) {
-            if d.value() == assemblies_address.value() {
-                asr::print_message("found stuff absolute?");
-                asr::print_message(&format!("a: {}, d: {}", a, d));
-            }
-        }
-        if let Ok(e) = process.read::<i32>(a) {
-            let assemblies = mono_module_addr + e;
-            if assemblies == assemblies_address {
-                asr::print_message("found stuff with offset?");
-                asr::print_message(&format!("a: {}, e: {:X}, assemblies: {}", a, e, assemblies));
             }
         }
         if 0 == i % ITEMS_PER_TICK {
