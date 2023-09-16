@@ -291,10 +291,6 @@ async fn attach(process: &Process) -> Option<Address> {
     let mono_module = process.get_module_range("libmonobdwgc-2.0.dylib").ok()?;
     let (mono_module_addr, mono_module_len) = mono_module;
 
-    const SIG_MACHO: Signature<4> = Signature::new("CF FA ED FE");
-    let macho_addr = SIG_MACHO.scan_process_range(process, mono_module)?;
-    next_tick().await;
-
     let process_path = process.get_path().ok()?;
     let contents_path = Path::new(&process_path).parent()?.parent()?;
     let mono_module_path = contents_path.join("Frameworks").join("libmonobdwgc-2.0.dylib");
@@ -302,7 +298,6 @@ async fn attach(process: &Process) -> Option<Address> {
     let macho_offsets = MachOFormatOffsets::new();
     let number_of_commands: u32 = slice_read(&module_from_path, macho_offsets.number_of_commands)?;
 
-    let mut root_domain_function_address = Address::NULL;
     let mut root_domain_function_offset: u32 = 0;
 
     let mut offset_to_next_command: usize = macho_offsets.load_commands as usize;
@@ -322,8 +317,6 @@ async fn attach(process: &Process) -> Option<Address> {
                     root_domain_function_offset = slice_read(&module_from_path, symbol_table_offset as usize + (j * macho_offsets.size_of_nlist_item) + macho_offsets.nlist_value)?;
                     asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_offset: {:X}", root_domain_function_offset));
                     asr::print_message(&format!("mono_module_len: {}", mono_module_len));
-                    root_domain_function_address = macho_addr + root_domain_function_offset;
-                    asr::print_message(&format!("MONO_ASSEMBLY_FOREACH_address: {}", root_domain_function_address));
                     break;
                 }
             }
@@ -338,16 +331,20 @@ async fn attach(process: &Process) -> Option<Address> {
     if root_domain_function_offset == 0 {
         return None;
     }
-    let function_slice = &module_from_path[(root_domain_function_offset as usize)..(root_domain_function_offset as usize + 0x100)];
-    asr::print_message(&format!("function_slice: {:02X?}", function_slice));
-    if let Some(a) = memchr::memmem::find(function_slice, &[0x48, 0x8D, 0x0D]) {
-        asr::print_message("found 48 8D 0D in function_slice.");
+    let function_array: [u8; 0x100] = slice_read(&module_from_path, root_domain_function_offset as usize)?;
+    asr::print_message(&format!("function_array: {:02X?}", function_array));
+
+    let sig_function_array: Signature<0x100> = Signature::Simple(function_array);
+    let root_domain_function_address = sig_function_array.scan_process_range(process, mono_module)?;
+
+    if let Some(a) = memchr::memmem::find(&function_array, &[0x48, 0x8D, 0x0D]) {
+        asr::print_message("found 48 8D 0D in function_array.");
         let scan_offset = a + 3;
-        if let Some(relative) = slice_read::<i32>(function_slice, scan_offset) {
-            let assemblies = macho_addr + root_domain_function_offset + scan_offset as u32 + 0x4 + relative;
+        if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
+            let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
             asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
             if attach_assemblies(process, assemblies).is_some() {
-                asr::print_message("found RIP-relative in function_slice.");
+                asr::print_message("found RIP-relative in function_array.");
                 asr::print_message(&format!("assemblies: {}", assemblies));
             }
         }
@@ -355,13 +352,7 @@ async fn attach(process: &Process) -> Option<Address> {
         asr::print_message("48 8D 0D not found.");
     }
 
-    if root_domain_function_address.is_null() {
-        // return None;
-    }
     next_tick().await;
-
-    asr::print_message(&format!("at root_domain_function_address: {:?}", process.read::<u8>(root_domain_function_address)));
-    asr::print_message(&format!("{:02X?}", process.read::<[u8; 0x100]>(root_domain_function_address)));
 
     let mut assemblies_address = Address::NULL;
 
@@ -419,15 +410,16 @@ async fn attach(process: &Process) -> Option<Address> {
 
     for i in 0..(0x100 - 7) {
         let scan_offset = i + 3;
-        if let Some(relative) = slice_read::<i32>(function_slice, scan_offset) {
-            let assemblies = macho_addr + root_domain_function_offset + scan_offset as u32 + 0x4 + relative;
+        if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
+            let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
             if assemblies == assemblies_address {
-                asr::print_message("found stuff RIP-relative from function_slice");
+                asr::print_message("found stuff RIP-relative from function_array");
             }
         }
     }
     next_tick().await;
 
+    let macho_addr = root_domain_function_address + (- (root_domain_function_offset as i32));
     for i in 0..(module_from_path.len() - 7) {
         let scan_offset = i + 3;
         if let Some(relative) = slice_read::<i32>(&module_from_path, scan_offset) {
@@ -471,12 +463,6 @@ async fn attach(process: &Process) -> Option<Address> {
         }
     }
 
-    const SIG_TRY: Signature<17> = Signature::new("55 48 89 E5 41 57 41 56 41 54 53 49 89 F6 49 89 FF");
-    let sig_try = SIG_TRY.scan_process_range(process, mono_module);
-    if let Some(sig_succeed) = sig_try {
-        let sig_succeed_offset = sig_succeed.value() - mono_module_addr.value();
-        asr::print_message(&format!("SIG_TRY: {:?}, sig_succeed_offset: {:X}", sig_succeed, sig_succeed_offset));
-    }
     // 554889E5 41574156 41545349 89F64989 FF488D3D 229A1B00 E82DCB0F 0085C075 41488B3D AA9A1B00 E8B8330E 004889C3 488D3D03 9A1B00E8 1ACB0F00 85C0754F 488B3D8B 9A1B004C 89FE4C89 F2E8E632 0E004889 DF5B415C 415E415F 5DE9EA2E 0E0089C3 89C7E863 FD0D0048 8D155EE3 0F00488D 0D84E30F 0031FFBE 04000000 4989C041 89D931C0 E8D6F10D 00EBFE41 89C489C7 E835FD0D 00488D15 70E30F00 488D0D98 E30F0031 FFBE0400 00004989 C04589E1 31C0E8A8 F10D00EB FE554889 E5415653 488D3D6F 991B00E8 6ECA0F00 85C00F85 C1000000 488D3D9B 991B00E8 5ACA0F00 85C00F85 DA000000 488B1DF7 991B0048 85DB7425 4C8B334C 89F7E8F0
 
     Some(assemblies_address)
