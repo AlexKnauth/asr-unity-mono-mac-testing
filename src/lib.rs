@@ -485,8 +485,10 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
     let sig_function_array: Signature<0x100> = Signature::Simple(function_array);
     let root_domain_function_address = sig_function_array.scan_process_range(process, mono_module)?;
 
-    if let Some(a) = memchr::memmem::find(&function_array, &[0x48, 0x8D, 0x0D]) {
-        asr::print_message("found 48 8D 0D in function_array.");
+    let mut assemblies_address = Address::NULL;
+
+    if let Some(a) = memchr::memmem::find(&function_array, &[0x48, 0x8B, 0x3D]) {
+        asr::print_message("found 48 8B 3D in function_array.");
         let scan_offset = a + 3;
         if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
             let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
@@ -494,26 +496,25 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
             if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
                 asr::print_message("found RIP-relative in function_array.");
                 asr::print_message(&format!("assemblies: {}", assemblies));
+                assemblies_address = assemblies;
             }
         }
     } else {
-        asr::print_message("48 8D 0D not found.");
+        asr::print_message("48 8B 3D not found.");
     }
 
     next_tick().await;
 
-    let mut assemblies_address = Address::NULL;
-
     let root_domain_function_offset_in_page = root_domain_function_address.value() & 0xfff;
     let number_of_pages = mono_module_len / 0x1000;
-    const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
-    // const SIG_3: Signature<3> = Signature::new("48 8D 0D");
+    const _SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
+    const SIG_3: Signature<3> = Signature::new("48 8B 3D");
     asr::print_message("looking at offset in page...");
     asr::print_message(&format!("0x{:X}", root_domain_function_offset_in_page));
     for i in 0..number_of_pages {
         let a = Address::new(mono_module_addr.value() + (i * 0x1000) + root_domain_function_offset_in_page);
         if process.read::<u8>(a).is_ok() {
-            let mb = SIG_MONO_64.scan_process_range(process, (a, 0x100));
+            let mb = SIG_3.scan_process_range(process, (a, 0x100));
             if let Some(b) = mb {
                 let scan_address = b + 3;
                 let mc = process.read::<i32>(scan_address).ok();
@@ -521,7 +522,10 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
                     let assemblies = scan_address + 0x4 + c;
                     if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
                         asr::print_message("found at offset in page.");
-                        assemblies_address = assemblies;
+                        asr::print_message(&format!("assemblies: {}", assemblies));
+                        if assemblies_address.is_null() {
+                            assemblies_address = assemblies;
+                        }
                         break;
                     }
                 }
@@ -543,7 +547,9 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
             asr::print_message(&format!("0x{:X}", actual_offset_in_page));
             asr::print_message(&format!("0x{:X}", a.value() - mono_module_addr.value()));
             asr::print_message(&format!("0x{}", a));
-            assemblies_address = a;
+            if assemblies_address.is_null() {
+                assemblies_address = a;
+            }
             break;
         }
         if 0 == i % ITEMS_PER_TICK {
