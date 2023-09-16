@@ -368,6 +368,28 @@ async fn attach_dll(process: &Process, module_range: (Address, u64)) -> Option<A
         return None;
     }
 
+    let function_array: [u8; 0x100] = process.read(root_domain_function_address).ok()?;
+    asr::print_message(&format!("function_array: {:02X?}", function_array));
+    /*
+Disassembly:
+
+0:  48 89 5c 24 08          mov    QWORD PTR [rsp+0x8],rbx
+5:  48 89 74 24 10          mov    QWORD PTR [rsp+0x10],rsi
+a:  57                      push   rdi
+b:  48 83 ec 20             sub    rsp,0x20
+f:  48 8b f1                mov    rsi,rcx
+12: 48 8b fa                mov    rdi,rdx
+15: 48 8d 0d 3c a0 46 00    lea    rcx,[rip+0x46a03c]                  # 0x46a058
+1c: ff 15 86 c6 35 00       call   QWORD PTR [rip+0x35c686]            # 0x35c6a8
+22: 48 8b 0d 1f a0 46 00    mov    rcx,QWORD PTR [rip+0x46a01f]        # 0x46a048
+29: e8 52 94 fd ff          call   0xfffffffffffd9480
+2e: 48 8d 0d 23 a0 46 00    lea    rcx,[rip+0x46a023]                  # 0x46a058
+35: 48 8b d8                mov    rbx,rax
+38: ff 15 72 c6 35 00       call   QWORD PTR [rip+0x35c672]            # 0x35c6b0
+3e: 48 8b 0d 03 a0 46 00    mov    rcx,QWORD PTR [rip+0x46a003]        # 0x46a048
+45: 4c 8b c7                mov    r8,rdi
+    */
+
     let assemblies: Address = {
         const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
         let scan_address: Address = SIG_MONO_64
