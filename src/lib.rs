@@ -455,7 +455,7 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
         if let Some(relative) = slice_read::<i32>(&function_array, scan_offset) {
             let assemblies = root_domain_function_address + scan_offset as u32 + 0x4 + relative;
             asr::print_message(&format!("a: {:X}, scan_offset: {:X}, relative: {:X}, assemblies? {}", a, scan_offset, relative, assemblies));
-            if attach_assemblies(process, assemblies).is_some() {
+            if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
                 asr::print_message("found RIP-relative in function_array.");
                 asr::print_message(&format!("assemblies: {}", assemblies));
             }
@@ -483,7 +483,7 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
                 let mc = process.read::<i32>(scan_address).ok();
                 if let Some(c) = mc {
                     let assemblies = scan_address + 0x4 + c;
-                    if attach_assemblies(process, assemblies).is_some() {
+                    if attach_assemblies(process, assemblies, BinaryFormat::MachO).is_some() {
                         asr::print_message("found at offset in page.");
                         assemblies_address = assemblies;
                         break;
@@ -501,7 +501,7 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
 
     for i in 0..(mono_module_len/8) {
         let a = Address::new(mono_module_addr.value() + (i * 8));
-        if attach_assemblies(process, a).is_some() {
+        if attach_assemblies(process, a, BinaryFormat::MachO).is_some() {
             asr::print_message("found somewhere else.");
             let actual_offset_in_page = a.value() & 0xfff;
             asr::print_message(&format!("0x{:X}", actual_offset_in_page));
@@ -580,8 +580,8 @@ async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<
     Some(assemblies_address)
 }
 
-fn attach_assemblies(process: &Process, assemblies_addr: Address) -> Option<Address> {
-    let offsets = Offsets::new(mono::Version::V2, true, BinaryFormat::MachO);
+fn attach_assemblies(process: &Process, assemblies_addr: Address, format: BinaryFormat) -> Option<Address> {
+    let offsets = Offsets::new(mono::Version::V2, true, format);
     let mut assemblies = process.read::<Address64>(assemblies_addr).ok()?;
     let image = loop {
         let data = process.read::<Address64>(assemblies).ok()?;
