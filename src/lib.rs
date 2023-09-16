@@ -254,6 +254,28 @@ impl Offsets {
     }
 }
 
+struct PEOffsets {
+    signature: u8,
+    export_directory_index_pe: u8,
+    number_of_functions: u8,
+    function_address_array_index: u8,
+    function_name_array_index: u8,
+    //function_entry_size: u32,
+}
+
+impl PEOffsets {
+    const fn new(is_64_bit: bool) -> Self {
+        PEOffsets {
+            signature: 0x3C,
+            export_directory_index_pe: if is_64_bit { 0x88 } else { 0x78 },
+            number_of_functions: 0x14,
+            function_address_array_index: 0x1C,
+            function_name_array_index: 0x20,
+            //function_entry_size: 0x4,
+        }
+    }
+}
+
 // --------------------------------------------------------
 
 async fn main() {
@@ -297,8 +319,63 @@ async fn attach(process: &Process) -> Option<Address> {
     None
 }
 
-async fn attach_dll(_process: &Process, _mono_module: (Address, u64)) -> Option<Address> {
-    None
+async fn attach_dll(process: &Process, module_range: (Address, u64)) -> Option<Address> {
+    let (module, _) = module_range;
+    let is_64_bit = true;
+    let pe_offsets = PEOffsets::new(is_64_bit);
+    let offsets = Offsets::new(Version::V2, is_64_bit, BinaryFormat::PE);
+
+    // Get root domain address: code essentially taken from UnitySpy -
+    // See https://github.com/hackf5/unityspy/blob/master/src/HackF5.UnitySpy/AssemblyImageFactory.cs#L123
+    let start_index = process.read::<u32>(module + pe_offsets.signature).ok()?;
+
+    let export_directory = process
+        .read::<u32>(module + start_index + pe_offsets.export_directory_index_pe)
+        .ok()?;
+
+    let number_of_functions = process
+        .read::<u32>(module + export_directory + pe_offsets.number_of_functions)
+        .ok()?;
+    let function_address_array_index = process
+        .read::<u32>(module + export_directory + pe_offsets.function_address_array_index)
+        .ok()?;
+    let function_name_array_index = process
+        .read::<u32>(module + export_directory + pe_offsets.function_name_array_index)
+        .ok()?;
+
+    let mut root_domain_function_address = Address::NULL;
+
+    for val in 0..number_of_functions {
+        let function_name_index = process
+            .read::<u32>(module + function_name_array_index + (val as u64).wrapping_mul(4))
+            .ok()?;
+
+        if process
+            .read::<[u8; 22]>(module + function_name_index)
+            .is_ok_and(|function_name| &function_name == b"mono_assembly_foreach\0")
+        {
+            root_domain_function_address = module
+                + process
+                    .read::<u32>(
+                        module + function_address_array_index + (val as u64).wrapping_mul(4),
+                    )
+                    .ok()?;
+            break;
+        }
+    }
+
+    if root_domain_function_address.is_null() {
+        return None;
+    }
+
+    let assemblies: Address = {
+        const SIG_MONO_64: Signature<3> = Signature::new("48 8B 0D");
+        let scan_address: Address = SIG_MONO_64
+            .scan_process_range(process, (root_domain_function_address, 0x100))?
+            + 3;
+        scan_address + 0x4 + process.read::<i32>(scan_address).ok()?
+    };
+    Some(assemblies)
 }
 
 async fn attach_dylib(process: &Process, mono_module: (Address, u64)) -> Option<Address> {
