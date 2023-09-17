@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 asr = { git = "https://github.com/AlexKnauth/asr", branch = "mono-3", features = [
     "alloc", # Working with allocations.
+    "std",
     # "derive", # Defining your own settings structs, converting endianness, and binding to .NET classes.
     # "flags", # Working with bit flags.
     # "float-vars", # Setting floating point variables.

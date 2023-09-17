@@ -11,7 +11,7 @@ checksum = "96d30a06541fbafbc7f82ed10c06164cfbd2c401138f6addd8404629c4b16711"
 [[package]]
 name = "asr"
 version = "0.1.0"
-source = "git+https://github.com/AlexKnauth/asr?branch=mono-3#f3f1d584ae9822106dd6f3e9dfa9702afb32cbea"
+source = "git+https://github.com/AlexKnauth/asr?branch=mono-3#8d863b032f0b6697df7481154fad8c4685b18e28"
 dependencies = [
  "arrayvec",
  "asr-derive",
@@ -24,7 +24,7 @@ dependencies = [
 [[package]]
 name = "asr-derive"
 version = "0.1.0"
-source = "git+https://github.com/AlexKnauth/asr?branch=mono-3#f3f1d584ae9822106dd6f3e9dfa9702afb32cbea"
+source = "git+https://github.com/AlexKnauth/asr?branch=mono-3#8d863b032f0b6697df7481154fad8c4685b18e28"
 dependencies = [
  "heck",
  "quote",
@@ -98,9 +98,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.35"
+version = "2.0.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59bf04c28bee9043ed9ea1e41afc0552288d3aba9c6efdd78903b802926f4879"
+checksum = "91e02e55d62894af2a08aca894c6577281f76769ba47c94d5756bec8ac6e7373"
 dependencies = [
  "proc-macro2",
  "quote",
