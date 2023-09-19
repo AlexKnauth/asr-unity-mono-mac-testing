@@ -1,11 +1,17 @@
 
 use std::collections::BTreeMap;
 
-use asr::{future::next_tick, Process, game_engine::unity::{SceneManager, get_scene_name}, string::ArrayCString};
+use asr::{future::{next_tick, retry}, Process, game_engine::unity::{SceneManager, get_scene_name}, string::ArrayCString};
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
+
+const SUPERLIMINAL_NAMES: [&str; 2] = [
+    "SuperliminalSteam.exe", // Windows
+    "SuperliminalSteam", // Mac
+];
+
 // --------------------------------------------------------
 
 async fn main() {
@@ -18,7 +24,9 @@ async fn main() {
     asr::print_message("Hello, World!");
 
     loop {
-        let process = Process::wait_attach("SuperliminalSteam").await;
+        let process = retry(|| {
+            SUPERLIMINAL_NAMES.into_iter().find_map(Process::attach)
+        }).await;
         process
             .until_closes(async {
                 asr::print_message("attaching SceneManager...");
