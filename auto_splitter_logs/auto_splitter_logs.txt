@@ -1,0 +1,12 @@
+Auto Splitter loaded.
+Hello, World!
+Attached to a new process: SuperliminalSteam
+attaching SceneManager...
+attached SceneManager
+SceneManager sceneName: Some(Some("StartScreen_Live"))
+SceneManager sceneName: Some(None)
+SceneManager sceneName: Some(Some("SomnasculptPresent"))
+SceneManager sceneName: Some(None)
+SceneManager sceneName: Some(Some("LoadScene15_FinalO"))
+SceneManager sceneName: Some(None)
+SceneManager sceneName: Some(Some("TestChamber_Live"))
