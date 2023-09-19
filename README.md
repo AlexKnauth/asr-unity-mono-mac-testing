@@ -2,7 +2,11 @@
 
 Exploring how an ASR Unity / Mono library might try to support
 Mac, and attempting to test potential library code and see
-if it works on Hollow Knight, for now.
+if it works on Superliminal.
+
+For the version testing it on Hollow Knight, see the
+[hollowknight](https://github.com/AlexKnauth/asr-unity-mono-mac-testing/tree/hollowknight)
+branch of this repository.
 
 ## Compilation
 
