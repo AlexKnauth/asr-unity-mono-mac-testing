@@ -1,11 +1,16 @@
 
 use std::{cmp::min, collections::BTreeMap};
 
-use asr::{future::next_tick, Process, game_engine::unity::{mono, SceneManager, get_scene_name}, Address, Address64, string::{ArrayWString, ArrayCString}};
+use asr::{future::{next_tick, retry}, Process, game_engine::unity::{mono, SceneManager, get_scene_name}, Address, Address64, string::{ArrayWString, ArrayCString}};
 
 asr::async_main!(stable);
 
 // --------------------------------------------------------
+
+const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
+    "hollow_knight.exe", // Windows
+    "Hollow Knight", // Mac
+];
 
 const INIT_MAX_DIRTYNESS: usize = 0x10;
 
@@ -21,7 +26,9 @@ async fn main() {
     asr::print_message("Hello, World!");
 
     loop {
-        let process = Process::wait_attach("Hollow Knight").await;
+        let process = retry(|| {
+            HOLLOW_KNIGHT_NAMES.into_iter().find_map(Process::attach)
+        }).await;
         process
             .until_closes(async {
                 asr::print_message("attaching SceneManager...");
