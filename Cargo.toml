@@ -27,6 +27,8 @@ bytemuck = { version = "1", features = ["derive", "min_const_generics"] }
 
 memchr = { version = "2" }
 
+serde_json = {}
+
 [lib]
 crate-type = ["cdylib"]
 
