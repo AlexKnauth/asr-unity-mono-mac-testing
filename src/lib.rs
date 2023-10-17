@@ -1,7 +1,17 @@
 
 use std::{cmp::min, collections::BTreeMap};
 
-use asr::{future::{next_tick, retry}, Process, game_engine::unity::{mono, SceneManager, get_scene_name}, Address, Address64, string::{ArrayWString, ArrayCString}};
+use asr::{
+    future::{next_tick, retry},
+    Process,
+    game_engine::unity::{
+        mono::{Image, Module, UnityPointer},
+        SceneManager,
+        get_scene_name
+    },
+    Address64, 
+    string::{ArrayWString, ArrayCString}
+};
 
 asr::async_main!(stable);
 
@@ -34,25 +44,28 @@ async fn main() {
                 asr::print_message("attaching SceneManager...");
                 for _ in 0..0x10 { next_tick().await; }
                 let scene_manager = SceneManager::wait_attach(&process).await;
-                asr::print_message("attached SceneManager");
-                let (module, _image, game_manager_class) = wait_attach_game_manager(&process).await.expect("GameManager");
-                let mut game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
+                asr::print_message("attaching Module...");
+                for _ in 0..0x10 { next_tick().await; }
+                let module = Module::wait_attach_auto_detect(&process).await;
+                asr::print_message("attaching Image...");
+                for _ in 0..0x10 { next_tick().await; }
+                let image = module.wait_get_default_image(&process).await;
                 let mut game_manager_dirtyness = 0;
                 let mut max_dirtyness = INIT_MAX_DIRTYNESS;
-                asr::print_message(&format!("GameManager instance found: {}", game_manager_instance));
-                let scene_name_offset = game_manager_class.get_field_offset(&process, &module, "sceneName").expect("sceneName") as u64;
-                let next_scene_name_offset = game_manager_class.get_field_offset(&process, &module, "nextSceneName").expect("nextSceneName") as u64;
+                asr::print_message("attached SceneManager, Module, and Image successfully");
+                let game_manager_scene_name_pointer: UnityPointer<2> = UnityPointer::new("GameManager", 0, &["_instance", "sceneName"]);
+                let game_manager_next_scene_name_pointer: UnityPointer<2> = UnityPointer::new("GameManager", 0, &["_instance", "nextSceneName"]);
 
                 // TODO: Load some initial information from the process.
-                let mut string_table: BTreeMap<(&str, u64), Option<String>> = BTreeMap::new();
-                string_table.insert(("SceneManager", 0), None);
-                string_table.insert(("GameManager", scene_name_offset), None);
-                string_table.insert(("GameManager", next_scene_name_offset), None);
+                let mut string_table: BTreeMap<&str, Option<String>> = BTreeMap::new();
+                string_table.insert("SceneManager sceneName", None);
+                string_table.insert("GameManager sceneName", None);
+                string_table.insert("GameManager nextSceneName", None);
                 loop {
                     // TODO: Do something on every tick.
                     let scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<64>(&process).ok().map(scene_path_to_name_string);
-                    let scene_name = read_pointer_path_string_object::<64>(&process, game_manager_instance, &[scene_name_offset]);
-                    let next_scene_name = read_pointer_path_string_object::<64>(&process, game_manager_instance, &[next_scene_name_offset]);
+                    let scene_name = read_unity_pointer_string_object::<64>(&process, &module, &image, &game_manager_scene_name_pointer);
+                    let next_scene_name = read_unity_pointer_string_object::<64>(&process, &module, &image, &game_manager_next_scene_name_pointer);
                     if scene_manager_scene_name.is_some() {
                         if scene_manager_scene_name == scene_name {
                             if 0 < game_manager_dirtyness {
@@ -64,24 +77,22 @@ async fn main() {
                             game_manager_dirtyness += 1;
                         }
                     }
-                    if Some(&scene_manager_scene_name) != string_table.get(&("SceneManager", 0)) {
-                        string_table.insert(("SceneManager", 0), scene_manager_scene_name);
-                        asr::print_message(&format!("SceneManager sceneName: {:?}", string_table.get(&("SceneManager", 0))));
+                    if Some(&scene_manager_scene_name) != string_table.get("SceneManager sceneName") {
+                        string_table.insert("SceneManager sceneName", scene_manager_scene_name);
+                        asr::print_message(&format!("SceneManager sceneName: {:?}", string_table.get("SceneManager sceneName")));
                     }
-                    if Some(&scene_name) != string_table.get(&("GameManager", scene_name_offset)) {
-                        string_table.insert(("GameManager", scene_name_offset), scene_name);
-                        asr::print_message(&format!("GameManager sceneName: {:?}", string_table.get(&("GameManager", scene_name_offset))));
+                    if Some(&scene_name) != string_table.get("GameManager sceneName") {
+                        string_table.insert("GameManager sceneName", scene_name);
+                        asr::print_message(&format!("GameManager sceneName: {:?}", string_table.get("GameManager sceneName")));
                     }
-                    if Some(&next_scene_name) != string_table.get(&("GameManager", next_scene_name_offset)) {
-                        string_table.insert(("GameManager", next_scene_name_offset), next_scene_name);
-                        asr::print_message(&format!("GameManager nextSceneName: {:?}", string_table.get(&("GameManager", next_scene_name_offset))));
+                    if Some(&next_scene_name) != string_table.get("GameManager nextSceneName") {
+                        string_table.insert("GameManager nextSceneName", next_scene_name);
+                        asr::print_message(&format!("GameManager nextSceneName: {:?}", string_table.get("GameManager nextSceneName")));
                     }
                     if max_dirtyness < game_manager_dirtyness {
                         asr::print_message(&format!("game_manager_dirtyness: {}", game_manager_dirtyness));
-                        game_manager_instance = game_manager_class.wait_get_static_instance(&process, &module, "_instance").await;
                         game_manager_dirtyness = 0;
                         max_dirtyness *= 2;
-                        asr::print_message(&format!("GameManager instance found: {}", game_manager_instance));
                     }
                     next_tick().await;
                 }
@@ -90,26 +101,8 @@ async fn main() {
     }
 }
 
-async fn wait_attach_game_manager(process: &Process) -> Option<(mono::Module, mono::Image, mono::Class)> {
-    asr::print_message("attaching mono module image...");
-    for _ in 0..0x10 { next_tick().await; }
-    let (module, image) = attach_auto_detect_default(process)?;
-    asr::print_message("attached mono module image");
-    for _ in 0..0x10 { next_tick().await; }
-    let game_manager_class = image.get_class(&process, &module, "GameManager")?;
-    asr::print_message("GameManager class found");
-    for _ in 0..0x10 { next_tick().await; }
-    Some((module, image, game_manager_class))
-}
-
-fn attach_auto_detect_default(process: &Process) -> Option<(mono::Module, mono::Image)> {
-    let module = mono::Module::attach_auto_detect(process)?;
-    let image = module.get_default_image(process)?;
-    Some((module, image))
-}
-
-fn read_pointer_path_string_object<const N: usize>(process: &Process, address: Address, path: &[u64]) -> Option<String> {
-    let string_object: Address64 = process.read_pointer_path64(address, path).ok()?;
+fn read_unity_pointer_string_object<const N: usize>(process: &Process, module: &Module, image: &Image, pointer: &UnityPointer<2>) -> Option<String> {
+    let string_object: Address64 = pointer.deref(process, module, image).ok()?;
     read_string_object::<N>(process, string_object)
 }
 
