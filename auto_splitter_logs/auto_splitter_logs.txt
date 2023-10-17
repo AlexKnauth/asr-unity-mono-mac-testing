@@ -1,0 +1,1222 @@
+This auto splitter uses WASI. The API is subject to change, because WASI is still in preview. Auto splitters using WASI may need to be recompiled in the future.
+Auto Splitter loaded.
+Hello, World!
+Attached to a new process: Hollow Knight
+attaching SceneManager...
+attaching Module...
+attaching Image...
+attached SceneManager, Module, and Image successfully
+SceneManager sceneName: Some("Pre_Menu_Intro")
+game_manager_dirtyness: 17
+game_manager_dirtyness: 33
+game_manager_dirtyness: 65
+game_manager_dirtyness: 129
+game_manager_dirtyness: 257
+game_manager_dirtyness: 513
+SceneManager sceneName: None
+GameManager tilemapDirty: false
+PlayerData fireballLevel: 0
+PlayerData hasDash: false
+PlayerData hasShadowDash: false
+PlayerData hasWalljump: false
+PlayerData hasDoubleJump: false
+PlayerData hasSuperDash: false
+PlayerData hasAcidArmour: false
+PlayerData hasDreamNail: false
+PlayerData hasDreamGate: true
+PlayerData dreamNailUpgraded: false
+PlayerData maxHealthBase: 4
+PlayerData heartPieces: 0
+PlayerData hasLantern: false
+PlayerData simpleKeys: 0
+PlayerData hasSlykey: false
+PlayerData hasWhiteKey: false
+PlayerData geo: 0
+PlayerData gotCharm_31: false
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: true
+PlayerData slyRescued: false
+PlayerData killedGorgeousHusk: false
+PlayerData metRelicDealerShop: false
+PlayerData watcherChandelier: false
+PlayerData killedBlackKnight: false
+PlayerData killedMegaJellyfish: false
+PlayerData spiderCapture: false
+PlayerData unchainedHollowKnight: true
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 0
+GameManager camera teleporting: false
+GameManager acceptingInput: false
+PlayerData hasDreamGate: false
+PlayerData maxHealthBase: 5
+PlayerData killedBigFly: false
+PlayerData unchainedHollowKnight: false
+GameManager acceptingInput: true
+SceneManager sceneName: Some("Menu_Title")
+game_manager_dirtyness: 67
+GameManager uiState vanilla: 4
+GameManager acceptingInput: false
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager acceptingInput: true
+This auto splitter uses WASI. The API is subject to change, because WASI is still in preview. Auto splitters using WASI may need to be recompiled in the future.
+Auto Splitter reloaded.
+Hello, World!
+Attached to a new process: Hollow Knight
+attaching SceneManager...
+attaching Module...
+attaching Image...
+attached SceneManager, Module, and Image successfully
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager camera teleporting: false
+GameManager acceptingInput: true
+GameManager tilemapDirty: false
+PlayerData fireballLevel: 0
+PlayerData hasDash: false
+PlayerData hasShadowDash: false
+PlayerData hasWalljump: false
+PlayerData hasDoubleJump: false
+PlayerData hasSuperDash: false
+PlayerData hasAcidArmour: false
+PlayerData hasDreamNail: false
+PlayerData hasDreamGate: false
+PlayerData dreamNailUpgraded: false
+PlayerData maxHealthBase: 5
+PlayerData heartPieces: 0
+PlayerData hasLantern: false
+PlayerData simpleKeys: 0
+PlayerData hasSlykey: false
+PlayerData hasWhiteKey: false
+PlayerData geo: 0
+PlayerData gotCharm_31: false
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: false
+PlayerData slyRescued: false
+PlayerData killedGorgeousHusk: false
+PlayerData metRelicDealerShop: false
+PlayerData watcherChandelier: false
+PlayerData killedBlackKnight: false
+PlayerData killedMegaJellyfish: false
+PlayerData spiderCapture: false
+PlayerData unchainedHollowKnight: false
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager tilemapDirty: true
+GameManager nextSceneName: "Opening_Sequence"
+GameManager gameState: 6
+SceneManager sceneName: Some("Opening_Sequence")
+GameManager sceneName: "Opening_Sequence"
+GameManager uiState vanilla: 3
+GameManager gameState: 7
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager nextSceneName: "Tutorial_01"
+GameManager gameState: 4
+SceneManager sceneName: None
+GameManager hazardRespawning: false
+GameManager transitionState: 0
+SceneManager sceneName: Some("Tutorial_01")
+GameManager sceneName: "Tutorial_01"
+GameManager acceptingInput: true
+GameManager gameState: 3
+GameManager transitionState: 2
+GameManager uiState vanilla: 4
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Town"
+GameManager gameState: 6
+SceneManager sceneName: Some("Town")
+GameManager sceneName: "Town"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_01"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_01")
+GameManager sceneName: "Crossroads_01"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_07"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_07")
+GameManager sceneName: "Crossroads_07"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_05"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_05")
+GameManager sceneName: "Crossroads_05"
+GameManager camera teleporting: true
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData grubsCollected: 1
+PlayerData geo: 1
+PlayerData geo: 2
+PlayerData geo: 3
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_07"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_07")
+GameManager sceneName: "Crossroads_07"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_25"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_25")
+GameManager sceneName: "Crossroads_25"
+GameManager camera teleporting: true
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager hazardRespawning: true
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager hazardRespawning: false
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_36"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_36")
+GameManager sceneName: "Crossroads_36"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_09"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_09")
+GameManager sceneName: "Crossroads_09"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData heartPieces: 1
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_33"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_33")
+GameManager sceneName: "Crossroads_33"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_12"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_12")
+GameManager sceneName: "Crossroads_12"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_35"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_35")
+GameManager sceneName: "Crossroads_35"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData grubsCollected: 2
+GameManager hazardRespawning: true
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager hazardRespawning: false
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_12"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_12")
+GameManager sceneName: "Crossroads_12"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_33"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_33")
+GameManager sceneName: "Crossroads_33"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_08"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_08")
+GameManager sceneName: "Crossroads_08"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData geo: 4
+PlayerData geo: 5
+PlayerData geo: 6
+PlayerData geo: 7
+PlayerData geo: 8
+PlayerData geo: 9
+PlayerData geo: 10
+PlayerData geo: 11
+PlayerData geo: 12
+PlayerData geo: 13
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_13"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_13")
+GameManager sceneName: "Crossroads_13"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_08"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_08")
+GameManager sceneName: "Crossroads_08"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_13"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_13")
+GameManager sceneName: "Crossroads_13"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager acceptingInput: false
+GameManager gameState: 5
+GameManager uiState vanilla: 5
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+SceneManager sceneName: None
+SceneManager sceneName: Some("Quit_To_Menu")
+GameManager sceneName: "Quit_To_Menu"
+PlayerData heartPieces: 0
+PlayerData geo: 0
+PlayerData grubsCollected: 0
+SceneManager sceneName: None
+GameManager hazardRespawning: null
+GameManager transitionState: null
+GameManager tilemapDirty: false
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 0
+GameManager uiState vanilla: null
+SceneManager sceneName: Some("Menu_Title")
+GameManager uiState vanilla: 4
+GameManager acceptingInput: false
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+PlayerData heartPieces: 1
+PlayerData geo: 13
+PlayerData grubsCollected: 2
+GameManager gameState: 2
+GameManager tilemapDirty: true
+GameManager nextSceneName: "Town"
+GameManager gameState: 6
+SceneManager sceneName: Some("Town")
+GameManager sceneName: "Town"
+GameManager hazardRespawning: false
+GameManager transitionState: 0
+GameManager acceptingInput: true
+GameManager gameState: 3
+GameManager gameState: 4
+GameManager uiState vanilla: 4
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_01"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_01")
+GameManager sceneName: "Crossroads_01"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_07"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_07")
+GameManager sceneName: "Crossroads_07"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager gameState: 4
+GameManager transitionState: 0
+PlayerData geo: 14
+PlayerData geo: 15
+PlayerData geo: 16
+PlayerData geo: 17
+PlayerData geo: 18
+PlayerData geo: 19
+PlayerData geo: 20
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_33"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_33")
+GameManager sceneName: "Crossroads_33"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_08"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_08")
+GameManager sceneName: "Crossroads_08"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_13"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_13")
+GameManager sceneName: "Crossroads_13"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_42"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_42")
+GameManager sceneName: "Crossroads_42"
+GameManager camera teleporting: true
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_19"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_19")
+GameManager sceneName: "Crossroads_19"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_03"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_03")
+GameManager sceneName: "Crossroads_03"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_47"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_47")
+GameManager sceneName: "Crossroads_47"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_03"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_03")
+GameManager sceneName: "Crossroads_03"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_21"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_21")
+GameManager sceneName: "Crossroads_21"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager gameState: 6
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_10"
+SceneManager sceneName: Some("Crossroads_10")
+GameManager sceneName: "Crossroads_10"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData geo: 21
+PlayerData geo: 22
+PlayerData geo: 23
+PlayerData geo: 24
+PlayerData geo: 25
+PlayerData geo: 26
+PlayerData geo: 27
+PlayerData geo: 28
+PlayerData geo: 29
+PlayerData geo: 30
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_06"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_06")
+GameManager sceneName: "Crossroads_06"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_ShamanTemple"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_ShamanTemple")
+GameManager sceneName: "Crossroads_ShamanTemple"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData fireballLevel: 1
+PlayerData geo: 31
+PlayerData geo: 32
+PlayerData geo: 34
+PlayerData geo: 35
+PlayerData geo: 36
+PlayerData geo: 37
+PlayerData geo: 39
+PlayerData geo: 40
+PlayerData geo: 41
+PlayerData geo: 46
+PlayerData geo: 51
+PlayerData geo: 56
+PlayerData geo: 64
+PlayerData geo: 73
+PlayerData geo: 79
+PlayerData geo: 80
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_06"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_06")
+GameManager sceneName: "Crossroads_06"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_33"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_33")
+GameManager sceneName: "Crossroads_33"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_08"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_08")
+GameManager sceneName: "Crossroads_08"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_13"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_13")
+GameManager sceneName: "Crossroads_13"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData heartPieces: 2
+PlayerData geo: 81
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_42"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_42")
+GameManager sceneName: "Crossroads_42"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_19"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_19")
+GameManager sceneName: "Crossroads_19"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_03"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_03")
+GameManager sceneName: "Crossroads_03"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_47"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_47")
+GameManager sceneName: "Crossroads_47"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData geo: 31
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_03"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_03")
+GameManager sceneName: "Crossroads_03"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_19"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_19")
+GameManager sceneName: "Crossroads_19"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_04"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_04")
+GameManager sceneName: "Crossroads_04"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData killedBigFly: true
+PlayerData geo: 32
+PlayerData geo: 33
+PlayerData geo: 34
+PlayerData geo: 36
+PlayerData geo: 37
+PlayerData geo: 38
+PlayerData geo: 39
+PlayerData geo: 40
+PlayerData geo: 41
+PlayerData geo: 43
+PlayerData geo: 44
+PlayerData geo: 45
+PlayerData geo: 46
+PlayerData geo: 48
+PlayerData geo: 51
+PlayerData geo: 53
+PlayerData geo: 54
+PlayerData geo: 55
+PlayerData geo: 56
+PlayerData geo: 57
+PlayerData geo: 58
+PlayerData geo: 59
+PlayerData geo: 62
+PlayerData geo: 63
+PlayerData geo: 64
+PlayerData geo: 66
+PlayerData geo: 68
+PlayerData geo: 69
+PlayerData geo: 70
+PlayerData geo: 73
+PlayerData geo: 75
+PlayerData geo: 76
+PlayerData geo: 77
+PlayerData geo: 78
+PlayerData geo: 79
+PlayerData geo: 80
+PlayerData geo: 81
+GameManager transitionState: 1
+GameManager nextSceneName: "Room_ruinhouse"
+GameManager gameState: 6
+SceneManager sceneName: Some("Room_ruinhouse")
+GameManager sceneName: "Room_ruinhouse"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData slyRescued: true
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_04"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_04")
+GameManager sceneName: "Crossroads_04"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_27"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_27")
+GameManager sceneName: "Crossroads_27"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_31"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_31")
+GameManager sceneName: "Crossroads_31"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData grubsCollected: 3
+GameManager hazardRespawning: true
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager hazardRespawning: false
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_27"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_27")
+GameManager sceneName: "Crossroads_27"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_15"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_15")
+GameManager sceneName: "Crossroads_15"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_03"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_03")
+GameManager sceneName: "Crossroads_03"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData grubsCollected: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_16"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_16")
+GameManager sceneName: "Crossroads_16"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_14"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_14")
+GameManager sceneName: "Crossroads_14"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_48"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_48")
+GameManager sceneName: "Crossroads_48"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData grubsCollected: 5
+GameManager acceptingInput: false
+GameManager gameState: 5
+GameManager uiState vanilla: 5
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+SceneManager sceneName: None
+SceneManager sceneName: Some("Quit_To_Menu")
+GameManager sceneName: "Quit_To_Menu"
+PlayerData fireballLevel: 0
+PlayerData heartPieces: 0
+PlayerData geo: 0
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: false
+PlayerData slyRescued: false
+GameManager camera teleporting: null
+GameManager hazardRespawning: null
+GameManager acceptingInput: null
+GameManager transitionState: null
+GameManager tilemapDirty: false
+PlayerData hasDreamGate: true
+PlayerData maxHealthBase: 4
+PlayerData killedBigFly: true
+PlayerData unchainedHollowKnight: true
+SceneManager sceneName: None
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 0
+GameManager uiState vanilla: null
+GameManager camera teleporting: false
+GameManager acceptingInput: true
+PlayerData hasDreamGate: false
+PlayerData maxHealthBase: 5
+PlayerData killedBigFly: false
+PlayerData unchainedHollowKnight: false
+SceneManager sceneName: Some("Menu_Title")
+GameManager uiState vanilla: 4
+GameManager acceptingInput: false
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+PlayerData fireballLevel: 1
+PlayerData heartPieces: 2
+PlayerData geo: 81
+PlayerData grubsCollected: 5
+PlayerData killedBigFly: true
+PlayerData slyRescued: true
+GameManager gameState: 2
+GameManager tilemapDirty: true
+GameManager nextSceneName: "Crossroads_47"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_47")
+GameManager sceneName: "Crossroads_47"
+GameManager hazardRespawning: false
+GameManager transitionState: 0
+GameManager acceptingInput: true
+GameManager gameState: 3
+GameManager gameState: 4
+GameManager uiState vanilla: 4
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+SceneManager sceneName: None
+SceneManager sceneName: Some("Cinematic_Stag_travel")
+GameManager sceneName: "Cinematic_Stag_travel"
+GameManager gameState: 7
+GameManager uiState vanilla: 3
+GameManager transitionState: 1
+GameManager nextSceneName: "Room_Town_Stag_Station"
+GameManager gameState: 6
+SceneManager sceneName: Some("Room_Town_Stag_Station")
+GameManager sceneName: "Room_Town_Stag_Station"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager uiState vanilla: 4
+GameManager camera teleporting: false
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Town"
+GameManager gameState: 6
+SceneManager sceneName: Some("Town")
+GameManager sceneName: "Town"
+GameManager camera teleporting: true
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: false
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_01"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_01")
+GameManager sceneName: "Crossroads_01"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 4
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_07"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_07")
+GameManager sceneName: "Crossroads_07"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+GameManager transitionState: 1
+GameManager nextSceneName: "Crossroads_38"
+GameManager gameState: 6
+SceneManager sceneName: Some("Crossroads_38")
+GameManager sceneName: "Crossroads_38"
+GameManager camera teleporting: true
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData geo: 82
+PlayerData geo: 85
+PlayerData geo: 86
+PlayerData geo: 91
+PlayerData geo: 96
+PlayerData geo: 97
+PlayerData geo: 103
+PlayerData geo: 106
+PlayerData geo: 107
+PlayerData geo: 108
+PlayerData geo: 114
+PlayerData geo: 119
+PlayerData geo: 120
+PlayerData geo: 125
+PlayerData geo: 126
+PlayerData geo: 133
+PlayerData geo: 139
+PlayerData geo: 141
+PlayerData geo: 142
+PlayerData geo: 153
+PlayerData geo: 158
+PlayerData geo: 159
+PlayerData geo: 164
+PlayerData geo: 169
+PlayerData geo: 176
+PlayerData geo: 177
+PlayerData geo: 178
+PlayerData geo: 179
+PlayerData geo: 180
+PlayerData geo: 181
+PlayerData heartPieces: 3
+GameManager acceptingInput: false
+GameManager gameState: 5
+GameManager uiState vanilla: 5
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+SceneManager sceneName: None
+SceneManager sceneName: Some("Quit_To_Menu")
+GameManager sceneName: "Quit_To_Menu"
+PlayerData fireballLevel: 0
+PlayerData heartPieces: 0
+PlayerData geo: 0
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: false
+PlayerData slyRescued: false
+SceneManager sceneName: None
+GameManager hazardRespawning: null
+GameManager transitionState: null
+GameManager tilemapDirty: false
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 0
+GameManager uiState vanilla: null
+GameManager acceptingInput: false
+SceneManager sceneName: Some("Menu_Title")
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+PlayerData fireballLevel: 1
+PlayerData heartPieces: 3
+PlayerData geo: 181
+PlayerData grubsCollected: 5
+PlayerData killedBigFly: true
+PlayerData slyRescued: true
+GameManager gameState: 2
+GameManager tilemapDirty: true
+GameManager nextSceneName: "Town"
+GameManager gameState: 6
+SceneManager sceneName: Some("Town")
+GameManager sceneName: "Town"
+GameManager hazardRespawning: false
+GameManager transitionState: 0
+GameManager acceptingInput: true
+GameManager gameState: 4
+GameManager uiState vanilla: 4
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 1
+GameManager nextSceneName: "Room_shop"
+GameManager gameState: 6
+SceneManager sceneName: Some("Room_shop")
+GameManager sceneName: "Room_shop"
+GameManager transitionState: 2
+GameManager gameState: 3
+GameManager camera teleporting: true
+GameManager camera teleporting: false
+GameManager transitionState: 3
+GameManager transitionState: 0
+GameManager gameState: 4
+PlayerData geo: 31
+PlayerData heartPieces: 4
+PlayerData heartPieces: 0
+PlayerData maxHealthBase: 6
+GameManager acceptingInput: false
+GameManager gameState: 5
+GameManager uiState vanilla: 5
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+SceneManager sceneName: None
+SceneManager sceneName: Some("Quit_To_Menu")
+GameManager sceneName: "Quit_To_Menu"
+PlayerData fireballLevel: 0
+PlayerData maxHealthBase: 5
+PlayerData geo: 0
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: false
+PlayerData slyRescued: false
+SceneManager sceneName: None
+GameManager hazardRespawning: null
+GameManager transitionState: null
+GameManager tilemapDirty: false
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+GameManager gameState: 0
+GameManager uiState vanilla: null
+SceneManager sceneName: Some("Menu_Title")
+GameManager uiState vanilla: 4
+GameManager acceptingInput: false
+GameManager gameState: 1
+GameManager uiState vanilla: 1
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+GameManager acceptingInput: true
+GameManager acceptingInput: false
+SceneManager sceneName: None
+GameManager camera teleporting: null
+GameManager acceptingInput: null
+GameManager tilemapDirty: null
+PlayerData fireballLevel: null
+PlayerData hasDash: null
+PlayerData hasShadowDash: null
+PlayerData hasWalljump: null
+PlayerData hasDoubleJump: null
+PlayerData hasSuperDash: null
+PlayerData hasAcidArmour: null
+PlayerData hasDreamNail: null
+PlayerData hasDreamGate: null
+PlayerData dreamNailUpgraded: null
+PlayerData maxHealthBase: null
+PlayerData heartPieces: null
+PlayerData hasLantern: null
+PlayerData simpleKeys: null
+PlayerData hasSlykey: null
+PlayerData hasWhiteKey: null
+PlayerData geo: null
+PlayerData gotCharm_31: null
+PlayerData grubsCollected: null
+PlayerData killedBigFly: null
+PlayerData slyRescued: null
+PlayerData killedGorgeousHusk: null
+PlayerData metRelicDealerShop: null
+PlayerData watcherChandelier: null
+PlayerData killedBlackKnight: null
+PlayerData killedMegaJellyfish: null
+PlayerData spiderCapture: null
+PlayerData unchainedHollowKnight: null
+GameManager sceneName: null
+GameManager nextSceneName: null
+GameManager gameState: null
+GameManager uiState vanilla: null
+Detached from a process.
