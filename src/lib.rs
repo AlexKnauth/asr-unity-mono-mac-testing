@@ -40,8 +40,8 @@ async fn main() {
                 let mut game_manager_dirtyness = 0;
                 let mut max_dirtyness = INIT_MAX_DIRTYNESS;
                 asr::print_message(&format!("GameManager instance found: {}", game_manager_instance));
-                let scene_name_offset = game_manager_class.get_field(&process, &module, "sceneName").expect("sceneName") as u64;
-                let next_scene_name_offset = game_manager_class.get_field(&process, &module, "nextSceneName").expect("nextSceneName") as u64;
+                let scene_name_offset = game_manager_class.get_field_offset(&process, &module, "sceneName").expect("sceneName") as u64;
+                let next_scene_name_offset = game_manager_class.get_field_offset(&process, &module, "nextSceneName").expect("nextSceneName") as u64;
 
                 // TODO: Load some initial information from the process.
                 let mut string_table: BTreeMap<(&str, u64), Option<String>> = BTreeMap::new();
