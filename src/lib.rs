@@ -56,7 +56,7 @@ async fn main() {
                 asr::print_message("attached SceneManager, Module, and Image successfully");
 
                 // TODO: Load some initial information from the process.
-                let mut scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<CSTR>(&process).ok().map(scene_path_to_name_string);
+                let mut scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<CSTR>(&process).ok().and_then(scene_path_to_name_string);
                 let mut info = HollowKnightInfo::new();
                 let mut string_table: BTreeMap<&str, Option<String>> = BTreeMap::new();
                 string_table.insert("SceneManager sceneName", None);
@@ -65,7 +65,7 @@ async fn main() {
                 loop {
                     // TODO: Do something on every tick.
                     let prev_scene_manager_scene_name = &scene_manager_scene_name;
-                    let curr_scene_manager_scene_name = scene_manager.get_current_scene_path::<CSTR>(&process).ok().map(scene_path_to_name_string);
+                    let curr_scene_manager_scene_name = scene_manager.get_current_scene_path::<CSTR>(&process).ok().and_then(scene_path_to_name_string);
                     if prev_scene_manager_scene_name != &curr_scene_manager_scene_name {
                         asr::print_message(&format!("SceneManager sceneName: {:?}", curr_scene_manager_scene_name));
                         scene_manager_scene_name = curr_scene_manager_scene_name;
@@ -94,6 +94,6 @@ async fn main() {
     }
 }
 
-pub fn scene_path_to_name_string<const N: usize>(scene_path: ArrayCString<N>) -> String {
-    String::from_utf8(get_scene_name(&scene_path).to_vec()).unwrap()
+pub fn scene_path_to_name_string<const N: usize>(scene_path: ArrayCString<N>) -> Option<String> {
+    String::from_utf8(get_scene_name(&scene_path).to_vec()).ok()
 }
