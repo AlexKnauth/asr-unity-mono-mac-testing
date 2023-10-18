@@ -1,7 +1,5 @@
 mod hollow_knight_memory;
 
-use std::collections::BTreeMap;
-
 use asr::{
     future::{next_tick, retry},
     Process,
@@ -58,10 +56,6 @@ async fn main() {
                 // TODO: Load some initial information from the process.
                 let mut scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<CSTR>(&process).ok().and_then(scene_path_to_name_string);
                 let mut info = HollowKnightInfo::new();
-                let mut string_table: BTreeMap<&str, Option<String>> = BTreeMap::new();
-                string_table.insert("SceneManager sceneName", None);
-                string_table.insert("GameManager sceneName", None);
-                string_table.insert("GameManager nextSceneName", None);
                 loop {
                     // TODO: Do something on every tick.
                     let prev_scene_manager_scene_name = &scene_manager_scene_name;
