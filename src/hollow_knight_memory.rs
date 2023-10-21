@@ -62,12 +62,22 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("GameManager uiState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "uiState"]), Type::I32),
     ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
     // ("GameManager camera teleporting", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "teleporting"]), Type::Bool),
-    ("GameManager hazardRespawning", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardRespawning"]), Type::Bool),
     // ("GameManager acceptingInput", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "acceptingInput"]), Type::Bool),
-    ("GameManager transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
     ("GameManager tilemapDirty", ("GameManager", 0, &["_instance", "tilemapDirty"]), Type::Bool),
     */
     ("GameManager focusing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "focusing"]), Type::Bool),
+
+    ("hero_ctrl hazardRespawning", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardRespawning"]), Type::Bool),
+    ("hero_ctrl hazardDeath", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardDeath"]), Type::Bool),
+    ("hero_ctrl recoiling", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "recoiling"]), Type::Bool),
+    // recoilingRight
+    // recoilingLeft
+    // recoilFrozen
+    ("hero_ctrl dead", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"]), Type::Bool),
+    ("hero_ctrl transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
+    ("hero_ctrl inv pulsing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "invPulse", "pulsing"]), Type::Bool),
+    // isInvincible
+    // invinciTest
 
     ("PlayerData fireballLevel", ("GameManager", 0, &["_instance", "playerData", "fireballLevel"]), Type::I32),
     ("PlayerData hasDash", ("GameManager", 0, &["_instance", "playerData", "hasDash"]), Type::Bool),
@@ -90,6 +100,10 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData maxHealthBase", ("GameManager", 0, &["_instance", "playerData", "maxHealthBase"]), Type::I32),
     ("PlayerData maxHealth", ("GameManager", 0, &["_instance", "playerData", "maxHealth"]), Type::I32),
     ("PlayerData health", ("GameManager", 0, &["_instance", "playerData", "health"]), Type::I32),
+    ("PlayerData healthBlue", ("GameManager", 0, &["_instance", "playerData", "healthBlue"]), Type::I32),
+    ("PlayerData joniHealthBlue", ("GameManager", 0, &["_instance", "playerData", "joniHealthBlue"]), Type::I32),
+    ("PlayerData damagedBlue", ("GameManager", 0, &["_instance", "playerData", "damagedBlue"]), Type::I32),
+    ("PlayerData prevHealth", ("GameManager", 0, &["_instance", "playerData", "prevHealth"]), Type::I32),
     ("PlayerData heartPieces", ("GameManager", 0, &["_instance", "playerData", "heartPieces"]), Type::I32),
     ("PlayerData MPCharge", ("GameManager", 0, &["_instance", "playerData", "MPCharge"]), Type::I32),
     ("PlayerData hasLantern", ("GameManager", 0, &["_instance", "playerData", "hasLantern"]), Type::Bool),
