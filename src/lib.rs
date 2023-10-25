@@ -16,8 +16,10 @@ asr::async_main!(stable);
 
 // --------------------------------------------------------
 
-const HOLLOW_KNIGHT_NAMES: [&str; 2] = [
+const HOLLOW_KNIGHT_NAMES: [&str; 4] = [
     "hollow_knight.exe", // Windows
+    "hollow_knight.x86_64", // Linux full executable name, just in case anything uses the non-truncated version
+    "hollow_knight.x", // Linux process name truncated to 15 characters
     "Hollow Knight", // Mac
 ];
 
