@@ -45,7 +45,7 @@ async fn main() {
             .until_closes(async {
                 asr::print_message("attaching SceneManager...");
                 for _ in 0..0x10 { next_tick().await; }
-                let scene_manager = SceneManager::wait_attach(&process).await;
+                let scene_manager = SceneManager::attach(&process);
                 asr::print_message("attaching Module...");
                 for _ in 0..0x10 { next_tick().await; }
                 let module = Module::wait_attach_auto_detect(&process).await;
@@ -57,12 +57,12 @@ async fn main() {
                 asr::print_message("attached SceneManager, Module, and Image successfully");
 
                 // TODO: Load some initial information from the process.
-                let mut scene_manager_scene_name: Option<String> = scene_manager.get_current_scene_path::<CSTR>(&process).ok().and_then(scene_path_to_name_string);
+                let mut scene_manager_scene_name: Option<String> = scene_manager.as_ref().and_then(|sm| sm.get_current_scene_path::<CSTR>(&process).ok()).and_then(scene_path_to_name_string);
                 let mut info = HollowKnightInfo::new();
                 loop {
                     // TODO: Do something on every tick.
                     let prev_scene_manager_scene_name = &scene_manager_scene_name;
-                    let curr_scene_manager_scene_name = scene_manager.get_current_scene_path::<CSTR>(&process).ok().and_then(scene_path_to_name_string);
+                    let curr_scene_manager_scene_name = scene_manager.as_ref().and_then(|sm| sm.get_current_scene_path::<CSTR>(&process).ok()).and_then(scene_path_to_name_string);
                     if prev_scene_manager_scene_name != &curr_scene_manager_scene_name {
                         asr::print_message(&format!("SceneManager sceneName: {:?}", curr_scene_manager_scene_name));
                         scene_manager_scene_name = curr_scene_manager_scene_name;
