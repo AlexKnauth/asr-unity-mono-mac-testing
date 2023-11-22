@@ -55,6 +55,14 @@ const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData hasDreamNail", ("GameManager", 0, &["_instance", "playerData", "hasDreamNail"]), Type::Bool),
     ("PlayerData hasDreamGate", ("GameManager", 0, &["_instance", "playerData", "hasDreamGate"]), Type::Bool),
     ("PlayerData dreamNailUpgraded", ("GameManager", 0, &["_instance", "playerData", "dreamNailUpgraded"]), Type::Bool),
+
+    // PlayerData hasCyclone: actually means Cyclone Slash, from Mato
+    ("PlayerData hasCyclone", ("GameManager", 0, &["_instance", "playerData", "hasCyclone"]), Type::Bool),
+    // PlayerData hasDashSlash: secretly means Great Slash, from Sheo
+    ("PlayerData hasDashSlash", ("GameManager", 0, &["_instance", "playerData", "hasDashSlash"]), Type::Bool),
+    // PlayerData hasUpwardSlash: secretly means Dash Slash, from Oro
+    ("PlayerData hasUpwardSlash", ("GameManager", 0, &["_instance", "playerData", "hasUpwardSlash"]), Type::Bool),
+
     ("PlayerData maxHealthBase", ("GameManager", 0, &["_instance", "playerData", "maxHealthBase"]), Type::I32),
     ("PlayerData heartPieces", ("GameManager", 0, &["_instance", "playerData", "heartPieces"]), Type::I32),
     ("PlayerData hasLantern", ("GameManager", 0, &["_instance", "playerData", "hasLantern"]), Type::Bool),
