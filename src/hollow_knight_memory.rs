@@ -35,6 +35,11 @@ impl Type {
 const POINTER_DEPTH: usize = 4;
 
 const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
+    // TODO: fix GameManager versionString
+    ("GameManager versionString", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "debugInfo", "versionString"]), Type::String),
+    ("GameManager version", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "debugInfo", "version"]), Type::String),
+    ("PlayerData version", ("GameManager", 0, &["_instance", "playerData", "version"]), Type::String),
+
     ("GameManager sceneName", ("GameManager", 0, &["_instance", "sceneName"]), Type::String),
     ("GameManager nextSceneName", ("GameManager", 0, &["_instance", "nextSceneName"]), Type::String),
     ("GameManager gameState", ("GameManager", 0, &["_instance", "gameState"]), Type::I32),
