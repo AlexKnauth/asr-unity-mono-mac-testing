@@ -95,6 +95,11 @@ const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData P3 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "completed"]), Type::Bool),
     ("PlayerData P4 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4", "completed"]), Type::Bool),
     ("PlayerData P5 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5", "completed"]), Type::Bool),
+    ("PlayerData P1 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1", "0xa"]), Type::Bool),
+    ("PlayerData P2 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2", "0xa"]), Type::Bool),
+    ("PlayerData P3 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "0xa"]), Type::Bool),
+    ("PlayerData P4 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4", "0xa"]), Type::Bool),
+    ("PlayerData P5 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5", "0xa"]), Type::Bool),
 ];
 
 pub struct HollowKnightInfo {
