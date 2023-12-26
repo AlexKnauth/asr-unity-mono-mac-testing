@@ -85,6 +85,11 @@ const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData spiderCapture", ("GameManager", 0, &["_instance", "playerData", "spiderCapture"]), Type::Bool),
     ("PlayerData unchainedHollowKnight", ("GameManager", 0, &["_instance", "playerData", "unchainedHollowKnight"]), Type::Bool),
 
+    ("PlayerData P1", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1"]), Type::I32),
+    ("PlayerData P2", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2"]), Type::I32),
+    ("PlayerData P3", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3"]), Type::I32),
+    ("PlayerData P4", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4"]), Type::I32),
+    ("PlayerData P5", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5"]), Type::I32),
     ("PlayerData P1 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1", "completed"]), Type::Bool),
     ("PlayerData P2 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2", "completed"]), Type::Bool),
     ("PlayerData P3 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "completed"]), Type::Bool),
