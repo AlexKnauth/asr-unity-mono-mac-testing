@@ -84,6 +84,12 @@ const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData killedMegaJellyfish", ("GameManager", 0, &["_instance", "playerData", "killedMegaJellyfish"]), Type::Bool),
     ("PlayerData spiderCapture", ("GameManager", 0, &["_instance", "playerData", "spiderCapture"]), Type::Bool),
     ("PlayerData unchainedHollowKnight", ("GameManager", 0, &["_instance", "playerData", "unchainedHollowKnight"]), Type::Bool),
+
+    ("PlayerData P1 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1", "completed"]), Type::Bool),
+    ("PlayerData P2 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2", "completed"]), Type::Bool),
+    ("PlayerData P3 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "completed"]), Type::Bool),
+    ("PlayerData P4 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4", "completed"]), Type::Bool),
+    ("PlayerData P5 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5", "completed"]), Type::Bool),
 ];
 
 pub struct HollowKnightInfo {
