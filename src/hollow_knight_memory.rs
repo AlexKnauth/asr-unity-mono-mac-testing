@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use asr::string::ArrayWString;
 use asr::{Process, Address64};
 use asr::game_engine::unity::mono::{Image, Module, UnityPointer};
+use serde::{Deserialize, Serialize};
 use serde_json::value::Value as JsonValue;
 use serde_json::Number;
 
@@ -13,11 +14,26 @@ pub const CSTR: usize = 128;
 
 // --------------------------------------------------------
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(bytemuck::CheckedBitPattern, Clone, Copy, Deserialize, Serialize)] // bytemuck::Zeroable
+#[repr(C)]
+pub struct BossSequenceDoorCompletion {
+    can_unlock: bool,
+    unlocked: bool,
+    pub completed: bool,
+    all_bindings: bool,
+    no_hits: bool,
+    bound_nail: bool,
+    bound_shell: bool,
+    bound_charms: bool,
+    bound_soul: bool,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 enum Type {
     Bool,
     I32,
-    String
+    String,
+    BossSequenceDoorCompletion,
 }
 
 impl Type {
@@ -26,6 +42,7 @@ impl Type {
             Type::Bool => Some(JsonValue::Bool(pointer.deref::<bool>(process, module, image).ok()?)),
             Type::I32 => Some(JsonValue::Number(Number::from(pointer.deref::<i32>(process, module, image).ok()?))),
             Type::String => Some(JsonValue::String(read_string_object::<CSTR>(process, pointer.deref(process, module, image).ok()?)?)),
+            Type::BossSequenceDoorCompletion => serde_json::to_value(pointer.deref::<BossSequenceDoorCompletion>(process, module, image).ok()?).ok(),
         }
     }
 }
@@ -85,21 +102,11 @@ const HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData spiderCapture", ("GameManager", 0, &["_instance", "playerData", "spiderCapture"]), Type::Bool),
     ("PlayerData unchainedHollowKnight", ("GameManager", 0, &["_instance", "playerData", "unchainedHollowKnight"]), Type::Bool),
 
-    ("PlayerData P1", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1"]), Type::I32),
-    ("PlayerData P2", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2"]), Type::I32),
-    ("PlayerData P3", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3"]), Type::I32),
-    ("PlayerData P4", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4"]), Type::I32),
-    ("PlayerData P5", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5"]), Type::I32),
-    ("PlayerData P1 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1", "completed"]), Type::Bool),
-    ("PlayerData P2 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2", "completed"]), Type::Bool),
-    ("PlayerData P3 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "completed"]), Type::Bool),
-    ("PlayerData P4 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4", "completed"]), Type::Bool),
-    ("PlayerData P5 completed", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5", "completed"]), Type::Bool),
-    ("PlayerData P1 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1", "0xa"]), Type::Bool),
-    ("PlayerData P2 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2", "0xa"]), Type::Bool),
-    ("PlayerData P3 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3", "0xa"]), Type::Bool),
-    ("PlayerData P4 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4", "0xa"]), Type::Bool),
-    ("PlayerData P5 0xa", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5", "0xa"]), Type::Bool),
+    ("PlayerData P1", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1"]), Type::BossSequenceDoorCompletion),
+    ("PlayerData P2", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2"]), Type::BossSequenceDoorCompletion),
+    ("PlayerData P3", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3"]), Type::BossSequenceDoorCompletion),
+    ("PlayerData P4", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4"]), Type::BossSequenceDoorCompletion),
+    ("PlayerData P5", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5"]), Type::BossSequenceDoorCompletion),
 ];
 
 pub struct HollowKnightInfo {

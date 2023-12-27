@@ -37,6 +37,7 @@ dependencies = [
  "asr",
  "bytemuck",
  "memchr",
+ "serde",
  "serde_json",
 ]
 

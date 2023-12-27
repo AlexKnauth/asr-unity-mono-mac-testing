@@ -27,6 +27,7 @@ bytemuck = { version = "1", features = ["derive", "min_const_generics"] }
 
 memchr = { version = "2" }
 
+serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }
 
 [lib]
