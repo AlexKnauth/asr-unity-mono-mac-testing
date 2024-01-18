@@ -28,7 +28,14 @@ async fn main() {
     let b3 = m3.get("b");
     asr::print_message(&format!("b3: {:?}", b3));
 
+    m3.insert("f", true);
+    m3.store();
+
+    asr::settings::gui::add_file_select("f", "f should be a string representation of a file path");
+    asr::settings::gui::add_file_select_name_filter("f", Some("All files"), "*.*");
+
     let mut ms = format!("{:?}", m3);
+    asr::print_message(&ms);
     loop {
         let m4 = asr::settings::Map::load();
         let ms4 = format!("{:?}", m4);
