@@ -28,7 +28,14 @@ async fn main() {
     let b3 = m3.get("b");
     asr::print_message(&format!("b3: {:?}", b3));
 
+    let mut ms = format!("{:?}", m3);
     loop {
+        let m4 = asr::settings::Map::load();
+        let ms4 = format!("{:?}", m4);
+        if ms4 != ms {
+            asr::print_message(&ms4);
+            ms = ms4;
+        }
         next_tick().await;
     }
 }
