@@ -57,6 +57,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
 
     ("GameManager sceneName", ("GameManager", 0, &["_instance", "sceneName"]), Type::String),
     ("GameManager nextSceneName", ("GameManager", 0, &["_instance", "nextSceneName"]), Type::String),
+    /*
     ("GameManager gameState", ("GameManager", 0, &["_instance", "gameState"]), Type::I32),
     ("GameManager uiState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "uiState"]), Type::I32),
     ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
@@ -65,6 +66,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     // ("GameManager acceptingInput", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "acceptingInput"]), Type::Bool),
     ("GameManager transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
     ("GameManager tilemapDirty", ("GameManager", 0, &["_instance", "tilemapDirty"]), Type::Bool),
+    */
     ("PlayerData fireballLevel", ("GameManager", 0, &["_instance", "playerData", "fireballLevel"]), Type::I32),
     ("PlayerData hasDash", ("GameManager", 0, &["_instance", "playerData", "hasDash"]), Type::Bool),
     ("PlayerData hasShadowDash", ("GameManager", 0, &["_instance", "playerData", "hasShadowDash"]), Type::Bool),
@@ -89,7 +91,9 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData simpleKeys", ("GameManager", 0, &["_instance", "playerData", "simpleKeys"]), Type::I32),
     ("PlayerData hasSlykey", ("GameManager", 0, &["_instance", "playerData", "hasSlykey"]), Type::Bool),
     ("PlayerData hasWhiteKey", ("GameManager", 0, &["_instance", "playerData", "hasWhiteKey"]), Type::Bool),
+    /*
     ("PlayerData geo", ("GameManager", 0, &["_instance", "playerData", "geo"]), Type::I32),
+    */
     ("PlayerData gotCharm_31", ("GameManager", 0, &["_instance", "playerData", "gotCharm_31"]), Type::Bool),
     ("PlayerData grubsCollected", ("GameManager", 0, &["_instance", "playerData", "grubsCollected"]), Type::I32),
     ("PlayerData killedBigFly", ("GameManager", 0, &["_instance", "playerData", "killedBigFly"]), Type::Bool),
