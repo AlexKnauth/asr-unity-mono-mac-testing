@@ -103,6 +103,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData spiderCapture", ("GameManager", 0, &["_instance", "playerData", "spiderCapture"]), Type::Bool),
     ("PlayerData unchainedHollowKnight", ("GameManager", 0, &["_instance", "playerData", "unchainedHollowKnight"]), Type::Bool),
 
+    /* Notes:
+    outside:
+      killsSpitter is used for normal Aspids outside of Colo
+      killsSuperSpitter is used for Primal Aspids outside of Colo
+    colo:
+      killsSpitter is used for Primal Aspids in all of Colo 1
+      killsSuperSpitter is used for Primal Aspids in all of Colo 2
+      killsSpitter is used for Primal Aspids in Colo 3 (so far: only tested up to partway through floorless)
+     */
     ("PlayerData killedSpitter", ("GameManager", 0, &["_instance", "playerData", "killedSpitter"]), Type::Bool),
     ("PlayerData killsSpitter", ("GameManager", 0, &["_instance", "playerData", "killsSpitter"]), Type::I32),
     ("PlayerData killedSuperSpitter", ("GameManager", 0, &["_instance", "playerData", "killedSuperSpitter"]), Type::Bool),
