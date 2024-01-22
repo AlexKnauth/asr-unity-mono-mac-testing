@@ -114,7 +114,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     colo:
       killsSpitter is used for Primal Aspids in all of Colo 1
       killsSuperSpitter is used for Primal Aspids in all of Colo 2
-      killsSpitter is used for Primal Aspids in Colo 3 (so far: only tested up to partway through floorless)
+      killsSpitter is used for Primal Aspids in all of Colo 3
      */
     ("PlayerData killedSpitter", ("GameManager", 0, &["_instance", "playerData", "killedSpitter"]), Type::Bool),
     ("PlayerData killsSpitter", ("GameManager", 0, &["_instance", "playerData", "killsSpitter"]), Type::I32),
