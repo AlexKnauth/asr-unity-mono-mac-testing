@@ -67,6 +67,8 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("GameManager transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
     ("GameManager tilemapDirty", ("GameManager", 0, &["_instance", "tilemapDirty"]), Type::Bool),
     */
+    ("GameManager focusing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "focusing"]), Type::Bool),
+
     ("PlayerData fireballLevel", ("GameManager", 0, &["_instance", "playerData", "fireballLevel"]), Type::I32),
     ("PlayerData hasDash", ("GameManager", 0, &["_instance", "playerData", "hasDash"]), Type::Bool),
     ("PlayerData hasShadowDash", ("GameManager", 0, &["_instance", "playerData", "hasShadowDash"]), Type::Bool),
@@ -86,7 +88,10 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData hasUpwardSlash", ("GameManager", 0, &["_instance", "playerData", "hasUpwardSlash"]), Type::Bool),
 
     ("PlayerData maxHealthBase", ("GameManager", 0, &["_instance", "playerData", "maxHealthBase"]), Type::I32),
+    ("PlayerData maxHealth", ("GameManager", 0, &["_instance", "playerData", "maxHealth"]), Type::I32),
+    ("PlayerData health", ("GameManager", 0, &["_instance", "playerData", "health"]), Type::I32),
     ("PlayerData heartPieces", ("GameManager", 0, &["_instance", "playerData", "heartPieces"]), Type::I32),
+    ("PlayerData MPCharge", ("GameManager", 0, &["_instance", "playerData", "MPCharge"]), Type::I32),
     ("PlayerData hasLantern", ("GameManager", 0, &["_instance", "playerData", "hasLantern"]), Type::Bool),
     ("PlayerData simpleKeys", ("GameManager", 0, &["_instance", "playerData", "simpleKeys"]), Type::I32),
     ("PlayerData hasSlykey", ("GameManager", 0, &["_instance", "playerData", "hasSlykey"]), Type::Bool),
