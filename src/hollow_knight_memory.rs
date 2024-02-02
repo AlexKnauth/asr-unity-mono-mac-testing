@@ -2,7 +2,7 @@ use std::cmp::min;
 use std::collections::BTreeMap;
 
 use asr::string::ArrayWString;
-use asr::{Process, Address64};
+use asr::{Address64, PointerSize, Process};
 use asr::game_engine::unity::mono::{Image, Module, UnityPointer};
 use serde::{Deserialize, Serialize};
 use serde_json::value::Value as JsonValue;
@@ -51,7 +51,7 @@ impl Type {
 
 const POINTER_DEPTH: usize = 4;
 
-static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
+static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ("GameManager versionNumber", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "debugInfo", "versionNumber"]), Type::String),
     ("PlayerData version", ("GameManager", 0, &["_instance", "playerData", "version"]), Type::String),
 
@@ -223,9 +223,9 @@ pub fn read_string_object<const N: usize>(process: &Process, a: Address64) -> Op
     // class "System.String" field "m_firstChar"
     const STRING_CONTENTS_OFFSET: u64 = 0x14;
 
-    let n: u32 = process.read_pointer_path64(a, &[STRING_LEN_OFFSET]).ok()?;
+    let n: u32 = process.read_pointer_path(a, PointerSize::Bit64, &[STRING_LEN_OFFSET]).ok()?;
     if !(n < 2048) { return None; }
-    let w: ArrayWString<N> = process.read_pointer_path64(a, &[STRING_CONTENTS_OFFSET]).ok()?;
+    let w: ArrayWString<N> = process.read_pointer_path(a, PointerSize::Bit64, &[STRING_CONTENTS_OFFSET]).ok()?;
     if !(w.len() == min(n as usize, N)) { return None; }
     String::from_utf16(&w.to_vec()).ok()
 }
