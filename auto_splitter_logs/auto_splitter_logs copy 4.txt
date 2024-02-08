@@ -264,6 +264,7 @@ hero_ctrl recoiling: true
 hero_ctrl recoiling: false
 hero_ctrl hazardRespawning: false
 hero_ctrl inv pulsing: false
+---------------------------------------
 hero_ctrl inv pulsing: true
 PlayerData health: 6
 PlayerData MPCharge: 75
