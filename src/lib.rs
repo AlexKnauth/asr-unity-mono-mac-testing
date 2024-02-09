@@ -37,8 +37,15 @@ async fn main() {
 
     asr::print_message("Hello, World!");
 
+    let mut timer_state = asr::timer::state();
+
     loop {
         let process = retry(|| {
+            let curr_timer_state = asr::timer::state();
+            if curr_timer_state != timer_state {
+                asr::print_message(&format!("timer state: {:?}", curr_timer_state));
+                timer_state = curr_timer_state;
+            }
             HOLLOW_KNIGHT_NAMES.into_iter().find_map(Process::attach)
         }).await;
         process
@@ -61,6 +68,11 @@ async fn main() {
                 let mut info = HollowKnightInfo::new();
                 loop {
                     // TODO: Do something on every tick.
+                    let curr_timer_state = asr::timer::state();
+                    if curr_timer_state != timer_state {
+                        asr::print_message(&format!("timer state: {:?}", curr_timer_state));
+                        timer_state = curr_timer_state;
+                    }
                     let prev_scene_manager_scene_name = &scene_manager_scene_name;
                     let curr_scene_manager_scene_name = scene_manager.as_ref().and_then(|sm| sm.get_current_scene_path::<CSTR>(&process).ok()).and_then(scene_path_to_name_string);
                     if prev_scene_manager_scene_name != &curr_scene_manager_scene_name {
