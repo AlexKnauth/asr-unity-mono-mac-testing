@@ -1,0 +1,38 @@
+GameManager gameState: 4
+  ---
+PlayerData health: 10
+  ---
+hero_ctrl inv pulsing: true
+  ---
+hero_ctrl recoiling: true
+  ---
+hero_ctrl hazardDeath: true
+PlayerData health: 9
+  ---
+hero_ctrl recoiling: false
+  ---
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+  ---
+hero_ctrl inv pulsing: false
+  ---
+PlayerData health: 8
+  ---
+hero_ctrl inv pulsing: true
+  ---
+hero_ctrl recoiling: true
+  ---
+hero_ctrl hazardDeath: true
+PlayerData health: 7
+  ---
+hero_ctrl recoiling: false
+  ---
+hero_ctrl hazardRespawning: false
+  ---
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+  ---
+hero_ctrl inv pulsing: false
+  ---
+GameManager gameState: 5
+  ---
