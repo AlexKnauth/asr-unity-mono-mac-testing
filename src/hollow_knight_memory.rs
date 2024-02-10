@@ -61,6 +61,8 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     /*
     ("GameManager uiState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "uiState"]), Type::I32),
     ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
+    ("GameManager menuState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "menuState"]), Type::I32),
+    ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
     // ("GameManager camera teleporting", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "teleporting"]), Type::Bool),
     // ("GameManager acceptingInput", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "acceptingInput"]), Type::Bool),
     ("GameManager tilemapDirty", ("GameManager", 0, &["_instance", "tilemapDirty"]), Type::Bool),
@@ -69,15 +71,17 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
 
     ("hero_ctrl hazardRespawning", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardRespawning"]), Type::Bool),
     ("hero_ctrl hazardDeath", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardDeath"]), Type::Bool),
+    ("hero_ctrl recoilFrozen", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "recoilFrozen"]), Type::Bool),
     ("hero_ctrl recoiling", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "recoiling"]), Type::Bool),
     // recoilingRight
     // recoilingLeft
-    // recoilFrozen
     ("hero_ctrl dead", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"]), Type::Bool),
     ("hero_ctrl transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
     ("hero_ctrl inv pulsing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "invPulse", "pulsing"]), Type::Bool),
     // isInvincible
     // invinciTest
+    // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
+    ("PlayerData currentInvPane", ("GameManager", 0, &["_instance", "playerData", "currentInvPane"]), Type::I32),
 
     ("PlayerData fireballLevel", ("GameManager", 0, &["_instance", "playerData", "fireballLevel"]), Type::I32),
     ("PlayerData hasDash", ("GameManager", 0, &["_instance", "playerData", "hasDash"]), Type::Bool),
