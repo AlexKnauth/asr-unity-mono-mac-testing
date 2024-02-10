@@ -1,0 +1,14 @@
+GameManager gameState: 4
+  ---
+PlayerData health: 10
+  ---
+hero_ctrl inv pulsing: true
+  ---
+hero_ctrl recoiling: true
+  ---
+hero_ctrl recoiling: false
+  ---
+hero_ctrl inv pulsing: false
+  ---
+GameManager gameState: 5
+  ---

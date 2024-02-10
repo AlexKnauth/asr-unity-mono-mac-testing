@@ -1,0 +1,26 @@
+GameManager gameState: 4
+hero_ctrl transitionState: 0
+  ---
+hero_ctrl hazardDeath: true
+PlayerData health: 9
+  ---
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+  ---
+hero_ctrl inv pulsing: true
+  ---
+hero_ctrl hazardRespawning: false
+  ---
+PlayerData health: 8
+  ---
+hero_ctrl hazardDeath: true
+  ---
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+  ---
+hero_ctrl inv pulsing: false
+  ---
+hero_ctrl hazardRespawning: false
+  ---
+GameManager gameState: 5
+  ---

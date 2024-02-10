@@ -1,0 +1,437 @@
+This auto splitter uses WASI. The API is subject to change, because WASI is still in preview. Auto splitters using WASI may need to be recompiled in the future.
+Auto splitter restarted.
+Hello, World!
+Attached to a new process: Hollow Knight
+attaching SceneManager...
+attaching Module...
+attaching Image...
+attached SceneManager, Module, and Image successfully
+GameManager versionNumber: "1.5.78.11833"
+PlayerData version: "1.5.78.11833"
+GameManager sceneName: "Menu_Title"
+GameManager nextSceneName: ""
+PlayerData fireballLevel: 0
+PlayerData hasDash: false
+PlayerData hasShadowDash: false
+PlayerData hasWalljump: false
+PlayerData hasDoubleJump: false
+PlayerData hasSuperDash: false
+PlayerData hasAcidArmour: false
+PlayerData hasDreamNail: false
+PlayerData hasDreamGate: false
+PlayerData dreamNailUpgraded: false
+PlayerData hasCyclone: false
+PlayerData hasDashSlash: false
+PlayerData hasUpwardSlash: false
+PlayerData maxHealthBase: 5
+PlayerData maxHealth: 5
+PlayerData health: 5
+PlayerData healthBlue: 0
+PlayerData joniHealthBlue: 0
+PlayerData damagedBlue: 0
+PlayerData prevHealth: 5
+PlayerData heartPieces: 0
+PlayerData MPCharge: 0
+PlayerData hasLantern: false
+PlayerData simpleKeys: 0
+PlayerData hasSlykey: false
+PlayerData hasWhiteKey: false
+PlayerData gotCharm_31: false
+PlayerData grubsCollected: 0
+PlayerData killedBigFly: false
+PlayerData killsBigFly: 3
+PlayerData slyRescued: false
+PlayerData killedGorgeousHusk: false
+PlayerData metRelicDealerShop: false
+PlayerData watcherChandelier: false
+PlayerData killedBlackKnight: false
+PlayerData killedMegaJellyfish: false
+PlayerData spiderCapture: false
+PlayerData unchainedHollowKnight: false
+PlayerData killedSpitter: false
+PlayerData killsSpitter: 20
+PlayerData killedSuperSpitter: false
+PlayerData killsSuperSpitter: 25
+PlayerData killedBuzzer: false
+PlayerData killsBuzzer: 45
+PlayerData killedBigBuzzer: false
+PlayerData killsBigBuzzer: 2
+PlayerData killedBurstingBouncer: false
+PlayerData killsBurstingBouncer: 15
+PlayerData killedColShield: false
+PlayerData killsColShield: 25
+PlayerData killedColRoller: false
+PlayerData killsColRoller: 20
+PlayerData killedColMiner: false
+PlayerData killsColMiner: 25
+PlayerData killedColWorm: false
+PlayerData killsColWorm: 20
+PlayerData killedColFlyingSentry: false
+PlayerData killsColFlyingSentry: 25
+PlayerData killedColMosquito: false
+PlayerData killsColMosquito: 15
+PlayerData killedCeilingDropper: false
+PlayerData killsCeilingDropper: 15
+PlayerData killedHopper: false
+PlayerData killsHopper: 25
+PlayerData killedGrassHopper: false
+PlayerData killsGrassHopper: 15
+PlayerData killedGiantHopper: false
+PlayerData killsGiantHopper: 10
+PlayerData killedGrubMimic: false
+PlayerData killsGrubMimic: 5
+PlayerData killedBlobble: false
+PlayerData killsBlobble: 15
+PlayerData killedOblobble: false
+PlayerData killsOblobble: 3
+PlayerData killedAngryBuzzer: false
+PlayerData killsAngryBuzzer: 15
+PlayerData killedColHopper: false
+PlayerData killsColHopper: 15
+PlayerData killedHeavyMantis: false
+PlayerData killsHeavyMantis: 15
+PlayerData killedMantisHeavyFlyer: false
+PlayerData killsMantisHeavyFlyer: 16
+PlayerData killedMage: false
+PlayerData killsMage: 20
+PlayerData killedMageKnight: false
+PlayerData killsMageKnight: 2
+PlayerData killedElectricMage: false
+PlayerData killsElectricMage: 6
+PlayerData killedLesserMawlek: false
+PlayerData killsLesserMawlek: 10
+PlayerData killedMawlek: false
+PlayerData killsMawlek: 1
+PlayerData killedLobsterLancer: false
+PlayerData killsLobsterLancer: 1
+PlayerData P1: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+PlayerData P2: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+PlayerData P3: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+PlayerData P4: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+PlayerData P5: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+GameManager nextSceneName: "Tutorial_01"
+SceneManager sceneName: Some("Tutorial_01")
+GameManager sceneName: "Tutorial_01"
+GameManager focusing: false
+hero_ctrl hazardRespawning: false
+hero_ctrl hazardDeath: false
+hero_ctrl recoiling: false
+hero_ctrl dead: false
+hero_ctrl transitionState: 0
+hero_ctrl inv pulsing: false
+hero_ctrl transitionState: 1
+GameManager nextSceneName: "Fungus3_40"
+SceneManager sceneName: Some("Fungus3_40")
+GameManager sceneName: "Fungus3_40"
+hero_ctrl transitionState: 0
+PlayerData fireballLevel: 2
+PlayerData hasDash: true
+PlayerData hasShadowDash: true
+PlayerData hasWalljump: true
+PlayerData hasDoubleJump: true
+PlayerData hasSuperDash: true
+PlayerData hasAcidArmour: true
+PlayerData hasDreamNail: true
+PlayerData hasDreamGate: true
+PlayerData dreamNailUpgraded: true
+PlayerData hasCyclone: true
+PlayerData hasDashSlash: true
+PlayerData hasUpwardSlash: true
+PlayerData gotCharm_31: true
+PlayerData maxHealthBase: 6
+PlayerData maxHealth: 6
+PlayerData health: 6
+PlayerData maxHealthBase: 7
+PlayerData maxHealth: 7
+PlayerData health: 7
+PlayerData prevHealth: 6
+PlayerData maxHealthBase: 8
+PlayerData maxHealth: 8
+PlayerData health: 8
+PlayerData prevHealth: 7
+PlayerData maxHealthBase: 9
+PlayerData maxHealth: 9
+PlayerData health: 9
+PlayerData prevHealth: 8
+PlayerData prevHealth: 9
+PlayerData maxHealth: 11
+PlayerData health: 11
+PlayerData prevHealth: 11
+hero_ctrl hazardRespawning: true
+hero_ctrl inv pulsing: true
+hero_ctrl hazardRespawning: false
+hero_ctrl inv pulsing: false
+GameManager nextSceneName: "Fungus3_13"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_13")
+GameManager sceneName: "Fungus3_13"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 0
+GameManager nextSceneName: "Fungus3_04"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_04")
+GameManager sceneName: "Fungus3_04"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 0
+GameManager nextSceneName: "Fungus3_21"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_21")
+GameManager sceneName: "Fungus3_21"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 0
+PlayerData MPCharge: 2
+PlayerData MPCharge: 6
+PlayerData MPCharge: 8
+PlayerData MPCharge: 14
+PlayerData MPCharge: 16
+PlayerData MPCharge: 26
+PlayerData MPCharge: 28
+PlayerData MPCharge: 30
+PlayerData MPCharge: 32
+PlayerData MPCharge: 34
+PlayerData MPCharge: 36
+PlayerData MPCharge: 44
+PlayerData MPCharge: 48
+GameManager nextSceneName: "Fungus3_22"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_22")
+GameManager sceneName: "Fungus3_22"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 4
+hero_ctrl transitionState: 0
+GameManager nextSceneName: "Fungus3_23"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_23")
+GameManager sceneName: "Fungus3_23"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 0
+GameManager nextSceneName: "Fungus3_22"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_23_boss")
+SceneManager sceneName: Some("Fungus3_22")
+GameManager sceneName: "Fungus3_22"
+game_manager_dirtyness: 1
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 0
+GameManager nextSceneName: "Fungus3_21"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_21")
+GameManager sceneName: "Fungus3_21"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 4
+hero_ctrl transitionState: 0
+PlayerData MPCharge: 15
+GameManager nextSceneName: "Fungus3_22"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_22")
+GameManager sceneName: "Fungus3_22"
+hero_ctrl transitionState: 2
+hero_ctrl transitionState: 3
+hero_ctrl transitionState: 4
+hero_ctrl transitionState: 0
+GameManager sceneName: null
+GameManager sceneName: "Fungus3_22"
+game_manager_dirtyness: 1
+-------------------------------------------------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 10                  -- normal hit
+PlayerData MPCharge: 30
+hero_ctrl recoiling: true
+hero_ctrl recoiling: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 9                   -- 2-hit wombo-combo, or 3-hit with next?
+PlayerData MPCharge: 45
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 8
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 7                   -- normal hit, or 3-hit with previous?
+PlayerData MPCharge: 60
+hero_ctrl recoiling: true
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 6                   -- 2-hit wombo-combo
+PlayerData MPCharge: 75
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 5
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+hero_ctrl hazardRespawning: false
+---------------------------------------
+PlayerData health: 6                   -- Hiveblood
+hero_ctrl inv pulsing: true
+PlayerData health: 5                   -- normal hit
+PlayerData MPCharge: 90
+hero_ctrl recoiling: true
+hero_ctrl recoiling: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+PlayerData health: 6                   -- HiveBlood
+hero_ctrl inv pulsing: true
+PlayerData health: 5                   -- 2-hit wombo-combo
+PlayerData MPCharge: 99
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 4
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+hero_ctrl hazardRespawning: false
+---------------------------------------
+PlayerData health: 5                   -- Hiveblood
+GameManager focusing: true             -- healing
+PlayerData MPCharge: 97
+PlayerData MPCharge: 94
+PlayerData MPCharge: 92
+PlayerData MPCharge: 89
+PlayerData MPCharge: 87
+PlayerData MPCharge: 84
+PlayerData MPCharge: 82
+PlayerData MPCharge: 81
+PlayerData MPCharge: 79
+PlayerData MPCharge: 76
+PlayerData MPCharge: 73
+PlayerData MPCharge: 71
+PlayerData MPCharge: 69
+PlayerData health: 7
+PlayerData MPCharge: 66
+PlayerData MPCharge: 64
+PlayerData MPCharge: 62
+PlayerData MPCharge: 61
+PlayerData MPCharge: 59
+PlayerData MPCharge: 57
+PlayerData MPCharge: 54
+PlayerData MPCharge: 52
+PlayerData MPCharge: 50
+PlayerData MPCharge: 48
+PlayerData MPCharge: 45
+PlayerData MPCharge: 43
+PlayerData MPCharge: 41
+PlayerData MPCharge: 38
+PlayerData MPCharge: 36
+PlayerData MPCharge: 35
+PlayerData health: 9
+PlayerData MPCharge: 33
+PlayerData MPCharge: 32
+PlayerData MPCharge: 30
+PlayerData MPCharge: 28
+PlayerData MPCharge: 25
+PlayerData MPCharge: 23
+PlayerData MPCharge: 21
+PlayerData MPCharge: 18
+PlayerData MPCharge: 17
+PlayerData MPCharge: 14
+PlayerData MPCharge: 12
+PlayerData MPCharge: 10
+PlayerData MPCharge: 7
+PlayerData MPCharge: 5
+PlayerData MPCharge: 3
+PlayerData health: 11
+PlayerData MPCharge: 0
+GameManager focusing: false
+PlayerData MPCharge: 1
+PlayerData MPCharge: 6
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 10                  -- 2-hit wombo-combo
+PlayerData MPCharge: 21
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 9
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+hero_ctrl hazardRespawning: false
+---------------------------------------
+PlayerData health: 10                  -- Hiveblood
+hero_ctrl inv pulsing: true
+PlayerData health: 9                   -- 2-hit wombo-combo
+PlayerData MPCharge: 36
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 8
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+hero_ctrl hazardRespawning: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 7                   -- 2-hit wombo-combo
+PlayerData MPCharge: 51
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 6
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl inv pulsing: false
+hero_ctrl hazardRespawning: false
+PlayerData health: 7                   -- Hiveblood
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 6                   -- normal hit
+PlayerData MPCharge: 66
+hero_ctrl recoiling: true
+hero_ctrl recoiling: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 5                   -- 3-hit wombo-combo?
+PlayerData MPCharge: 81
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 4
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+PlayerData health: 3
+PlayerData MPCharge: 96
+hero_ctrl recoiling: true
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: false
+hero_ctrl inv pulsing: false
+---------------------------------------
+hero_ctrl inv pulsing: true
+PlayerData health: 2                   -- 2-hit wombo-combo, or 3-hit killed on 3rd hit?
+PlayerData MPCharge: 99
+hero_ctrl recoiling: true
+hero_ctrl hazardDeath: true
+PlayerData health: 1
+hero_ctrl recoiling: false
+hero_ctrl hazardRespawning: true
+hero_ctrl hazardDeath: false
+hero_ctrl dead: true
+hero_ctrl inv pulsing: false
+---------------------------------------
+PlayerData health: 0
+PlayerData MPCharge: 0
+hero_ctrl hazardRespawning: false
+GameManager nextSceneName: "Fungus3_40"
+hero_ctrl transitionState: 1
+SceneManager sceneName: Some("Fungus3_40")
+GameManager sceneName: "Fungus3_40"
+hero_ctrl dead: false
+PlayerData health: 11
+hero_ctrl transitionState: 0
