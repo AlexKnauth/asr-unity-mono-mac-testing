@@ -214,15 +214,18 @@ impl HollowKnightInfo {
             }).collect()
         }
     }
-    pub fn print_changes(&mut self, process: &Process, module: &Module, image: &Image) {
+    pub fn print_changes(&mut self, process: &Process, module: &Module, image: &Image) -> bool {
+        let mut changed = false;
         for (k, p, t) in self.pointers.iter() {
             let prev = self.map_json.get(k).unwrap_or(&JsonValue::Null);
             let curr = t.read_unity_pointer_json(process, module, image, p).unwrap_or_default();
             if prev != &curr {
                 asr::print_message(&format!("{}: {}", k, curr));
                 self.map_json.insert(k, curr);
+                changed = true;
             }
         }
+        changed
     }
     pub fn game_manager_scene_name(&self) -> Option<&str> {
         self.map_json.get("GameManager sceneName")?.as_str()

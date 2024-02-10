@@ -68,18 +68,23 @@ async fn main() {
                 let mut info = HollowKnightInfo::new();
                 loop {
                     // TODO: Do something on every tick.
+                    let mut changed = false;
                     let curr_timer_state = asr::timer::state();
                     if curr_timer_state != timer_state {
                         asr::print_message(&format!("timer state: {:?}", curr_timer_state));
                         timer_state = curr_timer_state;
+                        changed = true;
                     }
                     let prev_scene_manager_scene_name = &scene_manager_scene_name;
                     let curr_scene_manager_scene_name = scene_manager.as_ref().and_then(|sm| sm.get_current_scene_path::<CSTR>(&process).ok()).and_then(scene_path_to_name_string);
                     if prev_scene_manager_scene_name != &curr_scene_manager_scene_name {
                         asr::print_message(&format!("SceneManager sceneName: {:?}", curr_scene_manager_scene_name));
                         scene_manager_scene_name = curr_scene_manager_scene_name;
+                        changed = true;
                     }
-                    info.print_changes(&process, &module, &image);
+                    if info.print_changes(&process, &module, &image) {
+                        changed = true;
+                    }
                     if scene_manager_scene_name.is_some() {
                         if scene_manager_scene_name.as_deref() == info.game_manager_scene_name() {
                             if 0 < game_manager_dirtyness {
@@ -95,6 +100,9 @@ async fn main() {
                         asr::print_message(&format!("game_manager_dirtyness: {}", game_manager_dirtyness));
                         game_manager_dirtyness = 0;
                         max_dirtyness *= 2;
+                    }
+                    if changed {
+                        asr::print_message("  ---");
                     }
                     next_tick().await;
                 }
