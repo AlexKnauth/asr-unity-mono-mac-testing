@@ -117,6 +117,8 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     /*
     ("PlayerData geo", ("GameManager", 0, &["_instance", "playerData", "geo"]), Type::I32),
     */
+    ("PlayerData dreamOrbs", ("GameManager", 0, &["_instance", "playerData", "dreamOrbs"]), Type::I32),
+    ("PlayerData gladeGhostsKilled", ("GameManager", 0, &["_instance", "playerData", "gladeGhostsKilled"]), Type::I32),
     ("PlayerData gotCharm_31", ("GameManager", 0, &["_instance", "playerData", "gotCharm_31"]), Type::Bool),
     ("PlayerData grubsCollected", ("GameManager", 0, &["_instance", "playerData", "grubsCollected"]), Type::I32),
     ("PlayerData killedBigFly", ("GameManager", 0, &["_instance", "playerData", "killedBigFly"]), Type::Bool),
@@ -129,6 +131,9 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData killedMegaJellyfish", ("GameManager", 0, &["_instance", "playerData", "killedMegaJellyfish"]), Type::Bool),
     ("PlayerData spiderCapture", ("GameManager", 0, &["_instance", "playerData", "spiderCapture"]), Type::Bool),
     ("PlayerData unchainedHollowKnight", ("GameManager", 0, &["_instance", "playerData", "unchainedHollowKnight"]), Type::Bool),
+
+    ("PlayerData killedHiveKnight", ("GameManager", 0, &["_instance", "playerData", "killedHiveKnight"]), Type::Bool),
+    ("PlayerData killedTraitorLord", ("GameManager", 0, &["_instance", "playerData", "killedTraitorLord"]), Type::Bool),
 
     /* Notes:
     outside:
