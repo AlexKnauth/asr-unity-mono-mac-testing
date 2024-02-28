@@ -202,6 +202,13 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData killedLobsterLancer", ("GameManager", 0, &["_instance", "playerData", "killedLobsterLancer"]), Type::Bool),
     ("PlayerData killsLobsterLancer", ("GameManager", 0, &["_instance", "playerData", "killsLobsterLancer"]), Type::I32),
 
+    ("PlayedData killedDungDefender", ("GameManager", 0, &["_instance", "playerData", "killedDungDefender"]), Type::Bool),
+    ("PlayedData dungDefenderLeft", ("GameManager", 0, &["_instance", "playerData", "dungDefenderLeft"]), Type::Bool),
+    ("PlayedData killedWhiteDefender", ("GameManager", 0, &["_instance", "playerData", "killedWhiteDefender"]), Type::Bool),
+    ("PlayedData whiteDefenderOrbsCollected", ("GameManager", 0, &["_instance", "playerData", "whiteDefenderOrbsCollected"]), Type::Bool),
+    ("PlayedData whiteDefenderDefeats", ("GameManager", 0, &["_instance", "playerData", "whiteDefenderDefeats"]), Type::I32),
+    ("PlayedData dungDefenderAwoken", ("GameManager", 0, &["_instance", "playerData", "dungDefenderAwoken"]), Type::Bool),
+    ("PlayedData dungDefenderAwakeConvo", ("GameManager", 0, &["_instance", "playerData", "dungDefenderAwakeConvo"]), Type::Bool),
 
     ("PlayerData P1", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier1"]), Type::BossSequenceDoorCompletion),
     ("PlayerData P2", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier2"]), Type::BossSequenceDoorCompletion),
