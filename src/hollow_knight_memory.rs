@@ -121,6 +121,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("PlayerData dreamOrbs", ("GameManager", 0, &["_instance", "playerData", "dreamOrbs"]), Type::I32),
     // NOTE: gladeGhostsKilled doesn't seem to work at all
     ("PlayerData gladeGhostsKilled", ("GameManager", 0, &["_instance", "playerData", "gladeGhostsKilled"]), Type::I32),
+    ("PlayerData gotCharm_10", ("GameManager", 0, &["_instance", "playerData", "gotCharm_10"]), Type::Bool),
     ("PlayerData gotCharm_31", ("GameManager", 0, &["_instance", "playerData", "gotCharm_31"]), Type::Bool),
     ("PlayerData grubsCollected", ("GameManager", 0, &["_instance", "playerData", "grubsCollected"]), Type::I32),
     ("PlayerData killedBigFly", ("GameManager", 0, &["_instance", "playerData", "killedBigFly"]), Type::Bool),
