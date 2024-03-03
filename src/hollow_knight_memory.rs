@@ -14,6 +14,14 @@ pub const CSTR: usize = 128;
 
 // --------------------------------------------------------
 
+#[derive(bytemuck::CheckedBitPattern, Clone, Copy, Deserialize, Serialize)]
+#[repr(C)]
+pub struct Vector3 {
+    x: f32,
+    y: f32,
+    z: f32,
+}
+
 #[derive(bytemuck::CheckedBitPattern, Clone, Copy, Deserialize, Serialize)] // bytemuck::Zeroable
 #[repr(C)]
 pub struct BossSequenceDoorCompletion {
@@ -33,6 +41,8 @@ enum Type {
     Bool,
     I32,
     String,
+    #[allow(dead_code)]
+    Vector3,
     BossSequenceDoorCompletion,
 }
 
@@ -42,6 +52,7 @@ impl Type {
             Type::Bool => Some(JsonValue::Bool(pointer.deref::<bool>(process, module, image).ok()?)),
             Type::I32 => Some(JsonValue::Number(Number::from(pointer.deref::<i32>(process, module, image).ok()?))),
             Type::String => Some(JsonValue::String(read_string_object::<CSTR>(process, pointer.deref(process, module, image).ok()?)?)),
+            Type::Vector3 => serde_json::to_value(pointer.deref::<Vector3>(process, module, image).ok()?).ok(),
             Type::BossSequenceDoorCompletion => serde_json::to_value(pointer.deref::<BossSequenceDoorCompletion>(process, module, image).ok()?).ok(),
         }
     }
@@ -67,6 +78,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, u8, &[&str]), Type)] = &[
     ("GameManager menuState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "menuState"]), Type::I32),
     ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
     // ("GameManager camera teleporting", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "teleporting"]), Type::Bool),
+    // ("GameManager camera target destination", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "camTarget", "destination"]), Type::Vector3),
     // ("GameManager acceptingInput", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "acceptingInput"]), Type::Bool),
     ("GameManager tilemapDirty", ("GameManager", 0, &["_instance", "tilemapDirty"]), Type::Bool),
     */
