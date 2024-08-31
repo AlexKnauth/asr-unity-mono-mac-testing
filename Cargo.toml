@@ -37,7 +37,7 @@ crate-type = ["cdylib"]
 lto = true
 panic = "abort"
 codegen-units = 1
-strip = true
+# strip = true
 
 [profile.release.build-override]
 opt-level = 0
