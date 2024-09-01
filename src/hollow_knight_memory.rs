@@ -120,13 +120,11 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
 
     ("PlayerData maxHealthBase", ("GameManager", 0, &["_instance", "playerData", "maxHealthBase"]), Type::I32),
     ("PlayerData maxHealth", ("GameManager", 0, &["_instance", "playerData", "maxHealth"]), Type::I32),
-    /*
     ("PlayerData health", ("GameManager", 0, &["_instance", "playerData", "health"]), Type::I32),
     ("PlayerData healthBlue", ("GameManager", 0, &["_instance", "playerData", "healthBlue"]), Type::I32),
     ("PlayerData joniHealthBlue", ("GameManager", 0, &["_instance", "playerData", "joniHealthBlue"]), Type::I32),
     ("PlayerData damagedBlue", ("GameManager", 0, &["_instance", "playerData", "damagedBlue"]), Type::I32),
     ("PlayerData prevHealth", ("GameManager", 0, &["_instance", "playerData", "prevHealth"]), Type::I32),
-    */
     ("PlayerData heartPieces", ("GameManager", 0, &["_instance", "playerData", "heartPieces"]), Type::I32),
     /*
     ("PlayerData MPCharge", ("GameManager", 0, &["_instance", "playerData", "MPCharge"]), Type::I32),
@@ -239,6 +237,10 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ("PlayerData P3", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier3"]), Type::BossSequenceDoorCompletion),
     ("PlayerData P4", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier4"]), Type::BossSequenceDoorCompletion),
     ("PlayerData P5", ("GameManager", 0, &["_instance", "playerData", "bossDoorStateTier5"]), Type::BossSequenceDoorCompletion),
+
+    ("PlayerData bossReturnEntryGate", ("GameManager", 0, &["_instance", "playerData", "bossReturnEntryGate"]), Type::String),
+    ("PlayerData bossStatueTargetLevel", ("GameManager", 0, &["_instance", "playerData", "bossStatueTargetLevel"]), Type::I32),
+    ("PlayerData currentBossStatueCompletionKey", ("GameManager", 0, &["_instance", "playerData", "currentBossStatueCompletionKey"]), Type::String),
 ];
 
 pub struct HollowKnightInfo {
