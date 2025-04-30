@@ -1,0 +1,189 @@
+[11:53:33][Runtime][WARN] This auto splitter uses WASI. The API is subject to change, because WASI is still in preview. Auto splitters using WASI may need to be recompiled in the future.
+[11:53:33][Runtime][INFO] Auto splitter loaded.
+[11:53:33][Auto Splitter][INFO] Hello, World!
+[11:53:33][Runtime][DEBUG] Attached to a new process: hollow_knight.exe
+[11:53:33][Auto Splitter][INFO] attaching SceneManager...
+[11:53:33][Auto Splitter][INFO] attaching Module...
+[11:53:34][Auto Splitter][INFO] attaching Image...
+[11:53:34][Auto Splitter][INFO] attached SceneManager, Module, and Image successfully
+[11:53:34][Auto Splitter][INFO] GameManager versionNumber: "1.5.78.11833"
+[11:53:34][Auto Splitter][INFO] PlayerData version: "1.5.78.11833"
+[11:53:34][Auto Splitter][INFO] GameManager sceneName: "Menu_Title"
+[11:53:34][Auto Splitter][INFO] GameManager nextSceneName: ""
+[11:53:34][Auto Splitter][INFO] GameManager entryGateName: ""
+[11:53:34][Auto Splitter][INFO] PlayerData fireballLevel: 0
+[11:53:34][Auto Splitter][INFO] PlayerData hasDash: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasShadowDash: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasWalljump: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasDoubleJump: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasSuperDash: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasAcidArmour: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasDreamNail: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasDreamGate: false
+[11:53:34][Auto Splitter][INFO] PlayerData dreamNailUpgraded: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasCyclone: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasDashSlash: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasUpwardSlash: false
+[11:53:34][Auto Splitter][INFO] PlayerData maxHealthBase: 5
+[11:53:34][Auto Splitter][INFO] PlayerData maxHealth: 5
+[11:53:34][Auto Splitter][INFO] PlayerData health: 5
+[11:53:34][Auto Splitter][INFO] PlayerData healthBlue: 0
+[11:53:34][Auto Splitter][INFO] PlayerData joniHealthBlue: 0
+[11:53:34][Auto Splitter][INFO] PlayerData damagedBlue: 0
+[11:53:34][Auto Splitter][INFO] PlayerData prevHealth: 5
+[11:53:34][Auto Splitter][INFO] PlayerData heartPieces: 0
+[11:53:34][Auto Splitter][INFO] PlayerData hasLantern: false
+[11:53:34][Auto Splitter][INFO] PlayerData simpleKeys: 0
+[11:53:34][Auto Splitter][INFO] PlayerData hasSlykey: false
+[11:53:34][Auto Splitter][INFO] PlayerData hasWhiteKey: false
+[11:53:34][Auto Splitter][INFO] PlayerData dreamOrbs: 0
+[11:53:34][Auto Splitter][INFO] PlayerData gladeGhostsKilled: 0
+[11:53:34][Auto Splitter][INFO] PlayerData gotCharm_10: false
+[11:53:34][Auto Splitter][INFO] PlayerData gotCharm_31: false
+[11:53:34][Auto Splitter][INFO] PlayerData grubsCollected: 0
+[11:53:34][Auto Splitter][INFO] PlayerData killedBigFly: false
+[11:53:34][Auto Splitter][INFO] PlayerData killsBigFly: 3
+[11:53:34][Auto Splitter][INFO] PlayerData slyRescued: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedHornet: false
+[11:53:34][Auto Splitter][INFO] PlayerData killsHornet: 2
+[11:53:34][Auto Splitter][INFO] PlayerData hornet1Defeated: false
+[11:53:34][Auto Splitter][INFO] PlayerData hornetOutskirtsDefeated: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedGorgeousHusk: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedGreatShieldZombie: false
+[11:53:34][Auto Splitter][INFO] PlayerData killsGreatShieldZombie: 10
+[11:53:34][Auto Splitter][INFO] PlayerData metRelicDealerShop: false
+[11:53:34][Auto Splitter][INFO] PlayerData watcherChandelier: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedBlackKnight: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedMegaJellyfish: false
+[11:53:34][Auto Splitter][INFO] PlayerData spiderCapture: false
+[11:53:34][Auto Splitter][INFO] PlayerData unchainedHollowKnight: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedHiveKnight: false
+[11:53:34][Auto Splitter][INFO] PlayerData killedTraitorLord: false
+[11:53:35][Auto Splitter][INFO] PlayerData killedSpitter: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsSpitter: 20
+[11:53:35][Auto Splitter][INFO] PlayerData killedSuperSpitter: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsSuperSpitter: 25
+[11:53:35][Auto Splitter][INFO] PlayerData killedBuzzer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsBuzzer: 45
+[11:53:35][Auto Splitter][INFO] PlayerData killedBigBuzzer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsBigBuzzer: 2
+[11:53:35][Auto Splitter][INFO] PlayerData killedBurstingBouncer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsBurstingBouncer: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedColShield: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColShield: 25
+[11:53:35][Auto Splitter][INFO] PlayerData killedColRoller: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColRoller: 20
+[11:53:35][Auto Splitter][INFO] PlayerData killedColMiner: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColMiner: 25
+[11:53:35][Auto Splitter][INFO] PlayerData killedColWorm: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColWorm: 20
+[11:53:35][Auto Splitter][INFO] PlayerData killedColFlyingSentry: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColFlyingSentry: 25
+[11:53:35][Auto Splitter][INFO] PlayerData killedColMosquito: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColMosquito: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedCeilingDropper: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsCeilingDropper: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedHopper: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsHopper: 25
+[11:53:35][Auto Splitter][INFO] PlayerData killedGrassHopper: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsGrassHopper: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedGiantHopper: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsGiantHopper: 10
+[11:53:35][Auto Splitter][INFO] PlayerData killedGrubMimic: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsGrubMimic: 5
+[11:53:35][Auto Splitter][INFO] PlayerData killedBlobble: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsBlobble: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedOblobble: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsOblobble: 3
+[11:53:35][Auto Splitter][INFO] PlayerData killedAngryBuzzer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsAngryBuzzer: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedColHopper: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsColHopper: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedHeavyMantis: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsHeavyMantis: 15
+[11:53:35][Auto Splitter][INFO] PlayerData killedMantisHeavyFlyer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsMantisHeavyFlyer: 16
+[11:53:35][Auto Splitter][INFO] PlayerData killedMage: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsMage: 20
+[11:53:35][Auto Splitter][INFO] PlayerData killedMageKnight: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsMageKnight: 2
+[11:53:35][Auto Splitter][INFO] PlayerData killedElectricMage: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsElectricMage: 6
+[11:53:35][Auto Splitter][INFO] PlayerData killedLesserMawlek: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsLesserMawlek: 10
+[11:53:35][Auto Splitter][INFO] PlayerData killedMawlek: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsMawlek: 1
+[11:53:35][Auto Splitter][INFO] PlayerData killedLobsterLancer: false
+[11:53:35][Auto Splitter][INFO] PlayerData killsLobsterLancer: 1
+[11:53:35][Auto Splitter][INFO] PlayedData killedDungDefender: false
+[11:53:35][Auto Splitter][INFO] PlayedData dungDefenderLeft: false
+[11:53:35][Auto Splitter][INFO] PlayedData killedWhiteDefender: false
+[11:53:35][Auto Splitter][INFO] PlayedData whiteDefenderOrbsCollected: false
+[11:53:35][Auto Splitter][INFO] PlayedData whiteDefenderDefeats: 0
+[11:53:35][Auto Splitter][INFO] PlayedData dungDefenderAwoken: false
+[11:53:35][Auto Splitter][INFO] PlayedData dungDefenderAwakeConvo: false
+[11:53:35][Auto Splitter][INFO] PlayerData P1: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+[11:53:35][Auto Splitter][INFO] PlayerData P2: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+[11:53:35][Auto Splitter][INFO] PlayerData P3: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+[11:53:35][Auto Splitter][INFO] PlayerData P4: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+[11:53:36][Auto Splitter][INFO] PlayerData P5: {"all_bindings":false,"bound_charms":false,"bound_nail":false,"bound_shell":false,"bound_soul":false,"can_unlock":false,"completed":false,"no_hits":false,"unlocked":false}
+[11:53:36][Auto Splitter][INFO] PlayerData bossReturnEntryGate: ""
+[11:53:36][Auto Splitter][INFO] PlayerData bossStatueTargetLevel: -1
+[11:53:36][Auto Splitter][INFO] PlayerData currentBossStatueCompletionKey: ""
+[11:53:36][Auto Splitter][INFO]   ---
+[11:53:47][Auto Splitter][INFO] PlayerData health: 4
+[11:53:47][Auto Splitter][INFO]   ---
+[11:53:50][Auto Splitter][INFO] PlayerData health: 5
+[11:53:50][Auto Splitter][INFO] PlayerData prevHealth: 4
+[11:53:50][Auto Splitter][INFO]   ---
+[11:53:50][Auto Splitter][INFO] GameManager nextSceneName: "Town"
+[11:53:50][Auto Splitter][INFO]   ---
+[11:53:50][Auto Splitter][INFO] SceneManager sceneName: Some("Town")
+[11:53:50][Auto Splitter][INFO] GameManager sceneName: "Town"
+[11:53:50][Auto Splitter][INFO]   ---
+[11:53:51][Auto Splitter][INFO] PlayerData prevHealth: 5
+[11:53:51][Auto Splitter][INFO]   ---
+[11:54:37][Auto Splitter][INFO] GameManager nextSceneName: "Fungus1_16_alt"
+[11:54:37][Auto Splitter][INFO]   ---
+[11:54:37][Auto Splitter][INFO] SceneManager sceneName: Some("Fungus1_16_alt")
+[11:54:37][Auto Splitter][INFO] GameManager sceneName: "Fungus1_16_alt"
+[11:54:37][Auto Splitter][INFO]   ---
+[11:54:53][Auto Splitter][INFO] GameManager nextSceneName: "Crossroads_ShamanTemple"
+[11:54:53][Auto Splitter][INFO]   ---
+[11:54:53][Auto Splitter][INFO] SceneManager sceneName: Some("Crossroads_ShamanTemple")
+[11:54:53][Auto Splitter][INFO] GameManager sceneName: "Crossroads_ShamanTemple"
+[11:54:53][Auto Splitter][INFO]   ---
+[11:55:13][Auto Splitter][INFO] PlayerData fireballLevel: 1
+[11:55:13][Auto Splitter][INFO]   ---
+[11:55:51][Auto Splitter][INFO] PlayerData killedBuzzer: true
+[11:55:51][Auto Splitter][INFO] PlayerData killsBuzzer: 44
+[11:55:51][Auto Splitter][INFO]   ---
+[11:56:32][Auto Splitter][INFO] GameManager nextSceneName: "Fungus1_16_alt"
+[11:56:32][Auto Splitter][INFO]   ---
+[11:56:32][Auto Splitter][INFO] SceneManager sceneName: Some("Fungus1_16_alt")
+[11:56:32][Auto Splitter][INFO] GameManager sceneName: "Fungus1_16_alt"
+[11:56:32][Auto Splitter][INFO]   ---
+[11:56:36][Auto Splitter][INFO] GameManager nextSceneName: "Fungus1_22"
+[11:56:36][Auto Splitter][INFO] GameManager entryGateName: "left1"
+[11:56:36][Auto Splitter][INFO]   ---
+[11:56:37][Auto Splitter][INFO] SceneManager sceneName: Some("Fungus1_22")
+[11:56:37][Auto Splitter][INFO] GameManager sceneName: "Fungus1_22"
+[11:56:37][Auto Splitter][INFO]   ---
+[11:56:40][Auto Splitter][INFO] GameManager nextSceneName: "Fungus1_21"
+[11:56:40][Auto Splitter][INFO] GameManager entryGateName: "bot1"
+[11:56:40][Auto Splitter][INFO]   ---
+[11:56:41][Auto Splitter][INFO] SceneManager sceneName: Some("Fungus1_21")
+[11:56:41][Auto Splitter][INFO] GameManager sceneName: "Fungus1_21"
+[11:56:41][Auto Splitter][INFO]   ---
+[11:56:46][Auto Splitter][INFO] GameManager nextSceneName: "Fungus1_04"
+[11:56:46][Auto Splitter][INFO] GameManager entryGateName: "right1"
+[11:56:46][Auto Splitter][INFO]   ---
+[11:56:46][Auto Splitter][INFO] SceneManager sceneName: Some("Fungus1_04")
+[11:56:46][Auto Splitter][INFO] GameManager sceneName: "Fungus1_04"
+[11:56:46][Auto Splitter][INFO]   ---
+[11:57:45][Auto Splitter][INFO] PlayerData killedHornet: true
+[11:57:45][Auto Splitter][INFO] PlayerData killsHornet: 1
+[11:57:45][Auto Splitter][INFO] PlayerData hornet1Defeated: true
+[11:57:45][Auto Splitter][INFO]   ---
+[11:57:53][Auto Splitter][INFO] PlayerData hasDash: true
+[11:57:53][Auto Splitter][INFO]   ---
