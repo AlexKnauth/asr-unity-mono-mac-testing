@@ -145,6 +145,12 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ("PlayerData killedBigFly", ("GameManager", 0, &["_instance", "playerData", "killedBigFly"]), Type::Bool),
     ("PlayerData killsBigFly", ("GameManager", 0, &["_instance", "playerData", "killsBigFly"]), Type::I32),
     ("PlayerData slyRescued", ("GameManager", 0, &["_instance", "playerData", "slyRescued"]), Type::Bool),
+
+    ("PlayerData killedHornet", ("GameManager", 0, &["_instance", "playerData", "killedHornet"]), Type::Bool),
+    ("PlayerData killsHornet", ("GameManager", 0, &["_instance", "playerData", "killsHornet"]), Type::I32),
+    ("PlayerData hornet1Defeated", ("GameManager", 0, &["_instance", "playerData", "hornet1Defeated"]), Type::Bool),
+    ("PlayerData hornetOutskirtsDefeated", ("GameManager", 0, &["_instance", "playerData", "hornetOutskirtsDefeated"]), Type::Bool),
+
     ("PlayerData killedGorgeousHusk", ("GameManager", 0, &["_instance", "playerData", "killedGorgeousHusk"]), Type::Bool),
     ("PlayerData killedGreatShieldZombie", ("GameManager", 0, &["_instance", "playerData", "killedGreatShieldZombie"]), Type::Bool),
     ("PlayerData killsGreatShieldZombie", ("GameManager", 0, &["_instance", "playerData", "killsGreatShieldZombie"]), Type::I32),
