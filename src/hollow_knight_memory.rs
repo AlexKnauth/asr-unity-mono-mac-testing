@@ -172,12 +172,12 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ("PlayerData killsCrystalFlyer", ("GameManager", 0, &["_instance", "playerData", "killsCrystalFlyer"]), Type::I32),
     // Crystallised Husk
     ("PlayerData killsBeamMiner", ("GameManager", 0, &["_instance", "playerData", "killsBeamMiner"]), Type::I32),
-    // Shardmite
-    ("PlayerData killsMinesCrawler", ("GameManager", 0, &["_instance", "playerData", "killsMinesCrawler"]), Type::I32),
-    // Husk Miner
-    ("PlayerData killsZombieMiner", ("GameManager", 0, &["_instance", "playerData", "killsZombieMiner"]), Type::I32),
     // Glimback
     ("PlayerData killsCrystalCrawler", ("GameManager", 0, &["_instance", "playerData", "killsCrystalCrawler"]), Type::I32),
+    // Husk Miner
+    ("PlayerData killsZombieMiner", ("GameManager", 0, &["_instance", "playerData", "killsZombieMiner"]), Type::I32),
+    // Shardmite
+    ("PlayerData killsMinesCrawler", ("GameManager", 0, &["_instance", "playerData", "killsMinesCrawler"]), Type::I32),
 
     /* Notes:
     outside:
