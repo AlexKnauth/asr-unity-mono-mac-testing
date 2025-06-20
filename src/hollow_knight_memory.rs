@@ -164,6 +164,14 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ("PlayerData killedHiveKnight", ("GameManager", 0, &["_instance", "playerData", "killedHiveKnight"]), Type::Bool),
     ("PlayerData killedTraitorLord", ("GameManager", 0, &["_instance", "playerData", "killedTraitorLord"]), Type::Bool),
 
+    ("PlayerData killsLaserBug", ("GameManager", 0, &["_instance", "playerData", "killsLaserBug"]), Type::I32),
+    ("PlayerData killsMegaBeamMiner", ("GameManager", 0, &["_instance", "playerData", "killsMegaBeamMiner"]), Type::I32),
+    ("PlayerData killsCrystalFlyer", ("GameManager", 0, &["_instance", "playerData", "killsCrystalFlyer"]), Type::I32),
+    ("PlayerData killsBeamMiner", ("GameManager", 0, &["_instance", "playerData", "killsBeamMiner"]), Type::I32),
+    ("PlayerData killsMinesCrawler", ("GameManager", 0, &["_instance", "playerData", "killsMinesCrawler"]), Type::I32),
+    ("PlayerData killsZombieMiner", ("GameManager", 0, &["_instance", "playerData", "killsZombieMiner"]), Type::I32),
+    ("PlayerData killsCrystalCrawler", ("GameManager", 0, &["_instance", "playerData", "killsCrystalCrawler"]), Type::I32),
+
     /* Notes:
     outside:
       killsSpitter is used for normal Aspids outside of Colo
