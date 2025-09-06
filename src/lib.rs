@@ -5,8 +5,7 @@ use asr::{
     Process,
     game_engine::unity::{
         mono::Module,
-        SceneManager,
-        get_scene_name
+        scene_manager::{self, SceneManager},
     },
     string::ArrayCString
 };
@@ -114,5 +113,5 @@ async fn main() {
 }
 
 pub fn scene_path_to_name_string<const N: usize>(scene_path: ArrayCString<N>) -> Option<String> {
-    String::from_utf8(get_scene_name(&scene_path).to_vec()).ok()
+    String::from_utf8(scene_manager::get_name(&scene_path).to_vec()).ok()
 }
