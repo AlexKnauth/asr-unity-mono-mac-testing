@@ -16,12 +16,14 @@ asr::async_main!(stable);
 
 // --------------------------------------------------------
 
-const HOLLOW_KNIGHT_NAMES: [&str; 5] = [
+const HOLLOW_KNIGHT_NAMES: [&str; 7] = [
     "hollow_knight.exe", // Windows
     "hollow_knight.x86_64", // Linux full executable name, just in case anything uses the non-truncated version
     "hollow_knight.x", // Linux process name truncated to 15 characters
     "Hollow Knight", // Mac
     "hollow_knight", // Mac
+    "Hollow Knight Silksong.exe", // Windows
+    "Hollow Knight Silksong",     // Mac, Linux
 ];
 
 const INIT_MAX_DIRTYNESS: usize = 0x10;
