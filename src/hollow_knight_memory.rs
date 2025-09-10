@@ -1,9 +1,9 @@
 use std::cmp::min;
 use std::collections::BTreeMap;
 
+use asr::game_engine::unity::mono::{Image, Module, UnityPointer};
 use asr::string::ArrayWString;
 use asr::{Address64, PointerSize, Process};
-use asr::game_engine::unity::mono::{Image, Module, UnityPointer};
 use serde::{Deserialize, Serialize};
 use serde_json::value::Value as JsonValue;
 use serde_json::Number;
@@ -47,13 +47,33 @@ enum Type {
 }
 
 impl Type {
-    fn read_unity_pointer_json<const N: usize>(&self, process: &Process, module: &Module, image: &Image, pointer: &UnityPointer<N>) -> Option<JsonValue> {
+    fn read_unity_pointer_json<const N: usize>(
+        &self,
+        process: &Process,
+        module: &Module,
+        image: &Image,
+        pointer: &UnityPointer<N>,
+    ) -> Option<JsonValue> {
         match self {
-            Type::Bool => Some(JsonValue::Bool(pointer.deref::<bool>(process, module, image).ok()?)),
-            Type::I32 => Some(JsonValue::Number(Number::from(pointer.deref::<i32>(process, module, image).ok()?))),
-            Type::String => Some(JsonValue::String(read_string_object::<CSTR>(process, pointer.deref(process, module, image).ok()?)?)),
-            Type::Vector3 => serde_json::to_value(pointer.deref::<Vector3>(process, module, image).ok()?).ok(),
-            Type::BossSequenceDoorCompletion => serde_json::to_value(pointer.deref::<BossSequenceDoorCompletion>(process, module, image).ok()?).ok(),
+            Type::Bool => Some(JsonValue::Bool(
+                pointer.deref::<bool>(process, module, image).ok()?,
+            )),
+            Type::I32 => Some(JsonValue::Number(Number::from(
+                pointer.deref::<i32>(process, module, image).ok()?,
+            ))),
+            Type::String => Some(JsonValue::String(read_string_object::<CSTR>(
+                process,
+                pointer.deref(process, module, image).ok()?,
+            )?)),
+            Type::Vector3 => {
+                serde_json::to_value(pointer.deref::<Vector3>(process, module, image).ok()?).ok()
+            }
+            Type::BossSequenceDoorCompletion => serde_json::to_value(
+                pointer
+                    .deref::<BossSequenceDoorCompletion>(process, module, image)
+                    .ok()?,
+            )
+            .ok(),
         }
     }
 }
@@ -63,56 +83,301 @@ impl Type {
 const POINTER_DEPTH: usize = 4;
 
 static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
-    ("PlayerData version", ("GameManager", 0, &["_instance", "playerData", "version"]), Type::String),
-
-    ("GameManager sceneName", ("GameManager", 0, &["_instance", "sceneName"]), Type::String),
-    ("GameManager nextSceneName", ("GameManager", 0, &["_instance", "nextSceneName"]), Type::String),
-    ("GameManager entryGateName", ("GameManager", 0, &["_instance", "entryGateName"]), Type::String),
-    
-    ("GameManager GameState", ("GameManager", 0, &["_instance", "<GameState>k__BackingField"]), Type::I32),
-    
-    ("GameManager uiState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "uiState"]), Type::I32),
+    (
+        "PlayerData version",
+        ("GameManager", 0, &["_instance", "playerData", "version"]),
+        Type::String,
+    ),
+    (
+        "GameManager sceneName",
+        ("GameManager", 0, &["_instance", "sceneName"]),
+        Type::String,
+    ),
+    (
+        "GameManager nextSceneName",
+        ("GameManager", 0, &["_instance", "nextSceneName"]),
+        Type::String,
+    ),
+    (
+        "GameManager entryGateName",
+        ("GameManager", 0, &["_instance", "entryGateName"]),
+        Type::String,
+    ),
+    (
+        "GameManager GameState",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<GameState>k__BackingField"],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager uiState vanilla",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "uiState"],
+        ),
+        Type::I32,
+    ),
     // ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
-    ("GameManager menuState vanilla", ("GameManager", 0, &["_instance", "<ui>k__BackingField", "menuState"]), Type::I32),
+    (
+        "GameManager menuState vanilla",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "menuState"],
+        ),
+        Type::I32,
+    ),
     // ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
     // ("GameManager camera target destination", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "camTarget", "destination"]), Type::Vector3),
-    ("GameManager acceptingInput", ("GameManager", 0, &["_instance", "<inputHandler>k__BackingField", "acceptingInput"]), Type::Bool),
-
-    ("GameManager focusing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "focusing"]), Type::Bool),
-    ("hero_ctrl hazardRespawning", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardRespawning"]), Type::Bool),
-    ("hero_ctrl hazardDeath", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "hazardDeath"]), Type::Bool),
-    ("hero_ctrl recoilFrozen", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "recoilFrozen"]), Type::Bool),
-    ("hero_ctrl recoiling", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "recoiling"]), Type::Bool),
+    (
+        "GameManager acceptingInput",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<inputHandler>k__BackingField",
+                "acceptingInput",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "GameManager focusing",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "focusing",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl hazardRespawning",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "hazardRespawning",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl hazardDeath",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "hazardDeath",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl recoilFrozen",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "recoilFrozen",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl recoiling",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "recoiling",
+            ],
+        ),
+        Type::Bool,
+    ),
     // recoilingRight
     // recoilingLeft
-    ("hero_ctrl dead", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"]), Type::Bool),
-    ("hero_ctrl transitionState", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "transitionState"]), Type::I32),
-    ("hero_ctrl inv pulsing", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "invPulse", "pulsing"]), Type::Bool),
+    (
+        "hero_ctrl dead",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl transitionState",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<hero_ctrl>k__BackingField", "transitionState"],
+        ),
+        Type::I32,
+    ),
+    (
+        "hero_ctrl inv pulsing",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "invPulse",
+                "pulsing",
+            ],
+        ),
+        Type::Bool,
+    ),
     // isInvincible
     // invinciTest
     // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
-    ("PlayerData currentInvPane", ("GameManager", 0, &["_instance", "playerData", "currentInvPane"]), Type::I32),
-
-    ("PlayerData hasDash", ("GameManager", 0, &["_instance", "playerData", "hasDash"]), Type::Bool),
-    ("PlayerData hasWalljump", ("GameManager", 0, &["_instance", "playerData", "hasWalljump"]), Type::Bool),
-    ("PlayerData hasDoubleJump", ("GameManager", 0, &["_instance", "playerData", "hasDoubleJump"]), Type::Bool),
-
-    ("PlayerData maxHealthBase", ("GameManager", 0, &["_instance", "playerData", "maxHealthBase"]), Type::I32),
-    ("PlayerData maxHealth", ("GameManager", 0, &["_instance", "playerData", "maxHealth"]), Type::I32),
-    ("PlayerData health", ("GameManager", 0, &["_instance", "playerData", "health"]), Type::I32),
-    ("PlayerData healthBlue", ("GameManager", 0, &["_instance", "playerData", "healthBlue"]), Type::I32),
-    ("PlayerData joniHealthBlue", ("GameManager", 0, &["_instance", "playerData", "joniHealthBlue"]), Type::I32),
-    ("PlayerData damagedBlue", ("GameManager", 0, &["_instance", "playerData", "damagedBlue"]), Type::I32),
-    ("PlayerData prevHealth", ("GameManager", 0, &["_instance", "playerData", "prevHealth"]), Type::I32),
-    ("PlayerData heartPieces", ("GameManager", 0, &["_instance", "playerData", "heartPieces"]), Type::I32),
-
-    ("PlayerData MPCharge", ("GameManager", 0, &["_instance", "playerData", "MPCharge"]), Type::I32),
-
-    ("PlayerData geo", ("GameManager", 0, &["_instance", "playerData", "geo"]), Type::I32),
-
-    ("PlayerData bossReturnEntryGate", ("GameManager", 0, &["_instance", "playerData", "bossReturnEntryGate"]), Type::String),
-    ("PlayerData bossStatueTargetLevel", ("GameManager", 0, &["_instance", "playerData", "bossStatueTargetLevel"]), Type::I32),
-    ("PlayerData currentBossStatueCompletionKey", ("GameManager", 0, &["_instance", "playerData", "currentBossStatueCompletionKey"]), Type::String),
+    (
+        "PlayerData currentInvPane",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "currentInvPane"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData hasDash",
+        ("GameManager", 0, &["_instance", "playerData", "hasDash"]),
+        Type::Bool,
+    ),
+    (
+        "PlayerData hasWalljump",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasWalljump"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData hasDoubleJump",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasDoubleJump"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData maxHealthBase",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "maxHealthBase"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData maxHealth",
+        ("GameManager", 0, &["_instance", "playerData", "maxHealth"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData health",
+        ("GameManager", 0, &["_instance", "playerData", "health"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData healthBlue",
+        ("GameManager", 0, &["_instance", "playerData", "healthBlue"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData joniHealthBlue",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "joniHealthBlue"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData damagedBlue",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "damagedBlue"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData prevHealth",
+        ("GameManager", 0, &["_instance", "playerData", "prevHealth"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData heartPieces",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "heartPieces"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData MPCharge",
+        ("GameManager", 0, &["_instance", "playerData", "MPCharge"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData geo",
+        ("GameManager", 0, &["_instance", "playerData", "geo"]),
+        Type::I32,
+    ),
+    (
+        "PlayerData bossReturnEntryGate",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "bossReturnEntryGate"],
+        ),
+        Type::String,
+    ),
+    (
+        "PlayerData bossStatueTargetLevel",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "bossStatueTargetLevel"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData currentBossStatueCompletionKey",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "currentBossStatueCompletionKey"],
+        ),
+        Type::String,
+    ),
 ];
 
 pub struct HollowKnightInfo {
@@ -124,16 +389,19 @@ impl HollowKnightInfo {
     pub fn new() -> Self {
         Self {
             map_json: BTreeMap::new(),
-            pointers: HOLLOW_KNIGHT_POINTERS.into_iter().map(|(k, (c, n, f), t)| {
-                (*k, UnityPointer::new(*c, *n, *f), t.clone())
-            }).collect()
+            pointers: HOLLOW_KNIGHT_POINTERS
+                .into_iter()
+                .map(|(k, (c, n, f), t)| (*k, UnityPointer::new(*c, *n, *f), t.clone()))
+                .collect(),
         }
     }
     pub fn print_changes(&mut self, process: &Process, module: &Module, image: &Image) -> bool {
         let mut changed = false;
         for (k, p, t) in self.pointers.iter() {
             let prev = self.map_json.get(k).unwrap_or(&JsonValue::Null);
-            let curr = t.read_unity_pointer_json(process, module, image, p).unwrap_or_default();
+            let curr = t
+                .read_unity_pointer_json(process, module, image, p)
+                .unwrap_or_default();
             if prev != &curr {
                 asr::print_message(&format!("{}: {}", k, curr));
                 self.map_json.insert(k, curr);
@@ -155,9 +423,17 @@ pub fn read_string_object<const N: usize>(process: &Process, a: Address64) -> Op
     // class "System.String" field "m_firstChar"
     const STRING_CONTENTS_OFFSET: u64 = 0x14;
 
-    let n: u32 = process.read_pointer_path(a, PointerSize::Bit64, &[STRING_LEN_OFFSET]).ok()?;
-    if !(n < 2048) { return None; }
-    let w: ArrayWString<N> = process.read_pointer_path(a, PointerSize::Bit64, &[STRING_CONTENTS_OFFSET]).ok()?;
-    if !(w.len() == min(n as usize, N)) { return None; }
+    let n: u32 = process
+        .read_pointer_path(a, PointerSize::Bit64, &[STRING_LEN_OFFSET])
+        .ok()?;
+    if !(n < 2048) {
+        return None;
+    }
+    let w: ArrayWString<N> = process
+        .read_pointer_path(a, PointerSize::Bit64, &[STRING_CONTENTS_OFFSET])
+        .ok()?;
+    if !(w.len() == min(n as usize, N)) {
+        return None;
+    }
     String::from_utf16(&w.to_vec()).ok()
 }
