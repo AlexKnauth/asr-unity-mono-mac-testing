@@ -37,11 +37,11 @@ pub struct BossSequenceDoorCompletion {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[allow(dead_code)]
 enum Type {
     Bool,
     I32,
     String,
-    #[allow(dead_code)]
     Vector3,
     BossSequenceDoorCompletion,
 }
@@ -263,8 +263,31 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::I32,
     ),
     (
+        "PlayerData hasSilkSpecial",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasSilkSpecial"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData hasNeedleThrow",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasNeedleThrow"],
+        ),
+        Type::Bool,
+    ),
+    (
         "PlayerData hasDash",
         ("GameManager", 0, &["_instance", "playerData", "hasDash"]),
+        Type::Bool,
+    ),
+    (
+        "PlayerData hasBrolly",
+        ("GameManager", 0, &["_instance", "playerData", "hasBrolly"]),
         Type::Bool,
     ),
     (
@@ -377,6 +400,51 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
             &["_instance", "playerData", "currentBossStatueCompletionKey"],
         ),
         Type::String,
+    ),
+    (
+        "PlayerData defeatedMossMother",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "defeatedMossMother"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData defeatedBellBeast",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "defeatedBellBeast"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData defeatedBellBeast",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "defeatedBellBeast"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData defeatedLace1",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "defeatedLace1"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData defeatedSongGolem",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "defeatedSongGolem"],
+        ),
+        Type::Bool,
     ),
 ];
 
