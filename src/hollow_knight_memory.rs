@@ -254,6 +254,56 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     // invinciTest
     // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
     (
+        "GameManager IsInSceneTransition",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<IsInSceneTransition>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "GameManager isLoading",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "isLoading",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "SceneLoad IsFinished",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<IsFinished>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "SceneLoad WaitForFade",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<WaitForFade>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
         "PlayerData currentInvPane",
         (
             "GameManager",
