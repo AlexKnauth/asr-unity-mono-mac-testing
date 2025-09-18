@@ -278,6 +278,58 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::Bool,
     ),
     (
+        "SceneLoad IsFetchAllowed",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<IsFetchAllowed>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "SceneLoad IsActivationAllowed",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<IsActivationAllowed>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "SceneLoad IsUnloadAssetsRequired",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<IsUnloadAssetsRequired>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "SceneLoad IsGarbageCollectRequired",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "sceneLoad",
+                "<IsGarbageCollectRequired>k__BackingField",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
         "SceneLoad IsFinished",
         (
             "GameManager",
