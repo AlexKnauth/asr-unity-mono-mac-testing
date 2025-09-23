@@ -356,6 +356,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::Bool,
     ),
     (
+        "PlayerData disablePause",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "disablePause"],
+        ),
+        Type::Bool,
+    ),
+    (
         "PlayerData currentInvPane",
         (
             "GameManager",
