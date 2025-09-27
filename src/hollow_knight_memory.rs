@@ -1,9 +1,11 @@
 use std::cmp::min;
 use std::collections::BTreeMap;
+use std::iter::FusedIterator;
+use std::sync::LazyLock;
 
 use asr::game_engine::unity::mono::{Image, Module, UnityPointer};
 use asr::string::ArrayWString;
-use asr::{Address64, PointerSize, Process};
+use asr::{Address, Address64, PointerSize, Process};
 use serde::{Deserialize, Serialize};
 use serde_json::value::Value as JsonValue;
 use serde_json::Number;
@@ -44,6 +46,7 @@ enum Type {
     String,
     Vector3,
     BossSequenceDoorCompletion,
+    Arrayof(Box<Type>),
 }
 
 impl Type {
@@ -54,26 +57,28 @@ impl Type {
         image: &Image,
         pointer: &UnityPointer<N>,
     ) -> Option<JsonValue> {
+        self.read_json(process, pointer.deref_offsets(process, module, image).ok()?)
+    }
+
+    fn read_json(&self, process: &Process, address: Address) -> Option<JsonValue> {
         match self {
-            Type::Bool => Some(JsonValue::Bool(
-                pointer.deref::<bool>(process, module, image).ok()?,
-            )),
+            Type::Bool => Some(JsonValue::Bool(process.read(address).ok()?)),
             Type::I32 => Some(JsonValue::Number(Number::from(
-                pointer.deref::<i32>(process, module, image).ok()?,
+                process.read::<i32>(address).ok()?,
             ))),
             Type::String => Some(JsonValue::String(read_string_object::<CSTR>(
                 process,
-                pointer.deref(process, module, image).ok()?,
+                process.read(address).ok()?,
             )?)),
-            Type::Vector3 => {
-                serde_json::to_value(pointer.deref::<Vector3>(process, module, image).ok()?).ok()
+            Type::Vector3 => serde_json::to_value(process.read::<Vector3>(address).ok()?).ok(),
+            Type::BossSequenceDoorCompletion => {
+                serde_json::to_value(process.read::<BossSequenceDoorCompletion>(address).ok()?).ok()
             }
-            Type::BossSequenceDoorCompletion => serde_json::to_value(
-                pointer
-                    .deref::<BossSequenceDoorCompletion>(process, module, image)
-                    .ok()?,
-            )
-            .ok(),
+            Type::Arrayof(t) => Some(JsonValue::Array(
+                array_object_iter(process, process.read(address).ok()?)?
+                    .map(|a| t.read_json(process, a.into()).unwrap_or_default())
+                    .collect(),
+            )),
         }
     }
 }
@@ -82,482 +87,499 @@ impl Type {
 
 const POINTER_DEPTH: usize = 4;
 
-static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
-    (
-        "PlayerData version",
-        ("GameManager", 0, &["_instance", "playerData", "version"]),
-        Type::String,
-    ),
-    (
-        "GameManager sceneName",
-        ("GameManager", 0, &["_instance", "sceneName"]),
-        Type::String,
-    ),
-    (
-        "GameManager nextSceneName",
-        ("GameManager", 0, &["_instance", "nextSceneName"]),
-        Type::String,
-    ),
-    (
-        "GameManager entryGateName",
-        ("GameManager", 0, &["_instance", "entryGateName"]),
-        Type::String,
-    ),
-    (
-        "GameManager GameState",
-        (
-            "GameManager",
-            0,
-            &["_instance", "<GameState>k__BackingField"],
-        ),
-        Type::I32,
-    ),
-    (
-        "GameManager uiState vanilla",
-        (
-            "GameManager",
-            0,
-            &["_instance", "<ui>k__BackingField", "uiState"],
-        ),
-        Type::I32,
-    ),
-    // ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
-    (
-        "GameManager menuState vanilla",
-        (
-            "GameManager",
-            0,
-            &["_instance", "<ui>k__BackingField", "menuState"],
-        ),
-        Type::I32,
-    ),
-    // ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
-    // ("GameManager camera target destination", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "camTarget", "destination"]), Type::Vector3),
-    (
-        "GameManager acceptingInput",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<inputHandler>k__BackingField",
-                "acceptingInput",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "GameManager focusing",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "cState",
-                "focusing",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "hero_ctrl hazardRespawning",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "cState",
-                "hazardRespawning",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "hero_ctrl hazardDeath",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "cState",
-                "hazardDeath",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "hero_ctrl recoilFrozen",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "cState",
-                "recoilFrozen",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "hero_ctrl recoiling",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "cState",
-                "recoiling",
-            ],
-        ),
-        Type::Bool,
-    ),
-    // recoilingRight
-    // recoilingLeft
-    (
-        "hero_ctrl dead",
-        (
-            "GameManager",
-            0,
-            &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "hero_ctrl transitionState",
-        (
-            "GameManager",
-            0,
-            &["_instance", "<hero_ctrl>k__BackingField", "transitionState"],
-        ),
-        Type::I32,
-    ),
-    (
-        "hero_ctrl inv pulsing",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "invPulse",
-                "pulsing",
-            ],
-        ),
-        Type::Bool,
-    ),
-    // isInvincible
-    // invinciTest
-    // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
-    (
-        "GameManager IsInSceneTransition",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<IsInSceneTransition>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "GameManager isLoading",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "isLoading",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad IsFetchAllowed",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsFetchAllowed>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad IsActivationAllowed",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsActivationAllowed>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad IsUnloadAssetsRequired",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsUnloadAssetsRequired>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad IsGarbageCollectRequired",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsGarbageCollectRequired>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad IsFinished",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsFinished>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "SceneLoad WaitForFade",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<WaitForFade>k__BackingField",
-            ],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData disablePause",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "disablePause"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData currentInvPane",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "currentInvPane"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData hasSilkSpecial",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "hasSilkSpecial"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData hasNeedleThrow",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "hasNeedleThrow"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData hasDash",
-        ("GameManager", 0, &["_instance", "playerData", "hasDash"]),
-        Type::Bool,
-    ),
-    (
-        "PlayerData hasBrolly",
-        ("GameManager", 0, &["_instance", "playerData", "hasBrolly"]),
-        Type::Bool,
-    ),
-    (
-        "PlayerData hasWalljump",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "hasWalljump"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData hasDoubleJump",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "hasDoubleJump"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData maxHealthBase",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "maxHealthBase"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData maxHealth",
-        ("GameManager", 0, &["_instance", "playerData", "maxHealth"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData health",
-        ("GameManager", 0, &["_instance", "playerData", "health"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData healthBlue",
-        ("GameManager", 0, &["_instance", "playerData", "healthBlue"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData joniHealthBlue",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "joniHealthBlue"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData damagedBlue",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "damagedBlue"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData prevHealth",
-        ("GameManager", 0, &["_instance", "playerData", "prevHealth"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData heartPieces",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "heartPieces"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData MPCharge",
-        ("GameManager", 0, &["_instance", "playerData", "MPCharge"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData geo",
-        ("GameManager", 0, &["_instance", "playerData", "geo"]),
-        Type::I32,
-    ),
-    (
-        "PlayerData bossReturnEntryGate",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "bossReturnEntryGate"],
-        ),
-        Type::String,
-    ),
-    (
-        "PlayerData bossStatueTargetLevel",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "bossStatueTargetLevel"],
-        ),
-        Type::I32,
-    ),
-    (
-        "PlayerData currentBossStatueCompletionKey",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "currentBossStatueCompletionKey"],
-        ),
-        Type::String,
-    ),
-    (
-        "PlayerData defeatedMossMother",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "defeatedMossMother"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData defeatedBellBeast",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "defeatedBellBeast"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData defeatedBellBeast",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "defeatedBellBeast"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData defeatedLace1",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "defeatedLace1"],
-        ),
-        Type::Bool,
-    ),
-    (
-        "PlayerData defeatedSongGolem",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "defeatedSongGolem"],
-        ),
-        Type::Bool,
-    ),
-];
+static HOLLOW_KNIGHT_POINTERS: LazyLock<Vec<(&str, (&str, usize, &[&str]), Type)>> =
+    LazyLock::new(|| {
+        vec![
+            (
+                "PlayerData version",
+                ("GameManager", 0, &["_instance", "playerData", "version"]),
+                Type::String,
+            ),
+            (
+                "GameManager sceneName",
+                ("GameManager", 0, &["_instance", "sceneName"]),
+                Type::String,
+            ),
+            (
+                "GameManager nextSceneName",
+                ("GameManager", 0, &["_instance", "nextSceneName"]),
+                Type::String,
+            ),
+            (
+                "GameManager entryGateName",
+                ("GameManager", 0, &["_instance", "entryGateName"]),
+                Type::String,
+            ),
+            (
+                "GameManager GameState",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<GameState>k__BackingField"],
+                ),
+                Type::I32,
+            ),
+            (
+                "GameManager uiState vanilla",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<ui>k__BackingField", "uiState"],
+                ),
+                Type::I32,
+            ),
+            // ("GameManager uiState modded", ("GameManager", 0, &["_instance", "_uiInstance", "uiState"]), Type::I32),
+            (
+                "GameManager menuState vanilla",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<ui>k__BackingField", "menuState"],
+                ),
+                Type::I32,
+            ),
+            // ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
+            // ("GameManager camera target destination", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "camTarget", "destination"]), Type::Vector3),
+            (
+                "GameManager acceptingInput",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<inputHandler>k__BackingField",
+                        "acceptingInput",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "GameManager focusing",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "cState",
+                        "focusing",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "hero_ctrl hazardRespawning",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "cState",
+                        "hazardRespawning",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "hero_ctrl hazardDeath",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "cState",
+                        "hazardDeath",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "hero_ctrl recoilFrozen",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "cState",
+                        "recoilFrozen",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "hero_ctrl recoiling",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "cState",
+                        "recoiling",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            // recoilingRight
+            // recoilingLeft
+            (
+                "hero_ctrl dead",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<hero_ctrl>k__BackingField", "cState", "dead"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "hero_ctrl transitionState",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<hero_ctrl>k__BackingField", "transitionState"],
+                ),
+                Type::I32,
+            ),
+            (
+                "hero_ctrl inv pulsing",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "<hero_ctrl>k__BackingField",
+                        "invPulse",
+                        "pulsing",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            // isInvincible
+            // invinciTest
+            // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
+            (
+                "GameManager IsInSceneTransition",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "<IsInSceneTransition>k__BackingField"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "GameManager isLoading",
+                ("GameManager", 0, &["_instance", "isLoading"]),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad IsFetchAllowed",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "sceneLoad", "<IsFetchAllowed>k__BackingField"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad IsActivationAllowed",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "sceneLoad",
+                        "<IsActivationAllowed>k__BackingField",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad IsUnloadAssetsRequired",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "sceneLoad",
+                        "<IsUnloadAssetsRequired>k__BackingField",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad IsGarbageCollectRequired",
+                (
+                    "GameManager",
+                    0,
+                    &[
+                        "_instance",
+                        "sceneLoad",
+                        "<IsGarbageCollectRequired>k__BackingField",
+                    ],
+                ),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad IsFinished",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "sceneLoad", "<IsFinished>k__BackingField"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "SceneLoad WaitForFade",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "sceneLoad", "<WaitForFade>k__BackingField"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData disablePause",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "disablePause"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData currentInvPane",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "currentInvPane"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData hasSilkSpecial",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "hasSilkSpecial"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData hasNeedleThrow",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "hasNeedleThrow"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData hasDash",
+                ("GameManager", 0, &["_instance", "playerData", "hasDash"]),
+                Type::Bool,
+            ),
+            (
+                "PlayerData hasBrolly",
+                ("GameManager", 0, &["_instance", "playerData", "hasBrolly"]),
+                Type::Bool,
+            ),
+            (
+                "PlayerData hasWalljump",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "hasWalljump"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData hasDoubleJump",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "hasDoubleJump"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData maxHealthBase",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "maxHealthBase"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData maxHealth",
+                ("GameManager", 0, &["_instance", "playerData", "maxHealth"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData health",
+                ("GameManager", 0, &["_instance", "playerData", "health"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData healthBlue",
+                ("GameManager", 0, &["_instance", "playerData", "healthBlue"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData joniHealthBlue",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "joniHealthBlue"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData damagedBlue",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "damagedBlue"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData prevHealth",
+                ("GameManager", 0, &["_instance", "playerData", "prevHealth"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData heartPieces",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "heartPieces"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData MPCharge",
+                ("GameManager", 0, &["_instance", "playerData", "MPCharge"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData geo",
+                ("GameManager", 0, &["_instance", "playerData", "geo"]),
+                Type::I32,
+            ),
+            (
+                "PlayerData bossReturnEntryGate",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "bossReturnEntryGate"],
+                ),
+                Type::String,
+            ),
+            (
+                "PlayerData bossStatueTargetLevel",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "bossStatueTargetLevel"],
+                ),
+                Type::I32,
+            ),
+            (
+                "PlayerData currentBossStatueCompletionKey",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "currentBossStatueCompletionKey"],
+                ),
+                Type::String,
+            ),
+            (
+                "PlayerData defeatedMossMother",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "defeatedMossMother"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData defeatedBellBeast",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "defeatedBellBeast"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData defeatedBellBeast",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "defeatedBellBeast"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData defeatedLace1",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "defeatedLace1"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData defeatedSongGolem",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "defeatedSongGolem"],
+                ),
+                Type::Bool,
+            ),
+            (
+                "PlayerData mossBerryValueList",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "mossBerryValueList"],
+                ),
+                Type::Arrayof(Box::new(Type::I32)),
+            ),
+            (
+                "PlayerData GrubFarmerMimicValueList",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "GrubFarmerMimicValueList"],
+                ),
+                Type::Arrayof(Box::new(Type::I32)),
+            ),
+            (
+                "PlayerData CrawbellCurrency",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "CrawbellCurrency"],
+                ),
+                Type::Arrayof(Box::new(Type::I32)),
+            ),
+            (
+                "PlayerData CrawbellCurrencyCaps",
+                (
+                    "GameManager",
+                    0,
+                    &["_instance", "playerData", "CrawbellCurrencyCaps"],
+                ),
+                Type::Arrayof(Box::new(Type::I32)),
+            ),
+        ]
+    });
 
 pub struct HollowKnightInfo {
     map_json: BTreeMap<&'static str, JsonValue>,
@@ -569,7 +591,7 @@ impl HollowKnightInfo {
         Self {
             map_json: BTreeMap::new(),
             pointers: HOLLOW_KNIGHT_POINTERS
-                .into_iter()
+                .iter()
                 .map(|(k, (c, n, f), t)| (*k, UnityPointer::new(*c, *n, *f), t.clone()))
                 .collect(),
         }
@@ -615,4 +637,35 @@ pub fn read_string_object<const N: usize>(process: &Process, a: Address64) -> Op
         return None;
     }
     String::from_utf16(&w.to_vec()).ok()
+}
+
+/*
+fn list_object_iter<'a>(
+    process: &'a Process,
+    a: Address64,
+) -> Option<impl FusedIterator<Item = Address64> + 'a> {
+    const LIST_ARRAY_OFFSET: u64 = 0x10;
+    const POINTER_SIZE: PointerSize = PointerSize::Bit64;
+    let array_ptr: Address64 = process.read(a + LIST_ARRAY_OFFSET).ok()?;
+    array_object_iter(process, array_ptr)
+}
+*/
+
+fn array_object_iter<'a>(
+    process: &'a Process,
+    a: Address64,
+) -> Option<impl FusedIterator<Item = Address64> + 'a> {
+    const ARRAY_LEN_OFFSET: u64 = 0x18;
+    const ARRAY_CONTENTS_OFFSET: u64 = 0x20;
+    const POINTER_SIZE: PointerSize = PointerSize::Bit64;
+    let vn: u32 = process.read(a + ARRAY_LEN_OFFSET).ok()?;
+
+    Some(
+        (0..(vn as u64))
+            .map(move |i| {
+                let item_offset = ARRAY_CONTENTS_OFFSET + (POINTER_SIZE as u64) * i;
+                a + item_offset
+            })
+            .fuse(),
+    )
 }
