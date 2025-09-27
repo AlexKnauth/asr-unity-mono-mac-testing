@@ -50,6 +50,13 @@ enum Type {
 }
 
 impl Type {
+    fn size(&self) -> u64 {
+        match self {
+            Type::I32 => 4,
+            _ => 8,
+        }
+    }
+
     fn read_unity_pointer_json<const N: usize>(
         &self,
         process: &Process,
@@ -75,7 +82,7 @@ impl Type {
                 serde_json::to_value(process.read::<BossSequenceDoorCompletion>(address).ok()?).ok()
             }
             Type::Arrayof(t) => Some(JsonValue::Array(
-                array_object_iter(process, process.read(address).ok()?)?
+                array_object_iter(process, process.read_pointer(address, PointerSize::Bit64).ok()?, t.size())?
                     .map(|a| t.read_json(process, a.into()).unwrap_or_default())
                     .collect(),
             )),
@@ -653,17 +660,17 @@ fn list_object_iter<'a>(
 
 fn array_object_iter<'a>(
     process: &'a Process,
-    a: Address64,
-) -> Option<impl FusedIterator<Item = Address64> + 'a> {
+    a: Address,
+    item_size: u64,
+) -> Option<impl FusedIterator<Item = Address> + 'a> {
     const ARRAY_LEN_OFFSET: u64 = 0x18;
     const ARRAY_CONTENTS_OFFSET: u64 = 0x20;
-    const POINTER_SIZE: PointerSize = PointerSize::Bit64;
     let vn: u32 = process.read(a + ARRAY_LEN_OFFSET).ok()?;
 
     Some(
         (0..(vn as u64))
             .map(move |i| {
-                let item_offset = ARRAY_CONTENTS_OFFSET + (POINTER_SIZE as u64) * i;
+                let item_offset = ARRAY_CONTENTS_OFFSET + item_size * i;
                 a + item_offset
             })
             .fuse(),
