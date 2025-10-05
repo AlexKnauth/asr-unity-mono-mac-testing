@@ -41,6 +41,7 @@ pub struct BossSequenceDoorCompletion {
 enum Type {
     Bool,
     I32,
+    F32,
     String,
     Vector3,
     BossSequenceDoorCompletion,
@@ -61,6 +62,9 @@ impl Type {
             Type::I32 => Some(JsonValue::Number(Number::from(
                 pointer.deref::<i32>(process, module, image).ok()?,
             ))),
+            Type::F32 => Some(JsonValue::Number(Number::from_f64(
+                pointer.deref::<f32>(process, module, image).ok()?.into(),
+            )?)),
             Type::String => Some(JsonValue::String(read_string_object::<CSTR>(
                 process,
                 pointer.deref(process, module, image).ok()?,
@@ -534,6 +538,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
             &["_instance", "playerData", "defeatedSongGolem"],
         ),
         Type::Bool,
+    ),
+    (
+        "PlayerData completionPercentage",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "completionPercentage"],
+        ),
+        Type::F32,
     ),
 ];
 
