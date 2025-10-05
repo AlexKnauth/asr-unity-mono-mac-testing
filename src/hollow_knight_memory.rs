@@ -258,23 +258,13 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &[
-                "_instance",
-                "<IsInSceneTransition>k__BackingField",
-            ],
+            &["_instance", "<IsInSceneTransition>k__BackingField"],
         ),
         Type::Bool,
     ),
     (
         "GameManager isLoading",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "isLoading",
-            ],
-        ),
+        ("GameManager", 0, &["_instance", "isLoading"]),
         Type::Bool,
     ),
     (
@@ -282,11 +272,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsFetchAllowed>k__BackingField",
-            ],
+            &["_instance", "sceneLoad", "<IsFetchAllowed>k__BackingField"],
         ),
         Type::Bool,
     ),
@@ -334,11 +320,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<IsFinished>k__BackingField",
-            ],
+            &["_instance", "sceneLoad", "<IsFinished>k__BackingField"],
         ),
         Type::Bool,
     ),
@@ -347,11 +329,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &[
-                "_instance",
-                "sceneLoad",
-                "<WaitForFade>k__BackingField",
-            ],
+            &["_instance", "sceneLoad", "<WaitForFade>k__BackingField"],
         ),
         Type::Bool,
     ),
