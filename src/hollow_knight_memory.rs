@@ -272,6 +272,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::Bool,
     ),
     (
+        "GameManager sceneLoad",
+        (
+            "GameManager",
+            0,
+            &["_instance", "sceneLoad"],
+        ),
+        Type::I32,
+    ),
+    (
         "SceneLoad IsFetchAllowed",
         (
             "GameManager",
