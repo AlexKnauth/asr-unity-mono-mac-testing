@@ -728,6 +728,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::Bool,
     ),
     (
+        "PlayerData cloakOdour_slabFly",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "cloakOdour_slabFly"],
+        ),
+        Type::I32,
+    ),
+    (
         "PlayerData disablePause",
         (
             "GameManager",
