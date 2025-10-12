@@ -257,6 +257,391 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     // isInvincible
     // invinciTest
     // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
+    // hero_state 7 corresponds to either dashing/sprinting or being gooped...
+    // maybe other things... how to tell when it's being gooped specifically?
+    (
+        "hero_ctrl hero_state",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "hero_state",
+            ],
+        ),
+        Type::I32,
+    ),
+    /*
+    (
+        "hero_ctrl controlReqlinquished",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "controlReqlinquished",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl controlRelinquishedFrame",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "controlRelinquishedFrame",
+            ],
+        ),
+        Type::I32,
+    ),
+    */
+    (
+        "hero_ctrl quickeningTimeLeft",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "quickeningTimeLeft",
+            ],
+        ),
+        Type::I32,
+    ),
+    (
+        "hero_ctrl PoisonHealthCount",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "<PoisonHealthCount>k__BackingField",
+            ],
+        ),
+        Type::I32,
+    ),
+    // shuttleCock seems to have something to do with Sprint-jumps / Supers
+    /*
+    (
+        "hero_ctrl shuttleCock",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "shuttleCock",
+            ],
+        ),
+        Type::Bool,
+    ),
+    */
+    (
+        "hero_ctrl swimming",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "swimming",
+            ],
+        ),
+        Type::Bool,
+    ),
+    /*
+    (
+        "hero_ctrl attackCount",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "attackCount",
+            ],
+        ),
+        Type::I32,
+    ),
+    */
+    (
+        "hero_ctrl bouncing",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "bouncing",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl shroomBouncing",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "shroomBouncing",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl recoilingDrill",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "recoilingDrill",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl isFrostDeath",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "isFrostDeath",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl onConveyor",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "onConveyor",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl onConveyorV",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "onConveyorV",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl inConveyorZone",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "inConveyorZone",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl freezeCharge",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "freezeCharge",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl inAcid",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "inAcid",
+            ],
+        ),
+        Type::Bool,
+    ),
+    // mantling appears to be ledge-grabbing?
+    /*
+    (
+        "hero_ctrl mantling",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "mantling",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl mantleRecovery",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "mantleRecovery",
+            ],
+        ),
+        Type::Bool,
+    ),
+    */
+    (
+        "hero_ctrl isMaggoted",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "isMaggoted",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl inFrostRegion",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "inFrostRegion",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl isFrosted",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "isFrosted",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl isBinding",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "isBinding",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl isScrewDownAttacking",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "isScrewDownAttacking",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl evading",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "evading",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl whipLashing",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "whipLashing",
+            ],
+        ),
+        Type::Bool,
+    ),
+    (
+        "hero_ctrl fakeHurt",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<hero_ctrl>k__BackingField",
+                "cState",
+                "fakeHurt",
+            ],
+        ),
+        Type::Bool,
+    ),
     (
         "GameManager IsInSceneTransition",
         (
@@ -273,11 +658,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ),
     (
         "GameManager sceneLoad",
-        (
-            "GameManager",
-            0,
-            &["_instance", "sceneLoad"],
-        ),
+        ("GameManager", 0, &["_instance", "sceneLoad"]),
         Type::I32,
     ),
     (
