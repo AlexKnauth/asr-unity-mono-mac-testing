@@ -264,11 +264,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "hero_state",
-            ],
+            &["_instance", "<hero_ctrl>k__BackingField", "hero_state"],
         ),
         Type::I32,
     ),
@@ -755,6 +751,69 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::I32,
     ),
     (
+        "PlayerData respawnScene",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "respawnScene"],
+        ),
+        Type::String,
+    ),
+    (
+        "PlayerData respawnMarkerName",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "respawnMarkerName"],
+        ),
+        Type::String,
+    ),
+    (
+        "PlayerData respawnType",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "respawnType"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData nonLethalRespawnScene",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "nonLethalRespawnScene"],
+        ),
+        Type::String,
+    ),
+    (
+        "PlayerData nonLethalRespawnMarker",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "nonLethalRespawnMarker"],
+        ),
+        Type::String,
+    ),
+    (
+        "PlayerData nonLethalRespawnType",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "nonLethalRespawnType"],
+        ),
+        Type::I32,
+    ),
+    (
+        "PlayerData hasActivatedBellBench",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasActivatedBellBench"],
+        ),
+        Type::Bool,
+    ),
+    (
         "PlayerData hasSilkSpecial",
         (
             "GameManager",
@@ -935,6 +994,42 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
             "GameManager",
             0,
             &["_instance", "playerData", "defeatedSongGolem"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData spinnerDefeated",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "spinnerDefeated"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData HasSeenNeedolin",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "HasSeenNeedolin"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData hasNeedolin",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "hasNeedolin"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData bellShrineBellhart",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "bellShrineBellhart"],
         ),
         Type::Bool,
     ),
