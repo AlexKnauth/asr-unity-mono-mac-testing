@@ -259,6 +259,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
     // hero_state 7 corresponds to either dashing/sprinting or being gooped...
     // maybe other things... how to tell when it's being gooped specifically?
+    /*
     (
         "hero_ctrl hero_state",
         (
@@ -268,6 +269,7 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         ),
         Type::I32,
     ),
+    */
     /*
     (
         "hero_ctrl controlReqlinquished",
