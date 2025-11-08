@@ -84,7 +84,7 @@ impl Type {
 
 // --------------------------------------------------------
 
-const POINTER_DEPTH: usize = 4;
+const POINTER_DEPTH: usize = 5;
 
 static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     (
@@ -1029,6 +1029,27 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
             &["_instance", "playerData", "completionPercentage"],
         ),
         Type::F32,
+    ),
+    // 0x18 is the offset to RuntimeData,
+    // asr currently struggles to resolve it by name consistently
+    // because it's part of a base class or something
+    (
+        "PlayerData Tools version",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "Tools", "RuntimeData", "_version"],
+        ),
+        Type::I32
+    ),
+    (
+        "PlayerData Tools entries",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "Tools", "RuntimeData", "_entries"],
+        ),
+        Type::I32
     ),
 ];
 
