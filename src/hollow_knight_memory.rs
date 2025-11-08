@@ -886,15 +886,6 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::I32,
     ),
     (
-        "PlayerData joniHealthBlue",
-        (
-            "GameManager",
-            0,
-            &["_instance", "playerData", "joniHealthBlue"],
-        ),
-        Type::I32,
-    ),
-    (
         "PlayerData damagedBlue",
         (
             "GameManager",
@@ -915,11 +906,6 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
             0,
             &["_instance", "playerData", "heartPieces"],
         ),
-        Type::I32,
-    ),
-    (
-        "PlayerData MPCharge",
-        ("GameManager", 0, &["_instance", "playerData", "MPCharge"]),
         Type::I32,
     ),
     (
