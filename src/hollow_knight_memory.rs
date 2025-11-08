@@ -240,20 +240,6 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         ),
         Type::I32,
     ),
-    (
-        "hero_ctrl inv pulsing",
-        (
-            "GameManager",
-            0,
-            &[
-                "_instance",
-                "<hero_ctrl>k__BackingField",
-                "invPulse",
-                "pulsing",
-            ],
-        ),
-        Type::Bool,
-    ),
     // isInvincible
     // invinciTest
     // ("hero_ctrl hero_state", ("GameManager", 0, &["_instance", "<hero_ctrl>k__BackingField", "hero_state"]), Type::I32),
