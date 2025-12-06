@@ -1024,18 +1024,30 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         (
             "GameManager",
             0,
-            &["_instance", "playerData", "Tools", "RuntimeData", "_version"],
+            &[
+                "_instance",
+                "playerData",
+                "Tools",
+                "RuntimeData",
+                "_version",
+            ],
         ),
-        Type::I32
+        Type::I32,
     ),
     (
         "PlayerData Tools entries",
         (
             "GameManager",
             0,
-            &["_instance", "playerData", "Tools", "RuntimeData", "_entries"],
+            &[
+                "_instance",
+                "playerData",
+                "Tools",
+                "RuntimeData",
+                "_entries",
+            ],
         ),
-        Type::I32
+        Type::I32,
     ),
 ];
 
