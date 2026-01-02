@@ -1049,6 +1049,24 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         ),
         Type::I32,
     ),
+    (
+        "PlayerData CollectedDustCageKey",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "CollectedDustCageKey"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData MerchantEnclaveSimpleKey",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "MerchantEnclaveSimpleKey"],
+        ),
+        Type::Bool,
+    ),
 ];
 
 pub struct HollowKnightInfo {
