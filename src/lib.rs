@@ -67,6 +67,32 @@ async fn main() {
                 // TODO: Load some initial information from the process.
                 let mut scene_manager_scene_name: Option<String> = scene_manager.as_ref().and_then(|sm| sm.get_current_scene_path::<CSTR>(&process).ok()).and_then(scene_path_to_name_string);
                 let mut info = HollowKnightInfo::new();
+
+                // signatures around the static reference to the GameManager
+                next_tick().await;
+                let gmc = image.wait_get_class(&process, &module, "GameManager").await;
+                let gmst = gmc.wait_get_static_table(&process, &module).await;
+                let gmsi_offset = gmc.wait_get_field_offset(&process, &module, "_instance").await;
+                let gmsi_location = gmst + gmsi_offset;
+                let gmsi = gmc.wait_get_static_instance(&process, &module, "_instance").await;
+                next_tick().await;
+                asr::print_message(&format!("location: {}, instance: {}", gmsi_location, gmsi));
+                next_tick().await;
+                let bs_location: [u8; 32] = process.read(gmsi_location + -10).unwrap();
+                let bs_instance: [u8; 32] = process.read(gmsi + -10).unwrap();
+                asr::print_message(&format!("bs_location: {:02X?}", bs_location));
+                asr::print_message(&format!("bs_instance: {:02X?}", bs_instance));
+                next_tick().await;
+                /*
+location: 2727d332d08, instance: 2716404dc00
+bs_location: [00, 00, 90, FB, 99, 96, 73, 02, 00, 00, 00, DC, 04, 64, 71, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 80, D2, 02, 64, 71, 02]
+bs_instance: [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 90, 49, 7B, 62, 71, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, F0, AC, C4, 00, 73, 02]
+
+location: 2a1fc912d08, instance: 2a1c02fac00
+bs_location: [00, 00, 40, A1, 7F, 11, A4, 02, 00, 00, 00, AC, 2F, C0, A1, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 40, 52, 2A, C0, A1, 02]
+bs_instance: [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, B0, 82, 35, FF, A3, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 70, 12, C4, 80, A3, 02]
+                */
+
                 loop {
                     // TODO: Do something on every tick.
                     let mut changed = false;
