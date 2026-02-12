@@ -2,12 +2,13 @@ mod hollow_knight_memory;
 
 use asr::{
     future::{next_tick, retry},
-    Process,
     game_engine::unity::{
         mono::Module,
         scene_manager::{self, SceneManager},
     },
-    string::ArrayCString
+    signature::Signature,
+    string::ArrayCString,
+    Process,
 };
 use hollow_knight_memory::{HollowKnightInfo, CSTR};
 
@@ -108,6 +109,23 @@ also 1.5 Normal64:
   488BCE49BB????????????????41FFD3E9??000000488B1425
                                                     ^---------------
                 */
+                const SIG_15_1: Signature<32> = Signature::new(
+                    "41FFD3E96300000048B8????????????????488B10488BCE488D6424009049BB",
+                );
+                const SIG_15_2: Signature<25> =
+                    Signature::new("488BCE49BB????????????????41FFD3E9??000000488B1425");
+                for memory_range in process.memory_ranges() {
+                    if let Ok(range) = memory_range.range() {
+                        if let Some(a) = SIG_15_1.scan_process_range(&process, range) {
+                            asr::print_message(&format!("a: {}", a));
+                            break;
+                        }
+                        if let Some(b) = SIG_15_2.scan_process_range(&process, range) {
+                            asr::print_message(&format!("b: {}", b));
+                            break;
+                        }
+                    }
+                }
 
                 loop {
                     // TODO: Do something on every tick.
