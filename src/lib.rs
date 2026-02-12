@@ -156,6 +156,38 @@ async fn main() {
                 a: 22f08b0dca0
                 mab: Some(22ceb9f2d08)
                 */
+                let sig_location: Signature<8> = Signature::Simple(gmsi_location.value().to_le_bytes());
+                let mut location_areas: Vec<[u8; 47]> = Vec::new();
+                for memory_range in process.memory_ranges() {
+                    let Ok(range) = memory_range.range() else {
+                        continue;
+                    };
+                    for a in sig_location.scan_iter(&process, range) {
+                        let Ok(bs) = process.read(a + -25) else {
+                            continue;
+                        };
+                        location_areas.push(bs);
+                    }
+                }
+                asr::print_message(&format!("location_count: {}", location_areas.len()));
+                if location_areas.len() <= 32 {
+                    
+                    let mut s = String::new();
+                    s.push_str("\n");
+                    for location_area in location_areas {
+                        for b in &location_area[0..25] {
+                            s.push_str(&format!("{:02X?}", b));
+                        }
+                        for _ in &location_area[25..33] {
+                            s.push_str("??");
+                        }
+                        for b in &location_area[33..] {
+                            s.push_str(&format!("{:02X?}", b));
+                        }
+                        s.push_str("\n");
+                    }
+                    asr::print_message(&s);
+                }
 
                 loop {
                     // TODO: Do something on every tick.
