@@ -128,21 +128,38 @@ async fn main() {
                 );
                 const SIG_15_2: Signature<25> =
                     Signature::new("488BCE49BB????????????????41FFD3E9??000000488B1425");
+                let mut mab = None;
                 for memory_range in process.memory_ranges() {
-                    if let Ok(range) = memory_range.range() {
-                        if let Some(a) = SIG_15_1.scan_process_range(&process, range) {
-                            asr::print_message(&format!("a: {}", a));
+                    let Ok(range) = memory_range.range() else {
+                        continue;
+                    };
+                    if let Some(a) = SIG_15_1.scan_process_range(&process, range) {
+                        asr::print_message(&format!("a: {}", a));
+                        if let Ok(aa) = process.read_pointer(a + 10, asr::PointerSize::Bit64) {
+                            mab = Some(aa);
                             break;
                         }
-                        if let Some(b) = SIG_15_2.scan_process_range(&process, range) {
-                            asr::print_message(&format!("b: {}", b));
+                    }
+                    if let Some(b) = SIG_15_2.scan_process_range(&process, range) {
+                        asr::print_message(&format!("b: {}", b));
+                        if let Ok(bb) = process.read_pointer(b + 25, asr::PointerSize::Bit64) {
+                            mab = Some(bb);
                             break;
                         }
                     }
                 }
+                asr::print_message(&format!("mab: {:?}", mab));
+                /*
+                location: 22ceb9f2d08, instance: 22f0477ec00
+                bs_location: [00, 00, 00, 40, 24, 0A, 2F, 02, 00, 00, 00, EC, 77, 04, 2F, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, C0, FE, 89, 04, 2F, 02]
+                bs_instance: [00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 58, 0F, 3D, F0, 2E, 02, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 40, DE, C4, 70, 2E, 02]
+                a: 22f08b0dca0
+                mab: Some(22ceb9f2d08)
+                */
 
                 loop {
                     // TODO: Do something on every tick.
+                    /*
                     let mut changed = false;
                     let curr_timer_state = asr::timer::state();
                     if curr_timer_state != timer_state {
@@ -191,6 +208,7 @@ async fn main() {
                     if changed {
                         asr::print_message("  ---");
                     }
+                    */
                     next_tick().await;
                 }
             })
