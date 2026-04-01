@@ -136,6 +136,62 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::I32,
     ),
     // ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
+    (
+        "GameManager slotOne blackThreadImpactsLeft",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<ui>k__BackingField",
+                "slotOne",
+                "blackThreadImpactsLeft",
+            ],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager slotTwo blackThreadImpactsLeft",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<ui>k__BackingField",
+                "slotTwo",
+                "blackThreadImpactsLeft",
+            ],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager slotThree blackThreadImpactsLeft",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<ui>k__BackingField",
+                "slotThree",
+                "blackThreadImpactsLeft",
+            ],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager slotFour blackThreadImpactsLeft",
+        (
+            "GameManager",
+            0,
+            &[
+                "_instance",
+                "<ui>k__BackingField",
+                "slotFour",
+                "blackThreadImpactsLeft",
+            ],
+        ),
+        Type::I32,
+    ),
     // ("GameManager camera target destination", ("GameManager", 0, &["_instance", "<cameraCtrl>k__BackingField", "camTarget", "destination"]), Type::Vector3),
     (
         "GameManager acceptingInput",
