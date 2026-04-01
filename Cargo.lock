@@ -11,12 +11,11 @@ checksum = "7c02d123df017efcdfbd739ef81735b36c5ba83ec3c59c80a9d7ecc718f92e50"
 [[package]]
 name = "asr"
 version = "0.1.0"
-source = "git+https://github.com/LiveSplit/asr#8518eb11d517ad57a16506d356c3ae0f9b95a040"
+source = "git+https://github.com/AlexKnauth/asr?branch=arm64#acd7bc27c152c60771420017edd6f6f4d2fb8a63"
 dependencies = [
  "arrayvec",
  "asr-derive",
  "bytemuck",
- "memchr",
  "time",
  "wasi",
 ]
@@ -24,7 +23,7 @@ dependencies = [
 [[package]]
 name = "asr-derive"
 version = "0.1.0"
-source = "git+https://github.com/LiveSplit/asr#8518eb11d517ad57a16506d356c3ae0f9b95a040"
+source = "git+https://github.com/AlexKnauth/asr?branch=arm64#acd7bc27c152c60771420017edd6f6f4d2fb8a63"
 dependencies = [
  "heck",
  "proc-macro2",
