@@ -137,6 +137,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
     ),
     // ("GameManager menuState modded", ("GameManager", 0, &["_instance", "_uiInstance", "menuState"]), Type::I32),
     (
+        "GameManager slotOne State",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "slotOne", "State"],
+        ),
+        Type::I32,
+    ),
+    (
         "GameManager slotOne blackThreadImpactsLeft",
         (
             "GameManager",
@@ -147,6 +156,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
                 "slotOne",
                 "blackThreadImpactsLeft",
             ],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager slotTwo State",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "slotTwo", "State"],
         ),
         Type::I32,
     ),
@@ -165,6 +183,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         Type::I32,
     ),
     (
+        "GameManager slotThree State",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "slotThree", "State"],
+        ),
+        Type::I32,
+    ),
+    (
         "GameManager slotThree blackThreadImpactsLeft",
         (
             "GameManager",
@@ -175,6 +202,15 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
                 "slotThree",
                 "blackThreadImpactsLeft",
             ],
+        ),
+        Type::I32,
+    ),
+    (
+        "GameManager slotFour State",
+        (
+            "GameManager",
+            0,
+            &["_instance", "<ui>k__BackingField", "slotFour", "State"],
         ),
         Type::I32,
     ),
