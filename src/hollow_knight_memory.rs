@@ -1159,6 +1159,62 @@ static HOLLOW_KNIGHT_POINTERS: &[(&str, (&str, usize, &[&str]), Type)] = &[
         ),
         Type::Bool,
     ),
+    // region: Pinstress
+    (
+        "PlayerData pinstressStoppedResting",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "pinstressStoppedResting"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData pinstressInsideSitting",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "pinstressInsideSitting"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData pinstressQuestReady",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "pinstressQuestReady"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData PinstressPeakQuestOffered",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "PinstressPeakQuestOffered"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData PinstressPeakBattleOffered",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "PinstressPeakBattleOffered"],
+        ),
+        Type::Bool,
+    ),
+    (
+        "PlayerData PinstressPeakBattleAccepted",
+        (
+            "GameManager",
+            0,
+            &["_instance", "playerData", "PinstressPeakBattleAccepted"],
+        ),
+        Type::Bool,
+    ),
+    // endregion: Pinstress
 ];
 
 pub struct HollowKnightInfo {
